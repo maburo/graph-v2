@@ -1,0 +1,31 @@
+@import "../variables";
+
+/**
+ * Mixin that prefixes CSS path with `.ib-flow-in-analyze-mode` class and applies color `$flow-error-color` to each of provided properties.
+ * Used to override color of CSS properties with "error color" when Flow is in so called "Analyze mode" - so all warnings are no more yellow but red colored.
+ *
+ * Example of usage:
+ *
+ *   // Input (SCSS):
+ *   .form input.warning {
+ *     border-color: yellow;
+ *     @include style-in-analyze-mode(border-color);
+ *   }
+ *
+ *   // Output (CSS):
+ *   .form input.warning {
+ *     border-color: yellow;
+ *   }
+ *
+ *   .ib-flow-in-analyze-mode .form input.warning {
+ *     border-color: red;
+ *   }
+ *
+ */
+@mixin style-for-analyze-mode($properties...) {
+  @at-root .ib-flow-in-analyze-mode & {
+    @each $property in $properties {
+      #{$property}: $flow-error-color;
+    }
+  }
+}

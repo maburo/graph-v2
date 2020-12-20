@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="11px" height="11px" viewBox="0 0 11 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Channels/Push-Small</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Atoms" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1388.000000, -1610.000000)">
+        <g id="Atoms/Icons/Channels/Push-Small" transform="translate(1383.000000, 1606.000000)">
+            <g>
+                <rect id="Rectangle-6" x="0" y="0" width="20" height="20"></rect>
+                <g id="Push-Icon" transform="translate(5.000000, 4.000000)" fill="#545454" fill-rule="nonzero">
+                    <g id="Group-4">
+                        <path d="M8.13094311,1.1 L1.21393432,1.1 C0.546368727,1.1 0,1.64349691 0,2.31393432 L0,9.78606568 C0,10.4536313 0.54349691,11 1.21393432,11 L8.68606568,11 C9.35363128,11 9.9,10.4565031 9.9,9.78606568 L9.9,2.93564127 C9.8176355,2.94919865 9.7330787,2.95625 9.64687501,2.95625 C8.79255952,2.95625 8.10000001,2.26369047 8.10000001,1.409375 C8.10000001,1.30342463 8.11065185,1.19996214 8.13094311,1.1 Z" id="Combined-Shape"></path>
+                        <circle id="Oval" cx="9.9" cy="1.1" r="1.1"></circle>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

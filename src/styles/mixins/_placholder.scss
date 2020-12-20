@@ -1,0 +1,31 @@
+@mixin placeholder {
+  /* WebKit, Blink, Edge */
+  &::-webkit-input-placeholder {
+    @content
+  }
+
+  /* Mozilla Firefox 4 to 18 */
+  &:-moz-placeholder {
+    @content
+  }
+
+  /* Mozilla Firefox 19+ */
+  &::-moz-placeholder {
+    @content
+  }
+
+  /* Internet Explorer 10-11 */
+  &:-ms-input-placeholder {
+    @content
+  }
+
+  /* Microsoft Edge */
+  &::-ms-input-placeholder {
+    @content
+  }
+
+  /* Most modern browsers support this now. */
+  &::placeholder {
+    @content
+  }
+}

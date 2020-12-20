@@ -1,0 +1,250 @@
+@import './variables';
+@import './mixins/analyze-mode';
+
+.flow-stop-element {
+  width: 130px;
+  height: 40px;
+  border-radius: 55px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 2px 0 rgba(84, 84, 84, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid transparent;
+  cursor: default;
+
+  .icon {
+      position: absolute;
+      left: 18px;
+      top: 13px;
+  }
+
+  .title {
+      position: absolute;
+      left: 42px;
+      top: 10px;
+      height: 21px;
+      font-family: $font-family-base;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.5;
+      color: #545454;
+  }
+
+  &.warning {
+      border-color: $flow-warning-color;
+  }
+
+  &.danger {
+      border-color: $flow-error-color;
+  }
+}
+
+.flow-pause-element {
+    width: 125px;
+    height: 50px;
+    border-radius: 25px;
+    box-shadow: 0 8px 5px -5px rgba(84, 84, 84, 0.25), 0 0 2px 0 rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    border: 1px solid transparent;
+
+    .icon {
+        position: absolute;
+        left: 12px;
+        top: 10px;
+
+        img {
+            width: 30px;
+            height: 30px;
+            padding: 4px;
+        }
+    }
+
+    .title {
+        position: absolute;
+        left: 45px;
+        top: 5px;
+
+        height: 20px;
+        font-family: $font-family-base;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.43;
+        color: #545454;
+    }
+
+    .text {
+        position: absolute;
+        left: 45px;
+        top: 25px;
+        height: 20px;
+        font-family: $font-family-base;
+        font-size: 12px;
+        line-height: 1.67;
+        color: #b4b4b4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 65px;
+    }
+
+    &.warning {
+        border-color: $flow-warning-color;
+    }
+
+    &.danger {
+        border-color: $flow-error-color;
+    }
+}
+
+.ib-flow-action-group {
+    $parent: &;
+  
+    position: relative;
+    width: 300px;
+    height: 80px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 2px 2px 0 rgba(84, 84, 84, 0.15), 0 0 2px 0 rgba(0, 0, 0, 0.1);
+    border: 1px solid transparent;
+    padding: 10px 16px 10px 12px;
+  
+    &:hover {
+      box-shadow: 0 8px 5px -5px rgba(84, 84, 84, 0.25), 0 0 2px 0 rgba(0, 0, 0, 0.1);
+  
+      .ib-flow-group-menu {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+  
+    /* Override menu styling */
+    .ib-flow-group-menu {
+      &-dropdown {
+        left: 58px;
+        top: 55px;
+      }
+    }
+  
+    &.active-flow {
+      border-color: $flow-color-action-active;
+    }
+  
+    &.warning {
+      border-color: $flow-warning-color !important;
+      @include style-for-analyze-mode(border-color);
+  
+      #{$parent}-left-border {
+        background-color: transparent;
+      }
+    }
+  
+    &.danger {
+      border-color: $flow-error-color !important;
+  
+      #{$parent}-left-border {
+        background-color: transparent;
+      }
+    }
+  
+    &-left-border {
+      position: absolute;
+      left: -1px;
+      top: -1px;
+      bottom: -1px;
+      width: 4px;
+  
+      /* Default group type: 'Channel' */
+      background-color: $flow-element-group-color--channel;
+  
+      /* Group type 'IVR' */
+      #{$parent}--ivr & {
+        background-color: $flow-element-group-color--ivr;
+      }
+  
+      /* Group type 'Function' */
+      #{$parent}--function & {
+        background-color: $flow-element-group-color--function;
+      }
+    }
+  
+    &-icon {
+      width: 30px;
+      height: 30px;
+      float: left;
+      margin-right: 12px;
+  
+      img {
+        width: 30px;
+        height: 30px;
+        padding: 3px;
+      }
+    }
+  
+    &-title {
+      height: 20px;
+      font-size: 14px;
+      font-weight: bold;
+      line-height: 1.43;
+      text-align: left;
+      color: #545454;
+    }
+  
+    &-subject-text {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 20px;
+      font-size: 12px;
+      line-height: 1.67;
+      text-align: left;
+      color: #545454;
+    }
+  
+    &-message-text {
+      height: 40px;
+      font-size: 12px;
+      line-height: 1.67;
+      letter-spacing: normal;
+      text-align: left;
+      color: #b4b4b4;
+      overflow: hidden;
+  
+      &--email {
+        top: 40px;
+        height: 20px;
+      }
+  
+      &--failover {
+        div {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  
+    &-actions {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      right: 0;
+      height: 20px;
+      display: flex;
+      align-items: center;
+  
+      > i {
+        width: 20px;
+        height: 20px;
+        opacity: 0.5;
+        font-size: 16px;
+        margin: 0;
+        padding: 2px;
+        display: flex;
+  
+        &::before {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+@import "../scripts/components/flow-nodes/dropdown/dropdown.scss";

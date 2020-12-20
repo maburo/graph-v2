@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="22px" viewBox="0 0 14 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Record</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="OMNI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Flow-Icons" transform="translate(-368.000000, -214.000000)">
+            <g id="Atoms/Icons/Record" transform="translate(360.000000, 210.000000)">
+                <g>
+                    <polygon id="Shape" points="0 0 30 0 30 30 0 30"></polygon>
+                    <g id="Group" transform="translate(8.000000, 4.000000)">
+                        <path d="M7,13 C8.66,13 9.99,11.5483333 9.99,9.75 L10,3.25 C10,1.45166667 8.66,0 7,0 C5.34,0 4,1.45166667 4,3.25 L4,9.75 C4,11.5483333 5.34,13 7,13 Z" id="Shape" fill="#29B899" fill-rule="nonzero"></path>
+                        <path d="M12.3,10 C12.3,13.3 9.76,15.61 7,15.61 C4.24,15.61 1.7,13.3 1.7,10 L0,10 C0,13.751 2.72,16.853 6,17.392 L6,22 L8,22 L8,17.392 C11.28,16.864 14,13.762 14,10 L12.3,10 Z" id="Path" fill="#7383BF"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

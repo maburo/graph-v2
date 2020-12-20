@@ -1,0 +1,86 @@
+html {
+  height: 100%;
+}
+
+body {
+  background-color: #d3d3d3;
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .layer {
+    padding: 0px;
+    margin: 0px;
+    
+    &.render {
+      position: absolute;  
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+    }
+
+    &.select {
+      position: absolute;
+      background-color: rgba($color: #a9f9ff, $alpha: 0.2);
+      border: rgba($color: #0084ff, $alpha: 0.9) solid 1px;
+    }
+  }
+
+  .context-menu {
+    position: absolute;
+    padding: 0px;
+    margin: 0px;
+    ul {
+      padding: 0px;
+      margin: 0px;
+    }
+
+    li {
+      border: black 1px solid;
+      padding: 10px 30px;
+      background-color: white;
+      list-style-type: none;
+      text-align: left;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f3f3f3;
+      }
+    }
+  }
+
+  .node {
+    position: absolute;
+    
+    .default {
+      background-color: #a0a0a0;
+      width: 32px;
+      height: 32px;
+      border: black 1px solid;
+      text-align: center;
+    }
+  }
+}
+
+.debug-mode-preview {
+  position: fixed;
+  transform: none;
+  font-size: 0.9em;
+  width: 9em;
+  top: 10px;
+  left: 10px;
+  padding: 5px 20px;
+  border-radius: 12px;
+  background-color: rgba(91, 157, 233, 0.514);
+}
+

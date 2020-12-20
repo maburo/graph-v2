@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="37px" height="37px" viewBox="0 0 37 37" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/financial-reports-large</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Detailed-Report" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Detailed-Report-1.0" transform="translate(-950.000000, -174.000000)">
+            <g id="icon/financial" transform="translate(950.000000, 173.000000)">
+                <g id="finance-icon">
+                    <rect id="Rectangle-16" fill="#26B99A" x="19" y="18" width="17" height="18"></rect>
+                    <rect id="Rectangle-14-Copy-4" stroke="#7383BF" stroke-width="2" x="1" y="2" width="35" height="35" rx="3"></rect>
+                    <path d="M18,2.5 L18,36.5147027" id="Line-5-Copy-2" stroke="#7383BF" stroke-width="2"></path>
+                    <path d="M1.5,19 L35.7344855,19" id="Line-6-Copy-2" stroke="#7383BF" stroke-width="2"></path>
+                    <text id="+-copy-4" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold" fill="#7383BF">
+                        <tspan x="6" y="16">+</tspan>
+                    </text>
+                    <text id="x-copy-4" font-family="OpenSans-Bold, Open Sans" font-size="11" font-weight="bold" fill="#7383BF">
+                        <tspan x="7" y="31">x</tspan>
+                    </text>
+                    <text id="–" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold" fill="#7383BF">
+                        <tspan x="24" y="15">–</tspan>
+                    </text>
+                    <text id="=-copy-4" font-family="OpenSans-Bold, Open Sans" font-size="14" font-weight="bold" fill="#F8F8F8">
+                        <tspan x="23" y="33">=</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

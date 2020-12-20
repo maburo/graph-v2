@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Say</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="OMNI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Flow-Icons" transform="translate(-94.000000, -216.000000)">
+            <g id="Atoms/Icons/Say" transform="translate(90.000000, 210.000000)">
+                <g>
+                    <polygon id="Shape" points="0 0 30 0 30 30 0 30"></polygon>
+                    <path d="M22.8888889,19.8888889 C21.5,19.8888889 20.1666667,19.6666667 18.9222222,19.2555556 C18.5333333,19.1333333 18.1,19.2222222 17.7888889,19.5222222 L15.3444444,21.9666667 C12.2,20.3666667 9.62222222,17.8 8.02222222,14.6444444 L10.4666667,12.1888889 C10.7777778,11.9 10.8666667,11.4666667 10.7444444,11.0777778 C10.3333333,9.83333333 10.1111111,8.5 10.1111111,7.11111111 C10.1111111,6.5 9.61111111,6 9,6 L5.11111111,6 C4.5,6 4,6.5 4,7.11111111 C4,17.5444444 12.4555556,26 22.8888889,26 C23.5,26 24,25.5 24,24.8888889 L24,21 C24,20.3888889 23.5,19.8888889 22.8888889,19.8888889 Z" id="Shape" fill="#7383BF" fill-rule="nonzero"></path>
+                    <path d="M22,15 L24,15 C24,10.03 19.97,6 15,6 L15,8 C18.87,8 22,11.13 22,15 Z" id="Path" fill="#29B899"></path>
+                    <path d="M18,15 L20,15 C20,12.24 17.76,10 15,10 L15,12 C16.66,12 18,13.34 18,15 Z" id="Path" fill="#29B899"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="26px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Inbound-Clicked</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Atoms" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1350.000000, -1359.000000)">
+        <g id="Atoms/Icons/Inbound-Clicked" transform="translate(1350.000000, 1359.000000)">
+            <g>
+                <rect id="Rectangle-5-Copy-10" fill="#7383BF" x="0" y="0" width="30" height="30" rx="15"></rect>
+                <g id="Group-5-Copy-19" transform="translate(17.000000, 15.000000) rotate(180.000000) translate(-17.000000, -15.000000) translate(8.000000, 5.000000)">
+                    <rect id="Rectangle" stroke="#FFFFFF" stroke-width="1.5" x="5.75" y="0.75" width="11.5" height="18.5" rx="2"></rect>
+                    <rect id="Rectangle-12" fill="#7383BF" x="5" y="7" width="4" height="6"></rect>
+                    <g id="Group" transform="translate(7.914214, 9.807612) rotate(45.000000) translate(-7.914214, -9.807612) translate(2.414214, 4.307612)" fill="#FFFFFF">
+                        <path d="M5.44849627,-0.302182476 L5.44849627,-0.302182476 C5.90332037,-0.302182476 6.27202816,0.0665253108 6.27202816,0.521349415 L6.27202816,11.0942426 C6.27202816,11.54904 5.903342,11.9177262 5.44854457,11.9177262 C5.44852847,11.9177262 5.44851237,11.9177262 5.44849627,11.9177262 L5.44849627,11.9177262 C4.99366435,11.9176995 4.62496438,11.5489779 4.62496438,11.094146 L4.62496438,0.521349415 C4.62496438,0.0665253108 4.99367216,-0.302182476 5.44849627,-0.302182476 Z" id="Rectangle-5" transform="translate(5.448494, 5.807748) rotate(45.000000) translate(-5.448494, -5.807748) "></path>
+                        <rect id="Rectangle-5" transform="translate(7.648283, 1.736519) rotate(90.000000) translate(-7.648283, -1.736519) " x="6.82475384" y="-0.763481454" width="1.64705882" height="5" rx="0.823529412"></rect>
+                        <rect id="Rectangle-5" x="8.58823529" y="1" width="1.64705882" height="5" rx="0.823529412"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

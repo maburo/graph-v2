@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Outbound_Deselected_State</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Detailed-Report" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Detailed-Report-1.4" transform="translate(-540.000000, -568.000000)">
+            <g id="Outbound_Deselected_State" transform="translate(533.000000, 563.000000)">
+                <rect id="Rectangle-2" x="0" y="0" width="30" height="30"></rect>
+                <rect id="Rectangle" stroke="#B4B4B4" stroke-width="1.5" x="7.75" y="5.75" width="11.5" height="18.5" rx="2"></rect>
+                <rect id="Rectangle-12" fill="#FFFFFF" x="17" y="12" width="4" height="6"></rect>
+                <g id="Group" transform="translate(19.560660, 15.161165) rotate(45.000000) translate(-19.560660, -15.161165) translate(14.060660, 9.161165)" fill="#B4B4B4">
+                    <path d="M5.19849379,-0.405735866 L5.19849379,-0.405735866 L5.19849379,-0.405735866 C5.65331652,-0.405735866 6.0220232,-0.0370291897 6.0220232,0.417793545 L6.0220232,11.6977018 L6.0220232,11.6977018 C6.0220232,12.1525246 5.65331652,12.5212312 5.19849379,12.5212312 L5.19849379,12.5212312 L5.19849379,12.5212312 C4.74367105,12.5212312 4.37496438,12.1525246 4.37496438,11.6977018 L4.37496438,0.417793545 L4.37496438,0.417793545 C4.37496438,-0.0370291897 4.74367105,-0.405735866 5.19849379,-0.405735866 Z" id="Rectangle-5" transform="translate(5.198494, 6.057748) rotate(45.000000) translate(-5.198494, -6.057748) "></path>
+                    <rect id="Rectangle-5" transform="translate(7.648283, 1.736519) rotate(90.000000) translate(-7.648283, -1.736519) " x="6.82475384" y="-0.763481454" width="1.64705882" height="5" rx="0.823529412"></rect>
+                    <rect id="Rectangle-5" x="8.58823529" y="1" width="1.64705882" height="5" rx="0.823529412"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

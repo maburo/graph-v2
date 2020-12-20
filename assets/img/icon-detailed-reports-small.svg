@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="23px" height="24px" viewBox="0 0 23 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>icon/detailed-reports-small</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="All-Reports" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="FINAL-AllReports-Filter" transform="translate(-240.000000, -232.000000)">
+            <g id="icon/detailed" transform="translate(240.000000, 232.819464)">
+                <rect id="Rectangle-10" fill="#26B99A" x="6.35294118" y="3.33333333" width="9.61749472" height="2.66666667" rx="1.33333333"></rect>
+                <rect id="Rectangle-10-Copy" fill="#26B99A" x="6.35294118" y="6.66666667" width="9.61749472" height="2.66666667" rx="1.33333333"></rect>
+                <rect id="Rectangle-10-Copy-3" fill="#26B99A" x="15.760339" y="5.26723323" width="5.28553542" height="1.46553354" rx="0.732766772"></rect>
+                <rect id="Rectangle-10-Copy-4" fill="#26B99A" x="15.760339" y="7.26723323" width="5.28553542" height="1.46553354" rx="0.732766772"></rect>
+                <rect id="Rectangle-10-Copy-5" fill="#26B99A" x="15.760339" y="9.33333333" width="5.28553542" height="1.46553354" rx="0.732766772"></rect>
+                <rect id="Rectangle-10-Copy-2" fill="#26B99A" x="6.35294118" y="10" width="9.61749472" height="2.66666667" rx="1.33333333"></rect>
+                <rect id="Rectangle-20" fill="#7383BF" transform="translate(18.403107, 18.714045) rotate(-45.000000) translate(-18.403107, -18.714045) " x="16.6384008" y="13.7140452" width="3.52941176" height="10" rx="1"></rect>
+                <path d="M8.48771953,16 C3.81900418,16 0.0342625935,12.4255218 0.0342625935,8.01617956 C0.0342625935,3.60683728 3.81900418,0.0323591161 8.48771953,0.0323591161 C13.1564349,0.0323591161 16.9411765,3.60683728 16.9411765,8.01617956 C16.9411765,12.4255218 13.1564349,16 8.48771953,16 Z M8.48771953,14.0981458 C12.0442837,14.0981458 14.9274485,11.3751568 14.9274485,8.01617956 C14.9274485,4.65720233 12.0442837,1.93421327 8.48771953,1.93421327 C4.93115541,1.93421327 2.04799052,4.65720233 2.04799052,8.01617956 C2.04799052,11.3751568 4.93115541,14.0981458 8.48771953,14.0981458 Z" id="Combined-Shape" fill="#7383BF"></path>
+            </g>
+        </g>
+    </g>
+</svg>

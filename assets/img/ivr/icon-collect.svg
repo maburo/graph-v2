@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="22px" viewBox="0 0 16 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Collect</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="OMNI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Flow-Icons" transform="translate(-187.000000, -214.000000)">
+            <g id="Atoms/Icons/Collect" transform="translate(180.000000, 210.000000)">
+                <g>
+                    <polygon id="Shape" points="0 0 30 0 30 30 0 30"></polygon>
+                    <path d="M9,4 C7.9,4 7,4.9 7,6 C7,7.1 7.9,8 9,8 C10.1,8 11,7.1 11,6 C11,4.9 10.1,4 9,4 Z M9,10 C7.9,10 7,10.9 7,12 C7,13.1 7.9,14 9,14 C10.1,14 11,13.1 11,12 C11,10.9 10.1,10 9,10 Z M9,16 C7.9,16 7,16.9 7,18 C7,19.1 7.9,20 9,20 C10.1,20 11,19.1 11,18 C11,16.9 10.1,16 9,16 Z M21,8 C22.1,8 23,7.1 23,6 C23,4.9 22.1,4 21,4 C19.9,4 19,4.9 19,6 C19,7.1 19.9,8 21,8 Z M15,16 C13.9,16 13,16.9 13,18 C13,19.1 13.9,20 15,20 C16.1,20 17,19.1 17,18 C17,16.9 16.1,16 15,16 Z M21,16 C19.9,16 19,16.9 19,18 C19,19.1 19.9,20 21,20 C22.1,20 23,19.1 23,18 C23,16.9 22.1,16 21,16 Z M21,10 C19.9,10 19,10.9 19,12 C19,13.1 19.9,14 21,14 C22.1,14 23,13.1 23,12 C23,10.9 22.1,10 21,10 Z M15,10 C13.9,10 13,10.9 13,12 C13,13.1 13.9,14 15,14 C16.1,14 17,13.1 17,12 C17,10.9 16.1,10 15,10 Z M15,4 C13.9,4 13,4.9 13,6 C13,7.1 13.9,8 15,8 C16.1,8 17,7.1 17,6 C17,4.9 16.1,4 15,4 Z" id="Shape" fill="#7383BF" fill-rule="nonzero"></path>
+                    <path d="M15,22 C13.9,22 13,22.9 13,24 C13,25.1 13.9,26 15,26 C16.1,26 17,25.1 17,24 C17,22.9 16.1,22 15,22 Z" id="Path" fill="#29B899"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

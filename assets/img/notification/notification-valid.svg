@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Statuses/Valid</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Components" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Atoms" transform="translate(-987.000000, -1951.000000)">
+            <g id="Atoms/Icons/Statuses/Valid" transform="translate(983.000000, 1947.000000)">
+                <g>
+                    <rect id="Rectangle-2" x="0" y="0" width="20" height="20"></rect>
+                    <g id="Group-2" transform="translate(4.000000, 4.000000)">
+                        <circle id="Oval" fill="#FFFFFF" fill-rule="nonzero" cx="6" cy="6" r="6"></circle>
+                        <path d="M12,5.99948209 C12,9.31307726 9.31411308,11.9989642 6.00051791,11.9989642 C2.68692274,11.9989642 0,9.31307726 0,5.99948209 C0,2.68588692 2.68692274,0 6.00051791,0 C9.31411308,0 12,2.68588692 12,5.99948209 Z M8.5779733,3.9612233 L5.48775,7.05144661 L3.9865267,5.5502233 C3.84752916,5.41271523 3.66315125,5.338 3.47275,5.338 C3.28423163,5.338 3.09867442,5.41352219 2.9619733,5.5502233 C2.67926228,5.83293433 2.67926228,6.29559513 2.96245302,6.57725511 C3.21407179,6.82824741 3.21407179,6.82824741 3.96970547,7.58200109 C4.72236551,8.33279109 4.72236551,8.33279109 4.9769733,8.5867767 C5.25886937,8.87172542 5.71963063,8.87172542 6.00247454,8.58582374 L9.60245301,4.98885035 C9.73990087,4.84991452 9.81375,4.66569305 9.81375,4.475 C9.81375,4.28430695 9.73990087,4.10008548 9.60347965,3.96218142 C9.31944649,3.67967197 8.85952464,3.67967197 8.5779733,3.9612233 Z" id="Combined-Shape" fill="#29B899"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

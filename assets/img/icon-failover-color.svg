@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="35px" height="30px" viewBox="0 0 35 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Failover-Large</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Atoms" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1250.000000, -573.000000)">
+        <g id="Atoms/Icons/Failover-Large" transform="translate(1243.000000, 563.000000)">
+            <g>
+                <rect id="Rectangle-12" x="0" y="0" width="50" height="50"></rect>
+                <g id="Failover" transform="translate(8.000000, 10.000000)" fill-rule="nonzero">
+                    <path d="M16.9714286,15.7024703 L6.95489143,15.7024703 C5.83660141,15.7024703 5.09142857,14.5751863 5.09142857,13.3175934 L5.09142857,5.07591415 L6.78857143,5.07591415 L6.78857143,13.3175934 C6.78857143,13.7482954 6.95669473,14.0026292 6.95489143,14.0026292 L16.9714286,14.0026292 L16.9714286,15.7024703 Z" id="Combined-Shape" stroke="#28B899" stroke-width="0.5" fill="#29B899"></path>
+                    <path d="M24.5152013,26.3028677 L14.5920343,26.3028677 C13.4737442,26.3028677 12.7285714,25.1755838 12.7285714,23.9179908 L12.7285714,15.6763116 L14.4257143,15.6763116 L14.4257143,23.9179908 C14.4257143,24.3486929 14.5938376,24.6030267 14.5920343,24.6030267 L24.514046,24.6030267 C24.4524931,24.8755899 24.42,25.1591931 24.42,25.4503974 C24.42,25.7434184 24.4528998,26.028743 24.5152013,26.3028677 Z" id="Combined-Shape" stroke="#28B899" stroke-width="0.5" fill="#29B899"></path>
+                    <path d="M10.2774798,3.39959704 L8.8817842e-16,3.39959704 L8.8817842e-16,5.09943806 L10.2774798,5.09943806 C10.2155532,4.82609396 10.1828571,4.54163012 10.1828571,4.24951756 C10.1828571,3.95740499 10.2155532,3.67294114 10.2774798,3.39959704 Z" id="Combined-Shape" stroke="#28B899" stroke-width="0.5" fill="#29B899"></path>
+                    <ellipse id="Oval" fill="#7483BE" cx="29.8085617" cy="25.4503974" rx="3.81857143" ry="3.82464229"></ellipse>
+                    <ellipse id="Oval" fill="#7483BE" cx="15.5485519" cy="4.24951756" rx="3.81857143" ry="3.82464229"></ellipse>
+                    <rect id="Rectangle" fill="#7483BE" x="18.5" y="11.0253577" width="7.63714286" height="7.64928458"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

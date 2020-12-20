@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="35px" height="35px" viewBox="0 0 35 35" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 46.2 (44496) - http://www.bohemiancoding.com/sketch -->
+    <title>Icons-Facebook_Large</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="34.5017043 -1.13686838e-13 1.31685341e-05 -1.13686838e-13 1.31685341e-05 34.9998501 34.5017043 34.9998501"></polygon>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-3">
+            <stop stop-color="#00A6FF" offset="0%"></stop>
+            <stop stop-color="#006DFF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons-Facebook_Large">
+            <g id="Facebook_Large">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M19.0676994,21.7231247 L14.6060245,17.0684773 L6.01373155,21.840335 L15.434018,11.8013741 L19.895693,16.4560214 L28.4879859,11.6841637 L19.0676994,21.7231247 Z M17.2508368,-1.76322418e-05 C7.72349012,-1.76322418e-05 1.31685341e-05,7.25274055 1.31685341e-05,16.1994282 C1.31685341e-05,21.2889748 2.49962042,25.8302469 6.40878757,28.8000453 L6.40878757,34.9998501 L12.2959124,31.7205617 C13.8652944,32.1617645 15.528612,32.3988741 17.2508368,32.3988741 C26.7782273,32.3988741 34.5017043,25.1461159 34.5017043,16.1994282 C34.5017043,7.25274055 26.7782273,-1.76322418e-05 17.2508368,-1.76322418e-05 L17.2508368,-1.76322418e-05 Z" id="Fill-1" fill="url(#linearGradient-3)" mask="url(#mask-2)"></path>
+            </g>
+        </g>
+    </g>
+</svg>

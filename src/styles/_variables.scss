@@ -1,0 +1,24 @@
+@import "./ib-bootstrap/variables.scss";
+
+// _flow-container
+$flow-color-action-active: #26b99a;
+
+
+$font-family-sans-serif: 'Roboto', 'Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif' !default;
+$font-family-base: $font-family-sans-serif !default;
+//== Flow Specific Variables
+
+// Colors
+$flow-dark-color: #242424;
+$flow-dark-gray: #545454;
+$flow-light-gray: #b4b4b4;
+$flow-lighter-gray: #d3d3d3;
+// $flow-focus-color: $link-color;
+$flow-error-color: #c84714;
+$flow-warning-color: #f1af52;
+$flow-selected-color: #29b899;
+// $flow-success-color: $brand-success;
+
+$flow-element-group-color--channel: #26b99a;
+$flow-element-group-color--ivr: #7383bf;
+$flow-element-group-color--function: #41c3dd;

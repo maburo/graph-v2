@@ -1,0 +1,13 @@
+<svg width="142" height="142" viewBox="0 0 142 142" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <filter id="omni-flow-group-shadow">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+      <feOffset dx="0" dy="1" />
+    </filter>
+    <path id="omni-flow-decision-group-bg-danger" class="omni-flow-decision-group-bg omni-flow-decision-group-bg-danger" d="M60.988332 1.264372C58.04718-.260082 53.27114-.294038 50.300447 1.198728L5.362457 23.779983C2.400854 25.268183 0 29.168883 0 32.472783v57.824384c0 3.3127 2.42039 7.151135 5.422486 8.581192l44.6536 21.27087c2.994755 1.42656 7.814192 1.37209 10.776187-.127574l45.794025-23.185594C109.603066 95.339045 112 91.439434 112 88.12862V33.70153c0-3.311973-2.38475-7.232917-5.325427-8.757125L60.988333 1.264372z" />
+  </defs>
+  <g transform="translate(15 10)">
+    <use fill="rgba(0,0,0,0.2)" xlink:href="#omni-flow-decision-group-bg-danger" filter="url(#omni-flow-group-shadow)" class="omni-flow-group-shadow-light" />
+    <use fill="#ffffff" stroke="#c81414" stroke-width="6" xlink:href="#omni-flow-decision-group-bg-danger" />
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="28px" viewBox="0 0 29 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Analyze Active Default</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="13.7934783" cy="12.9130435" r="12.9130435"></circle>
+    </defs>
+    <g id="Icon-Matrix" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1013.000000, -158.000000)">
+        <g id="Analyze-Active-Default" transform="translate(1014.000000, 159.000000)">
+            <g id="Path-4">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" stroke="#29B899" stroke-width="2" fill="#29B899" xlink:href="#path-1"></use>
+            </g>
+            <g id="Group-10" transform="translate(5.282609, 4.695652)" fill="#FFFFFF">
+                <rect id="Rectangle-4" x="4.69565217" y="0" width="2.34782609" height="15.2608696" rx="1"></rect>
+                <rect id="Rectangle-4" x="9.39130435" y="4.36024845" width="2.34782609" height="10.9006211" rx="1"></rect>
+                <rect id="Rectangle-4" x="0" y="10.2298137" width="2.34782609" height="4.69565217" rx="1"></rect>
+                <rect id="Rectangle-4" x="14.0869565" y="1.09006211" width="2.34782609" height="14.1708075" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

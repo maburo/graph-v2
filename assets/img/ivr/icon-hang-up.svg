@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="11px" viewBox="0 0 28 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Hang up</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="OMNI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Flow-Icons" transform="translate(-631.000000, -218.000000)">
+            <g id="Atoms/Icons/Hang-up" transform="translate(630.000000, 210.000000)">
+                <g id="Atoms/Icons/Dial-Copy">
+                    <polygon id="Shape" points="0 0 30 0 30 30 0 30"></polygon>
+                    <path d="M23.8888889,18.8888889 C22.5,18.8888889 21.1666667,18.6666667 19.9222222,18.2555556 C19.5333333,18.1333333 19.1,18.2222222 18.7888889,18.5222222 L16.3444444,20.9666667 C13.2,19.3666667 10.6222222,16.8 9.02222222,13.6444444 L11.4666667,11.1888889 C11.7777778,10.9 11.8666667,10.4666667 11.7444444,10.0777778 C11.3333333,8.83333333 11.1111111,7.5 11.1111111,6.11111111 C11.1111111,5.5 10.6111111,5 10,5 L6.11111111,5 C5.5,5 5,5.5 5,6.11111111 C5,16.5444444 13.4555556,25 23.8888889,25 C24.5,25 25,24.5 25,23.8888889 L25,20 C25,19.3888889 24.5,18.8888889 23.8888889,18.8888889 Z" id="Shape" fill="#C84714" fill-rule="nonzero" transform="translate(15.000000, 15.000000) rotate(135.000000) translate(-15.000000, -15.000000) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

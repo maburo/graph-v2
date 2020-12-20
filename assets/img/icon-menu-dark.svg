@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="13px" viewBox="0 0 20 13" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Menu Dark</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Icon-Matrix" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-608.000000, -1586.000000)">
+        <g id="Menu-Dark" transform="translate(608.000000, 1586.000000)" fill="#545454" fill-rule="nonzero">
+            <path d="M1.11111111,2 C0.497461389,2 0,1.55228475 0,1 C0,0.44771525 0.497461389,0 1.11111111,0 L18.8888889,0 C19.5025386,0 20,0.44771525 20,1 C20,1.55228475 19.5025386,2 18.8888889,2 L1.11111111,2 Z" id="Line-2"></path>
+            <path d="M1.11111111,7.5 C0.497461389,7.5 0,7.05228475 0,6.5 C0,5.94771525 0.497461389,5.5 1.11111111,5.5 L18.8888889,5.5 C19.5025386,5.5 20,5.94771525 20,6.5 C20,7.05228475 19.5025386,7.5 18.8888889,7.5 L1.11111111,7.5 Z" id="Line-2"></path>
+            <path d="M1.11111111,13 C0.497461389,13 0,12.5522847 0,12 C0,11.4477153 0.497461389,11 1.11111111,11 L18.8888889,11 C19.5025386,11 20,11.4477153 20,12 C20,12.5522847 19.5025386,13 18.8888889,13 L1.11111111,13 Z" id="Line-2"></path>
+        </g>
+    </g>
+</svg>

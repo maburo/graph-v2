@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="12px" height="12px" viewBox="0 0 12 12" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Channels/Facebook-Small</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M6.00796909,0 C9.31801721,0.00398531279 12,2.48912584 12,5.55411339 C12,8.62156221 9.31370893,11.108233 5.99999528,11.108233 C5.40099009,11.108233 4.82247115,11.026938 4.27662587,10.8756677 L2.22902987,12 L2.22902987,9.87434358 C0.869386076,8.85612242 0,7.29910855 0,5.55411339 C0,2.48912584 2.68198745,0.00398531279 5.99202151,0 L6.00796909,8.52654936e-15 Z M6.63191711,7.44796055 L9.90837554,4.00601556 L6.91989887,5.64208817 L5.36808805,4.04620133 L2.09162621,7.4881468 L5.08010142,5.85207467 L6.63191711,7.44796055 Z" id="path-1"></path>
+    </defs>
+    <g id="Atoms" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-947.000000, -1610.000000)">
+        <g id="Atoms/Icons/Channels/Facebook-Small" transform="translate(943.000000, 1606.000000)">
+            <g>
+                <rect id="Rectangle-6" x="0" y="0" width="20" height="20"></rect>
+                <g id="Facebook-Icon" transform="translate(4.000000, 4.000000)">
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="path-4"></g>
+                    <polygon id="Fill-4" fill="#545454" fill-rule="nonzero" mask="url(#mask-2)" points="0 12 12 12 12 0 0 0"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

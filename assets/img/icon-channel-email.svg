@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="10px" height="10px" viewBox="0 0 10 10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Channels/Email-Small</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Atoms" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1268.000000, -1611.000000)">
+        <g id="Atoms/Icons/Channels/Email-Small" transform="translate(1263.000000, 1606.000000)">
+            <g>
+                <rect id="Rectangle-6" x="0" y="0" width="20" height="20"></rect>
+                <g id="Email-Icon" transform="translate(5.000000, 5.000000)" fill="#545454" fill-rule="nonzero">
+                    <g id="Group-3">
+                        <path d="M10,4.25810679 L9.99530044,4.25410402 L5.37025848,0.140597079 C5.15944948,-0.046865693 4.84055052,-0.046865693 4.62974152,0.140597079 L0.00469956361,4.25410402 L0,4.25810679 L5.00033568,7 L10,4.25810679 Z" id="Fill-1"></path>
+                        <path d="M5,7.53297177 L9.86256369,10 C9.94435505,9.94206829 10,9.85578701 10,9.75409836 L10,5.00616295 L9.99262537,5 L5,7.53297177 Z" id="Fill-4"></path>
+                        <path d="M5,7.53297177 L9.86256369,10 C9.94435505,9.94206829 10,9.85578701 10,9.75409836 L10,5.00616295 L9.99262537,5 L5,7.53297177 Z" id="Fill-6"></path>
+                        <path d="M5.06967575,7.49817651 L0.00747739787,5 L0,5.00607829 L0,9.68879164 C0,9.8608072 0.155665828,10 0.348038882,10 L9.79131262,10 C9.87152471,10 9.94154034,9.97203987 10,9.93131534 L5.06967575,7.49817651 Z" id="Fill-8"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

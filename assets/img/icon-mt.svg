@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="26px" height="26px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Atoms/Icons/Outbound-Clicked</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Atoms" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1500.000000, -1359.000000)">
+        <g id="Atoms/Icons/Outbound-Clicked" transform="translate(1500.000000, 1359.000000)">
+            <g>
+                <rect id="Rectangle-5-Copy-4" fill="#26B99A" x="0" y="0" width="30" height="30" rx="15"></rect>
+                <g id="Group-5-Copy-14" transform="translate(8.000000, 5.000000)">
+                    <rect id="Rectangle" stroke="#FFFFFF" stroke-width="1.5" x="0.75" y="0.75" width="11.5" height="18.5" rx="2"></rect>
+                    <rect id="Rectangle-12" fill="#26B99A" x="10" y="7" width="4" height="6"></rect>
+                    <g id="Group" transform="translate(12.560660, 10.161165) rotate(45.000000) translate(-12.560660, -10.161165) translate(7.060660, 4.161165)" fill="#FFFFFF">
+                        <path d="M5.19849627,-0.405735866 L5.19849627,-0.405735866 C5.65332037,-0.405735866 6.02202816,-0.0370280798 6.02202816,0.417796024 L6.02202816,11.6978015 C6.02202816,12.1525974 5.65334325,12.5212823 5.19854736,12.5212823 C5.19853033,12.5212823 5.1985133,12.5212823 5.19849627,12.5212823 L5.19849627,12.5212823 C4.7436639,12.5212541 4.37496438,12.1525317 4.37496438,11.6976993 L4.37496438,0.417796024 C4.37496438,-0.0370280798 4.74367216,-0.405735866 5.19849627,-0.405735866 Z" id="Rectangle-5" transform="translate(5.198494, 6.057748) rotate(45.000000) translate(-5.198494, -6.057748) "></path>
+                        <rect id="Rectangle-5" transform="translate(7.648283, 1.736519) rotate(90.000000) translate(-7.648283, -1.736519) " x="6.82475384" y="-0.763481454" width="1.64705882" height="5" rx="0.823529412"></rect>
+                        <rect id="Rectangle-5" x="8.58823529" y="1" width="1.64705882" height="5" rx="0.823529412"></rect>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
