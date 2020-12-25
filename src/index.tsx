@@ -8,12 +8,14 @@ import { GraphEditor } from './scripts/components/graph';
 import { Graph, Edge } from './scripts/components/vgraph';
 
 import { ExitNode, PauseNode, ActionNode } from './scripts/components/flow-nodes';
+import { AABB } from './scripts/math';
 
 const container = document.createElement('div');
 container.className = 'container';
 document.body.appendChild(container);
 
-loadGraph('/big_graph.json');
+// loadGraph('/big_graph.json');
+loadGraph('/15065834.json');
 
 // ReactDOM.render((
 //   <div>
@@ -75,7 +77,7 @@ function loadGraph(file: string) {
         ...json.flowData.startElements, 
         ...json.flowData.flowElements
       ]
-
+           
       const edges: Edge[] = [];
       const graph: Graph<FlowElement> = new Graph();
 
@@ -84,7 +86,8 @@ function loadGraph(file: string) {
           id: el.id,
           x: el.diagramX,
           y: el.diagramY,
-          payload: el
+          payload: el,
+          bbox: new AABB(),
         });
         
         if (el.action?.nextElementId) edges.push({from: el.id, to: el.action.nextElementId});
@@ -97,6 +100,9 @@ function loadGraph(file: string) {
         graph.addEdge(edge);
       });
 
+      console.log(graph);
+      
+      
       ReactDOM.render(
         <GraphEditor 
           debug={true}

@@ -6,7 +6,6 @@ import AABB from '../math/aabb';
 import { Vector2D } from '../math/vector';
 import { 
   clamp, 
-  makeTransformMatrix 
 } from '../math/util';
 import { 
   SelectLayer, 
@@ -22,28 +21,26 @@ interface GraphProps {
   minZoom: number,
   maxZoom: number,
   zoomSense: number,
-  debug: boolean,
+  debug?: boolean,
 }
 
 interface GraphState {
-  x: number,
-  y: number,
-  z: number,
-  mx: number,
-  my: number,
-  width: number,
-  height: number,
-  selectRegion: AABB,
-  selectOrigin: Vector2D,
-  mode: Mode,
+  readonly x: number,
+  readonly y: number,
+  readonly z: number,
+  readonly mx: number,
+  readonly my: number,
+  readonly width: number,
+  readonly height: number,
+  readonly selectRegion: AABB,
+  readonly selectOrigin: Vector2D,
+  readonly mode: Mode,
 }
 
 export enum Mode {
   Edit, StartSelection, Select, Move, Drag
 }
 
-export const GraphContext = React.createContext<Graph<FlowElement>>(null);
-export const ModeContext = React.createContext<Mode>(Mode.Edit);
 
 /**
  * Editor
@@ -62,27 +59,28 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       my: 0,
       width: 0,
       height: 0,
-      selectRegion: new AABB(0, 0, 0, 0),
+      selectRegion: new AABB(0, 0, 0, 0), // TODO: min aabb size
       selectOrigin: new Vector2D(0, 0),
       mode: Mode.Edit,
     }
   }
 
   componentDidMount() {
-    window.requestAnimationFrame(this.step.bind(this));
+    window.requestAnimationFrame(this.animationStep.bind(this));
   }
 
-  step() {    
+  animationStep() {    
     const div = this.ref.current;
+    
     if (div) {
-      const width = div.clientHeight;
-      const height = div.clientWidth;
+      const height = div.clientHeight;
+      const width = div.clientWidth;
       if (width != this.state.width || height != this.state.height) {
         this.setState({...this.state, width, height}, );
       }
     }
 
-    window.requestAnimationFrame(this.step.bind(this));
+    window.requestAnimationFrame(this.animationStep.bind(this));
   }
 
   render() {
@@ -96,44 +94,39 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       if (adjacent.length === 0) continue;
   
       for (const edge of adjacent) {
+        const top = (edge.payload.type == FlowElementType.EXIT) ? 
+          20 : 55;
         edges.push({
           startX: node.x,
-          startY: node.y,
-          endX: edge.x || 0,
-          endY: edge.y || 0
+          startY: node.y + 55,
+          endX: edge.x - 20 || 0,
+          endY: edge.y + top || 0
         });
       }
     }
     
-    // const transformMtx = makeTransformMatrix(x, y, z);
+    const center = new Vector2D(width, height).div(2).add2d(x, y);
 
-    
-    const center = new Vector2D(width, height).div(2);
-    const a = z;
-    const d = a;
-    const tx = -x;
-    const ty = -y;
-    // const transformMtx = `matrix(${a},0,0,${d},${tx},${ty})`;
-
-    const cx = x + center.x;
-    const cy = y + center.y;
     const mtx = Matrix3D.translation(-x, -y);
     
-    Matrix3D.mul(mtx, Matrix3D.translation(cx, cy));
+    Matrix3D.mul(mtx, Matrix3D.translation(center.x, center.y));
     Matrix3D.mul(mtx, Matrix3D.scale(z));
-    Matrix3D.mul(mtx, Matrix3D.translation(-cx, -cy));
+    Matrix3D.mul(mtx, Matrix3D.translation(-center.x, -center.y));
     const transformMtx = Matrix3D.cssMatrix(mtx);
   
+    // TODO: lod, drag
     return (
-      <GraphContext.Provider value={graph}>
-      <ModeContext.Provider value={Mode.Edit}>
         <div 
           className="container" 
           ref={this.ref}
+          // onKeyDown=
           onWheel={this.onMouseWheel.bind(this)}
           onMouseMove={this.onMouseMove.bind(this)}
           onMouseDown={this.onMouseDown.bind(this)}
           onMouseUp={this.onMouseUp.bind(this)}
+          onTouchStart={this.onTouchStart.bind(this)}
+          onTouchEnd={this.onTouchEnd.bind(this)}
+          onTouchMove={this.onTouchMove.bind(this)}
         >
           {/* <GlLayer /> */}
        
@@ -146,6 +139,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             edges={edges} />
   
           <HtmlLayer 
+            onStartDrag={this.onNodeStartDrag.bind(this)}
             graph={graph}
             mode={mode}
             width={width}
@@ -154,7 +148,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             nodes={nodes} />
   
           {
-            this.state.mode === Mode.Select &&
+            // TODO: change on zoom
+            mode === Mode.Select &&
             <SelectLayer 
               mode={mode}
               graph={graph}
@@ -165,14 +160,20 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
           }
 
           {
+            // <MiniMapLayer />
+          }
+
+          {
             this.props.debug &&
             <DebugLayer
               parentRef={this.ref}
               transform={transformMtx}
+              position={{x, y, z}}
               graph={graph}
               mode={mode}
               width={width}
               height={height}
+              nodes={nodes}
               />
           }
   
@@ -185,50 +186,47 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
               } }
             ]} />
         </div>
-      </ModeContext.Provider>
-      </GraphContext.Provider>
     );
   }
 
-  onMouseWheel(e: React.WheelEvent) {
-    const v = clamp(
-      this.state.z - e.deltaY * this.props.zoomSense * this.state.z, 
-      this.props.minZoom, 
-      this.props.maxZoom);
-
-    this.setState({...this.state, z: v});
+  onNodeStartDrag(node: Node<any>) {
+    this.setState({...this.state, mode: Mode.Drag});
   }
 
-  onMouseMove(e: React.MouseEvent<unknown>) {
+  onMove(clientX: number, clientY: number) {
     const { mode, selectOrigin, x, y, z, mx, my } = this.state; 
 
     if (mode === Mode.Select) {
       const aabb = new AABB(selectOrigin.x, selectOrigin.y, selectOrigin.x, selectOrigin.y);
-      aabb.addPoint(e.clientX, e.clientY);
+      aabb.addPoint(clientX, clientY);
       this.setState({...this.state, selectRegion: aabb});
     }
     else if (mode === Mode.Move) {
       const aabb = this.props.graph.aabb;
 
+      const hw = this.state.width / 2;
+      const hh = this.state.height / 2;
+
       this.setState({
         ...this.state, 
-        x: clamp((x - (e.clientX - mx) / z), aabb.minX, aabb.maxX), 
-        y: clamp((y - (e.clientY - my) / z), aabb.minY, aabb.maxY),
-        mx: e.clientX,
-        my: e.clientY,
+        x: clamp((x - (clientX - mx) / z), aabb.minX - hw, aabb.maxX - hw), 
+        y: clamp((y - (clientY - my) / z), aabb.minY - hh, aabb.maxY - hh),
+        mx: clientX,
+        my: clientY,
       });
     }
-  }
-  
-  onMouseDown(e: React.MouseEvent<unknown>) {
-    e.preventDefault();
+    else if (mode === Mode.Drag) {
 
+    }
+  }
+
+  onStartInteraction(clientX: number, clientY: number) {
     const { mode } = this.state;
 
     if (mode == Mode.StartSelection) {
       this.setState({...this.state, 
-        selectRegion: new AABB(e.clientX, e.clientY, e.clientX, e.clientY),
-        selectOrigin: new Vector2D(e.clientX, e.clientY),
+        selectRegion: new AABB(clientX, clientY, clientX, clientY),
+        selectOrigin: new Vector2D(clientX, clientY),
         mode: Mode.Select,
       });
     }
@@ -236,15 +234,13 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       this.setState({
         ...this.state, 
         mode: Mode.Move,
-        mx: e.clientX,
-        my: e.clientY,
+        mx: clientX,
+        my: clientY,
       });
     }
   }
   
-  onMouseUp(e: React.MouseEvent<unknown>) {
-    e.preventDefault();
-    
+  onEndInteraction() {
     const { mode } = this.state;
 
     if (mode === Mode.Select) {
@@ -255,6 +251,64 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         ...this.state, 
         mode: Mode.Edit,
       });
+    }
+    else if (mode === Mode.Drag) {
+      this.setState({
+        ...this.state,
+        mode: Mode.Edit,
+      })
+    }
+  }
+
+  //---------------------- Mouse
+  onMouseWheel(e: React.WheelEvent) {
+    const v = clamp(
+      this.state.z - e.deltaY * this.props.zoomSense * this.state.z, 
+      this.props.minZoom, 
+      this.props.maxZoom);
+
+    this.setState({...this.state, z: v});
+  }
+
+  onMouseMove(e: React.MouseEvent<unknown>) {
+    e.preventDefault();
+    this.onMove(e.clientX, e.clientY);
+  }
+
+  onMouseDown(e: React.MouseEvent<unknown>) {
+    e.preventDefault();
+    this.onStartInteraction(e.clientX, e.clientY);
+  }
+  
+  onMouseUp(e: React.MouseEvent<unknown>) {
+    e.preventDefault();
+    this.onEndInteraction();
+  }
+
+  //---------------------- Touch
+  onTouchStart(e: React.TouchEvent) {
+    e.preventDefault();
+    const touches = e.changedTouches;
+    
+    for (let i = 0; e.touches.length; i++) {
+      const touch = touches.item(i);
+      this.onStartInteraction(touch.clientX, touch.clientY);
+      this.onMove(touch.clientX, touch.clientY);
+    }
+  }
+
+  onTouchEnd(e: React.TouchEvent) {
+    e.preventDefault();
+    this.onEndInteraction();
+  }
+
+  onTouchMove(e: React.TouchEvent) {
+    e.preventDefault();
+    const touches = e.changedTouches;
+    
+    for (let i = 0; e.touches.length; i++) {
+      const touch = touches.item(i);
+      this.onMove(touch.clientX, touch.clientY);
     }
   }
 }

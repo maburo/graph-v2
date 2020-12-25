@@ -1,27 +1,33 @@
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
 
-import { Node } from '../vgraph';
+import { Graph, Node } from '../vgraph';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { ActionNode, ExitNode, PauseNode } from '../flow-nodes';
 import { Mode } from '../graph';
 import { LayerProperties } from './layer-props';
-import { Vector2D } from '../../math';
 
 interface HtmlLayerProperties extends LayerProperties {
+  onStartDrag: (node: Node<any>) => void,
   nodes: Node<FlowElement>[],
   transform: string,
 }
 
 export function HtmlLayer(props: HtmlLayerProperties) {
-  const { nodes, transform, mode } = props;
-  
+  const { nodes, transform, mode, graph, onStartDrag } = props;
+
   return (
-    <div 
+    <div
       className="render layer"
-      style={{transform, transformOrigin: "0px 0px"}}
+      style={{ transform, transformOrigin: "0px 0px" }}
     >
-      { 
-        nodes.map(node => (<HtmlNode mode={mode} node={node} />)) 
+      {
+        nodes.map(node => (
+          <HtmlNode
+            onStartDrag={onStartDrag}
+            graph={graph}
+            mode={mode}
+            node={node}
+          />))
       }
     </div>
   );
@@ -29,7 +35,9 @@ export function HtmlLayer(props: HtmlLayerProperties) {
 
 interface NodeProperties {
   mode: Mode,
-  node: Node<FlowElement>
+  node: Node<FlowElement>,
+  graph: Graph<any>,
+  onStartDrag: ((node: Node<any>) => void),
 }
 
 class HtmlNode extends React.Component<NodeProperties> {
@@ -45,15 +53,26 @@ class HtmlNode extends React.Component<NodeProperties> {
   render() {
     const node = this.props.node;
     const child = createChild(node);
+    let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
 
     return (
       <div
-          style={{
-            left: node.x + 'px', 
-            top: node.y + 'px'
-          }} 
-          className="node">
-        { child }
+        onMouseDown={e => {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('node mouse down');
+          this.props.onStartDrag(this.props.node);
+        }}
+        // onMouseUp={() => { }}
+        // onTouchStart={() => { }}
+        // onTouchEnd={() => { }}
+        style={{
+          left: node.x + 'px',
+          top: node.y + 'px'
+        }}
+        className={className}
+      >
+        { child}
       </div>
     )
   }
@@ -63,10 +82,10 @@ function createChild(node: Node<FlowElement>) {
   switch (node.payload.type) {
     case FlowElementType.EXIT:
       return (
-        <ExitNode 
+        <ExitNode
           id={node.id}
           type={FlowElementType.EXIT}
-          />
+        />
       )
     case FlowElementType.PAUSE:
       return (
@@ -77,16 +96,16 @@ function createChild(node: Node<FlowElement>) {
       )
     case FlowElementType.SEND_ACTION:
       return (
-        <ActionNode 
-          id={node.id} 
+        <ActionNode
+          id={node.id}
           totalNumberOfElements={1}
-          type={FlowElementType.SEND_ACTION} 
-          />
+          type={FlowElementType.SEND_ACTION}
+        />
       )
     default:
       return (
         <span className="default">
-          {`${node.id} ${node.payload?.action?.type}`} 
-        </span>) 
+          {`${node.id} ${node.payload?.action?.type}`}
+        </span>)
   }
 }

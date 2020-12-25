@@ -11,7 +11,7 @@ export default class AABB {
               minY:number = Number.MAX_SAFE_INTEGER,
               maxX:number = Number.MIN_SAFE_INTEGER,
               maxY:number = Number.MIN_SAFE_INTEGER) 
-  {
+  { 
     this.minX = minX;
     this.minY = minY;
     this.maxX = maxX;
@@ -26,13 +26,15 @@ export default class AABB {
   addPoint(x:number, y:number) {
     if (this.maxX < x) {
       this.maxX = x;
-    } else if (this.minX > x) {
+    } 
+    if (this.minX > x) {
       this.minX = x;
     }
 
     if (this.maxY < y) {
       this.maxY = y;
-    } else if (this.minY > y) {
+    } 
+    if (this.minY > y) {
       this.minY = y;
     }
   }

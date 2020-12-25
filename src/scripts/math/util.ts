@@ -4,10 +4,10 @@ export function clamp(value:number, min:number, max:number) {
   return value;
 }
 
-export function makeTransformMatrix(x: number, y: number, z: number) {
-  const a = z;
-  const d = a;
-  const tx = -x;
-  const ty = -y
-  return `matrix(${a},0,0,${d},${tx},${ty})`;
-}
+// export function makeTransformMatrix(x: number, y: number, z: number) {
+//   const a = z;
+//   const d = a;
+//   const tx = -x;
+//   const ty = -y
+//   return `matrix(${a},0,0,${d},${tx},${ty})`;
+// }

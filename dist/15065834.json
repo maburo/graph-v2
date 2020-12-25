@@ -1,0 +1,1661 @@
+{
+  "id": 12434168,
+  "communicationType": "FLOW",
+  "name": "ETIQA : Claims + CC v1 05122019",
+  "status": "ACTIVE",
+  "schedule": {
+    "end": 1583300271000,
+    "timezoneId": 122
+  },
+  "createdAt": 1575524453892,
+  "modifiedAt": 1575524574260,
+  "startedAt": 1575524574435,
+  "launchedAt": 1575524574435,
+  "flowData": {
+  "startElements": [
+    {
+      "id": 1,
+      "oldActionGroupId": null,
+      "type": "START_EVALUATE_INBOUND_MESSAGE",
+      "diagramX": -820,
+      "diagramY": -646,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "",
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 2
+        }
+      ],
+      "collect": null
+    }
+  ],
+  "flowElements": [
+    {
+      "id": 12,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 1035,
+      "diagramY": -1327,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "1",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 15
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "2",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 161
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "3",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 162
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "VOLVER",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 2
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "",
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 4
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": 900
+          },
+          "nextElementId": 69
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 15,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 1745,
+      "diagramY": -1628,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Te ofrecemos las siguientes opciones:\n\n*1* Combo 1\n*2* Combo 2\n*3* Combo 3\n*4* Contacta a uno de nuestros asesores\n\nEscribe la palabra *VOLVER* para regresar al menú anterior"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 33,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 162,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 1743,
+      "diagramY": -1401,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Te ofrecemos las siguientes opciones:\n\n*1* Combo 1\n*2* Combo 2\n*3* Combo 3\n*4* Contacta a uno de nuestros asesores\n\nEscribe la palabra *VOLVER* para regresar al menú anterior"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": null,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 69,
+      "oldActionGroupId": null,
+      "type": "EXIT",
+      "diagramX": 1335,
+      "diagramY": -658,
+      "action": {
+        "type": "ExitFlowAction"
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 166,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2619,
+      "diagramY": -1771,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Combo Personal # 2, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 125,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 167,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2623,
+      "diagramY": -1641,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Combo Personal # 3, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 125,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 34,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2617,
+      "diagramY": -1897,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Combo Personal # 1, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 125,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 62,
+      "oldActionGroupId": null,
+      "type": "EXIT",
+      "diagramX": 4209,
+      "diagramY": -1679,
+      "action": {
+        "type": "ExitFlowAction"
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 45,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 3252,
+      "diagramY": -1547,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "En breves momentos uno de nuestros expertos se pondrá en contacto contigo."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 46,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 33,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 2243,
+      "diagramY": -1719,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "1",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 34
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "2",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 166
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "3",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 167
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "4",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 45
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "VOLVER",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 4
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": 60
+          },
+          "nextElementId": 125
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 168,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 2251,
+      "diagramY": -1262,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "1",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 170
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "2",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 171
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "3",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 172
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "4",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 45
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "VOLVER",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 4
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": 60
+          },
+          "nextElementId": 125
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 170,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2643,
+      "diagramY": -1218,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Combo Familiar # 1, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 125,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 171,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2648,
+      "diagramY": -1111,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Combo Familiar # 2, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 125,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 172,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2647,
+      "diagramY": -1004,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Combo Familiar # 3, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 125,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 173,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2639,
+      "diagramY": -820,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Promoción  #1, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 176,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 174,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2641,
+      "diagramY": -710,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Promoción  #2, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 177,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 175,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2639,
+      "diagramY": -604,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Sr {$data\u0001whatsAppDisplayName} confirmamos tu pedido de 1 Promoción  #3, en breve sera despachado, gracias por confiar en nosotros. Hasta pronto."
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 178,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 161,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 1745,
+      "diagramY": -1506,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Te ofrecemos las siguientes opciones:\n\n*1* Combo 1\n*2* Combo 2\n*3* Combo 3\n*4* Contacta a uno de nuestros asesores\n\nEscribe la palabra *VOLVER* para regresar al menú anterior"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 168,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 4,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 561,
+      "diagramY": -1389,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Te ofrecemos las siguientes opciones:\n\n*1* Combos personales\n*2* Combos familiares\n*3* Promociones\n\nEscribe la palabra *VOLVER* para regresar al menú anterior"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 12,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 46,
+      "oldActionGroupId": null,
+      "type": "START_CONVERSATION",
+      "diagramX": 3763,
+      "diagramY": -1580,
+      "action": {
+        "type": "StartConversationAction",
+        "tagIds": [
+          "3AD7EF4404F935710954137223EDA949"
+        ],
+        "nextElementId": 62
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 176,
+      "oldActionGroupId": null,
+      "type": "EXIT",
+      "diagramX": 2989,
+      "diagramY": -800,
+      "action": {
+        "type": "ExitFlowAction"
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 177,
+      "oldActionGroupId": null,
+      "type": "EXIT",
+      "diagramX": 2991,
+      "diagramY": -690,
+      "action": {
+        "type": "ExitFlowAction"
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 178,
+      "oldActionGroupId": null,
+      "type": "EXIT",
+      "diagramX": 2989,
+      "diagramY": -584,
+      "action": {
+        "type": "ExitFlowAction"
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 181,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": -248,
+      "diagramY": -291,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "1",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 182
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "",
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 180
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "2",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 183
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": 300
+          },
+          "nextElementId": 9
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 183,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": -326,
+      "diagramY": 143,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Ingresa dirección por favor:"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 186,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 9,
+      "oldActionGroupId": null,
+      "type": "EXIT",
+      "diagramX": 645,
+      "diagramY": 95,
+      "action": {
+        "type": "ExitFlowAction"
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 182,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 355,
+      "diagramY": -173,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Escoge una de las siguientes opciones: \n\n*Digita el número de la opción con la que quieres que te ayudemos en el día de hoy*\n\n*1* Realizar tu pedido\n*2* Información de tu pedido"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": null,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 186,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 122,
+      "diagramY": 162,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": null,
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 182
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": null
+          },
+          "nextElementId": 9
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 2,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": -329,
+      "diagramY": -665,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [
+            "{$data\u0001whatsAppDisplayName}"
+          ],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "¡Hola {$data\u0001whatsAppDisplayName}, nos encanta leerte ! ❤.\nTe damos la binvenida bienvenida a nuestra cuenta oficial ✅ de Whatsapp de Sandwich Qbano😃\nResponde por favor a este mensaje digitando el número del servicio que requieres:\n1. Realizar tu pedido\n2. Información de tu pedido\n3. Olvidaste algo de tu pedido realizado"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 187,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 180,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": -675,
+      "diagramY": -385,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Tu pedido se entregará en la *CARRERA 9 #5-23* en Cali\n\n*1.* Si\n*2.* No"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 181,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 187,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": -322,
+      "diagramY": -568,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "1",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 188
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "2",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": null
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "3",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": null
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": null,
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": null
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": null
+          },
+          "nextElementId": 9
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 188,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 26,
+      "diagramY": -503,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": null,
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Es primera vez que realizas un pedido?, digita Si o No"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": null,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 3,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 3,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 386,
+      "diagramY": -712,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "si",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 6
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "no",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 189
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": null,
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": null
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": 300
+          },
+          "nextElementId": null
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 6,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 741,
+      "diagramY": -647,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Por favor escriba la dirección y teléfono y cedula, para crearlo en nuestra base de datos "
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": null,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 189,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 742,
+      "diagramY": -558,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": null,
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Digite su número de cedula o número telefónico con el que realizó su pedido"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": null,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 185,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 185,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 1043,
+      "diagramY": -476,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": null,
+            "keywords": null,
+            "valueType": "ANY_KEYWORD",
+            "matchType": null,
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 165
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": null
+          },
+          "nextElementId": 69
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 165,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 1492,
+      "diagramY": -417,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": [],
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": "Tu dirección es cl 9 # 42-130, Es correcta la dirección de entrega de su pedido?, digita Si o No"
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": true,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": 190,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    },
+    {
+      "id": 190,
+      "oldActionGroupId": null,
+      "type": "EVALUATE_INBOUND_MESSAGE",
+      "diagramX": 1897,
+      "diagramY": -397,
+      "action": null,
+      "rules": [
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "si",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": 191
+        },
+        {
+          "condition": {
+            "type": "MoResponse",
+            "value": "no",
+            "keywords": null,
+            "valueType": "KEYWORD",
+            "matchType": "EQUALS",
+            "receiver": {
+              "receiver": "573176770524",
+              "receiverType": "WHATSAPP",
+              "receiverId": 410054,
+              "receiverLabel": "573176770524",
+              "campaignChemistryEnabled": false,
+              "shared": false
+            }
+          },
+          "nextElementId": null
+        },
+        {
+          "condition": {
+            "type": "Else",
+            "waitMinutes": null,
+            "waitSeconds": null
+          },
+          "nextElementId": null
+        }
+      ],
+      "collect": null
+    },
+    {
+      "id": 191,
+      "oldActionGroupId": null,
+      "type": "SEND_ACTION",
+      "diagramX": 2247,
+      "diagramY": -352,
+      "action": {
+        "type": "SendMessageAction",
+        "serviceMessagingData": {
+          "requestType": "APPLICATION_TYPE_WHATSAPP",
+          "sendingRequestType": null,
+          "recipientsDataKeys": null,
+          "serviceData": {
+            "deliveryOptions": {
+              "validityPeriod": 2880
+            },
+            "sender": "573176770524",
+            "message": {
+              "type": "TEXT",
+              "text": ""
+            }
+          },
+          "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+          "deliveryNotificationsData": null,
+          "shouldForwardToCcaas": null,
+          "urlShorteningParams": null,
+          "isPrioritySending": false
+        },
+        "nextElementId": null,
+        "timeWindow": null,
+        "deliveryRate": null
+      },
+      "rules": [],
+      "collect": null
+    }
+  ],
+  "flowSettings": {
+    "flowRecurrence": true,
+    "reenterDelaySeconds": 0,
+    "reenterLimitations": [],
+    "goal": null
+  }
+}
+  }

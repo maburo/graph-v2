@@ -19,17 +19,17 @@ export class Vector2D {
     return this;
   }
 
+  add2d(x: number, y: number): Vector2D {
+    this.x += x;
+    this.y += y;
+    return this;
+  }
+
   sub(vec: Vector2D): Vector2D {
     this.x -= vec.x;
     this.y -= vec.y;
     return this;
   }
-
-  // add(scaler: number): Vector2D {
-  //   this.x += scaler;
-  //   this.y += scaler;
-  //   return this;
-  // }
 
   mul(scalar: number): Vector2D {
     this.x *= scalar;
