@@ -58,6 +58,10 @@ export class Graph<T> {
     return this.elementsList.length === 0;
   }
 
+  getNode(id: number) {
+    return this.elementsMap.get(id);
+  }
+
   get nodes(): Node<T>[] {
     return this.elementsList;
   }

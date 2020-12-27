@@ -15,8 +15,12 @@ const container = document.createElement('div');
 container.className = 'container';
 document.body.appendChild(container);
 
-// loadGraph('/big_graph.json');
-loadGraph('/15065834.json');
+const qwe = document.createElement('div')
+qwe.innerHTML = '<span>sdf<br/> asfsf<br /> s'
+document.body.appendChild(qwe)
+
+loadGraph('/big_graph.json');
+// loadGraph('/15065834.json');
 // loadGraph('/small.json');
 
 // ReactDOM.render((
@@ -77,9 +81,11 @@ function loadGraph(file: string) {
           nodeFactory={new NodeFactory()}
           debug={true}
           graph={graph} 
-          minZoom={0.05}
-          maxZoom={1}
-          zoomSense={0.001}
+          zoom={{
+            min: 0.05,
+            max: 1,
+            sense: 0.001,
+          }}
         />, container
       )
     })

@@ -6,7 +6,7 @@ import { LayerProperties } from './layer-props';
 
 interface HtmlLayerProperties extends LayerProperties {
   update: Date,
-  onStartDrag: (node: Node<any>) => void,
+  onStartDrag: (e: React.MouseEvent) => void,
   nodes: Node<any>[],
   transform: string,
 }
@@ -57,14 +57,14 @@ interface NodeProperties {
   mode: Mode,
   node: Node<any>,
   graph: Graph<any>,
-  onStartDrag: ((node: Node<any>) => void),
+  onStartDrag: (e: React.MouseEvent) => void,
 }
 
 class HtmlNode extends React.PureComponent<NodeProperties> {
 
-  constructor(props: NodeProperties) {
-    super(props);
-  }
+  // constructor(props: NodeProperties) {
+  //   super(props);
+  // }
 
   // shouldComponentUpdate(next: NodeProperties) {
   //   const a = this.props as any;
@@ -77,21 +77,15 @@ class HtmlNode extends React.PureComponent<NodeProperties> {
   // }
 
   render() {
-    const { x, y, node } = this.props;
+    const { x, y, node, onStartDrag } = this.props;
     let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
     
     return (
       <NodeFactoryContext.Consumer>
         { factory => (
           <div
-            onMouseDown={e => {
-              e.preventDefault();
-              e.stopPropagation();
-              this.props.onStartDrag(this.props.node);
-            }}
-            // onMouseUp={() => { }}
-            // onTouchStart={() => { }}
-            // onTouchEnd={() => { }}
+            data-id={node.id}
+            onMouseDown={onStartDrag}
             style={{
               left: x + 'px',
               top: y + 'px'

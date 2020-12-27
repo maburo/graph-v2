@@ -1,7 +1,7 @@
 import React from 'react';
 import { ContextMenu } from './context-menu';
-import { FlowElement, FlowElementType } from '@infobip/moments-components';
-import { Graph, Node } from './vgraph';
+import { FlowElement } from '@infobip/moments-components';
+import { Graph } from './vgraph';
 import { AABB, Vector2D, clamp, Matrix3D, Vector3D } from '../math';
 import { NodeFactory } from './node-factory';
 import { 
@@ -11,12 +11,17 @@ import {
   DebugLayer,
   EdgeData
 } from './layers';
+import { MouseController, TouchController } from '../controllers';
+
+interface ZoomSettings {
+  readonly min: number,
+  readonly max: number,
+  readonly sense: number,
+}
 
 interface GraphProps {
   readonly graph: Graph<FlowElement>
-  readonly minZoom: number,
-  readonly maxZoom: number,
-  readonly zoomSense: number,
+  readonly zoom: ZoomSettings,
   readonly debug?: boolean,
   readonly nodeFactory: NodeFactory,
 }
@@ -42,37 +47,27 @@ export enum Mode {
 
 export const NodeFactoryContext = React.createContext<NodeFactory>(null);
 
-
 /**
  * Editor
  */
 export class GraphEditor extends React.Component<GraphProps, GraphState> {
   readonly ref: React.RefObject<HTMLDivElement>;
 
-  private onNodeStartDragFn: (node: Node<any>) => void;
+  private onNodeStartDragFn: (node: React.MouseEvent) => void;
   private animationStepFn: () => void;
-  private onMouseMoveFn: (e: React.MouseEvent<unknown>) => void;
-  private onMouseDownFn: (e: React.MouseEvent<unknown>) => void;
-  private onMouseUpFn: (e: React.MouseEvent<unknown>) => void;
-  private onMouseWheelFn: (e: React.WheelEvent) => void;
-  private onTouchStartFn: (e: React.TouchEvent) => void;
-  private onTouchEndFn: (e: React.TouchEvent)  => void;
-  private onTouchMoveFn: (e: React.TouchEvent) => void;
+
+  private mouseController: MouseController;
+  private touchController: TouchController;
 
   constructor(props:GraphProps) {
     super(props);
 
+    this.ref = React.createRef();
+    this.mouseController = new MouseController(this);
+    this.touchController = new TouchController(this);
+
     this.onNodeStartDragFn = this.onNodeStartDrag.bind(this);
     this.animationStepFn = this.animationStep.bind(this);
-    this.onMouseMoveFn = this.onMouseMove.bind(this);
-    this.onMouseDownFn = this.onMouseDown.bind(this);
-    this.onMouseUpFn = this.onMouseUp.bind(this);
-    this.onMouseWheelFn = this.onMouseWheel.bind(this);
-    this.onTouchStartFn = this.onTouchStart.bind(this);
-    this.onTouchEndFn = this.onTouchEnd.bind(this);
-    this.onTouchMoveFn = this.onTouchMove.bind(this);
-
-    this.ref = React.createRef();
 
     const position = move(new Vector3D(0, 0, 1), new Vector2D(), props.graph.bbox);
   
@@ -93,7 +88,12 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   componentDidMount() {
+    this.ref.current.addEventListener('wheel', this.mouseController.onWheel, { passive: false });
     window.requestAnimationFrame(this.animationStepFn);
+  }
+
+  componentWillUnmount() {
+    this.ref.current.removeEventListener('wheel', this.mouseController.onWheel);
   }
 
   animationStep() {    
@@ -148,13 +148,12 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
           className="container" 
           ref={this.ref}
           // onKeyDown=
-          onWheel={this.onMouseWheelFn}
-          onMouseMove={this.onMouseMoveFn}
-          onMouseDown={this.onMouseDownFn}
-          onMouseUp={this.onMouseUpFn}
-          onTouchStart={this.onTouchStartFn}
-          onTouchEnd={this.onTouchEndFn}
-          onTouchMove={this.onTouchMoveFn}
+          onMouseMove={this.mouseController.onMouseMove}
+          onMouseDown={this.mouseController.onMouseDown}
+          onMouseUp={this.mouseController.onMouseUp}
+          onTouchStart={this.touchController.onTouchStart}
+          onTouchEnd={this.touchController.onTouchEnd}
+          onTouchMove={this.touchController.onTouchMove}
         >
           {/* <GlLayer /> */}
        
@@ -221,8 +220,15 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     );
   }
 
-  onNodeStartDrag(node: Node<any>) {
-    // CTRL
+  onNodeStartDrag(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const id = e.currentTarget.getAttribute('data-id');
+    const node = this.props.graph.getNode(parseInt(id));
+    
+    // CTRL +
+    // ALT branch
     this.props.graph.setSelection(node);
     // this.props.graph.addToSelection(node);
     this.setState({mode: Mode.Drag});
@@ -289,7 +295,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     }
   }
   
-  onEndInteraction() {
+  onEndInteraction(clientX: number, clientY: number) {
     switch (this.state.mode) {
       case Mode.Select:
         this.setState({mode: Mode.Edit});
@@ -299,93 +305,22 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         break;
       case Mode.Drag:
         this.setState({mode: Mode.Edit});
-        // this.props.graph.bbox.addPoint(new pos)
         break;
     }
   }
 
   //---------------------- Mouse
-  onMouseWheel(e: React.WheelEvent) {
-    this.zoomToCenter(e);
-  }
-
-  zoomToCenter(e: React.WheelEvent) {
-    const { position: prevPosition, vpCenter } = this.state;
-    const { minZoom, maxZoom, zoomSense } = this.props;
-    const z = clamp(prevPosition.z - e.deltaY * zoomSense * prevPosition.z, minZoom, maxZoom);
-    const position = new Vector3D(
-      prevPosition.x,
-      prevPosition.y,
-      z
-    );
-    this.setState({position, ...calcTransformMtx(position, vpCenter)});
-  }
-
-  zoomToCursor(e: React.WheelEvent) {
-    const projMousePos = new Vector2D(e.clientX, e.clientY)
-      .mulMtx3D(this.state.invTransformMtx);
-    
-    const { position: prevPosition, vpCenter } = this.state;
-    const { minZoom, maxZoom, zoomSense, graph } = this.props;
-    const { x: px, y: py, z: pz } = prevPosition;
-
-    const nz = clamp(pz - e.deltaY * zoomSense * pz, minZoom, maxZoom);
-    const nx = clamp(px + (projMousePos.x - px) * (nz - pz), graph.bbox.minX, graph.bbox.maxX);
-    const ny = clamp(py + (projMousePos.y - py) * (nz - pz), graph.bbox.minY, graph.bbox.maxY);
-
-    const transformMtx = Matrix3D.translation(-nx + vpCenter.x, -ny + vpCenter.y);
-    Matrix3D.mul(transformMtx, Matrix3D.translation(projMousePos.x, projMousePos.y));
-    Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
-    Matrix3D.mul(transformMtx, Matrix3D.translation(-projMousePos.x, -projMousePos.y));
-  
-    const invTransformMtx = Matrix3D.copy(transformMtx);
-    Matrix3D.invert(invTransformMtx);
-
-    const newPos = new Vector3D(nx, ny, nz);
-
-    this.setState({position: newPos, transformMtx, invTransformMtx, projMousePos});
-  }
-
-  onMouseMove(e: React.MouseEvent<unknown>) {
-    e.preventDefault();
-    this.onMove(e.clientX, e.clientY);
-  }
-
-  onMouseDown(e: React.MouseEvent<unknown>) {
-    e.preventDefault();
-    this.onStartInteraction(e.clientX, e.clientY);
-  }
-  
-  onMouseUp(e: React.MouseEvent<unknown>) {
-    e.preventDefault();
-    this.onEndInteraction();
-  }
-
-  //---------------------- Touch
-  onTouchStart(e: React.TouchEvent) {
-    e.preventDefault();
-    const touches = e.changedTouches;
-    
-    for (let i = 0; e.touches.length; i++) {
-      const touch = touches.item(i);
-      this.onStartInteraction(touch.clientX, touch.clientY);
-      this.onMove(touch.clientX, touch.clientY);
-    }
-  }
-
-  onTouchEnd(e: React.TouchEvent) {
-    e.preventDefault();
-    this.onEndInteraction();
-  }
-
-  onTouchMove(e: React.TouchEvent) {
-    e.preventDefault();
-    const touches = e.changedTouches;
-    
-    for (let i = 0; e.touches.length; i++) {
-      const touch = touches.item(i);
-      this.onMove(touch.clientX, touch.clientY);
-    }
+  onZoom(delta: number, ox: number, oy: number) {
+    const { position, vpCenter } = this.state;
+    this.setState(zoomToCenter(delta, position, vpCenter, this.props.zoom ));
+    // this.setState(zoomToCursor(
+    //   delta, 
+    //   new Vector2D(ox, oy), 
+    //   position, 
+    //   vpCenter, 
+    //   this.props.zoom, 
+    //   this.props.graph.bbox
+    // ));
   }
 }
 
@@ -412,4 +347,49 @@ function calcTransformMtx(pos: Vector3D, vpCenter: Vector2D) {
     transformMtx,
     invTransformMtx,
   };
+}
+
+function zoomToCenter(
+  delta: number,
+  prevPosition: Vector3D, 
+  vpCenter: Vector2D,
+  zoom: ZoomSettings
+) {
+  const z = clamp(prevPosition.z - delta * zoom.sense * prevPosition.z, zoom.min, zoom.max);
+  const position = new Vector3D(
+    prevPosition.x,
+    prevPosition.y,
+    z
+  );
+
+  return {position, ...calcTransformMtx(position, vpCenter)};
+}
+
+function zoomToCursor(
+  delta: number,
+  mousePos: Vector2D,
+  prevPosition: Vector3D, 
+  vpCenter: Vector2D,
+  zoom: ZoomSettings,
+  bbox: AABB
+) {
+  const projMousePos = mousePos.mulMtx3D(this.state.invTransformMtx);
+  
+  const { x: px, y: py, z: pz } = prevPosition;
+
+  const nz = clamp(pz - delta * zoom.sense * pz, zoom.min, zoom.max);
+  const nx = clamp(px + (projMousePos.x - px) * (nz - pz), bbox.minX, bbox.maxX);
+  const ny = clamp(py + (projMousePos.y - py) * (nz - pz), bbox.minY, bbox.maxY);
+
+  const transformMtx = Matrix3D.translation(-nx + vpCenter.x, -ny + vpCenter.y);
+  Matrix3D.mul(transformMtx, Matrix3D.translation(projMousePos.x, projMousePos.y));
+  Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
+  Matrix3D.mul(transformMtx, Matrix3D.translation(-projMousePos.x, -projMousePos.y));
+
+  const invTransformMtx = Matrix3D.copy(transformMtx);
+  Matrix3D.invert(invTransformMtx);
+
+  const newPos = new Vector3D(nx, ny, nz);
+
+  return {position: newPos, transformMtx, invTransformMtx, projMousePos};
 }
