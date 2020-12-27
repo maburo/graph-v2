@@ -306,6 +306,22 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
   //---------------------- Mouse
   onMouseWheel(e: React.WheelEvent) {
+    this.zoomToCenter(e);
+  }
+
+  zoomToCenter(e: React.WheelEvent) {
+    const { position: prevPosition, vpCenter } = this.state;
+    const { minZoom, maxZoom, zoomSense } = this.props;
+    const z = clamp(prevPosition.z - e.deltaY * zoomSense * prevPosition.z, minZoom, maxZoom);
+    const position = new Vector3D(
+      prevPosition.x,
+      prevPosition.y,
+      z
+    );
+    this.setState({position, ...calcTransformMtx(position, vpCenter)});
+  }
+
+  zoomToCursor(e: React.WheelEvent) {
     const projMousePos = new Vector2D(e.clientX, e.clientY)
       .mulMtx3D(this.state.invTransformMtx);
     
