@@ -1,3 +1,4 @@
+import { Vector2D } from '../math';
 import AABB from '../math/aabb';
 
 export interface Node<T> {
@@ -43,7 +44,10 @@ export class Graph<T> {
   removeNode(id: number) {
     this.elementsMap.delete(id);
     this.elementsList = this.elementsList.filter(node => node.id === id);
+    this.calcBbox();
+  }
 
+  private calcBbox() {
     this.bbox.reset();
     for (const node of this.nodes) {
       this.bbox.addPoint(node.x, node.y);
@@ -78,11 +82,23 @@ export class Graph<T> {
     this.selectedNodes.add(node);
   }
 
+  setSelection(node: Node<T>) {
+    this.selectedNodes = new Set([node]);
+  }
+
   get selected(): Set<Node<T>> {
     return this.selectedNodes;
   }
 
   isSelected(node: Node<T>): boolean {
     return this.selectedNodes.has(node);
+  }
+
+  moveSelectedTo(pos: Vector2D) {
+    this.selectedNodes.forEach(node => {
+      node.x = pos.x;
+      node.y = pos.y;
+    });
+    this.calcBbox();
   }
 }

@@ -16,7 +16,8 @@ container.className = 'container';
 document.body.appendChild(container);
 
 // loadGraph('/big_graph.json');
-loadGraph('/15065834.json');
+// loadGraph('/15065834.json');
+loadGraph('/small.json');
 
 // ReactDOM.render((
 //   <div>

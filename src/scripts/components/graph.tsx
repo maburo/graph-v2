@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, EventHandler, useContext, useLayoutEffect } from 'react';
+import React from 'react';
 import { ContextMenu } from './context-menu';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { Graph, Node } from './vgraph';
@@ -8,8 +8,8 @@ import {
   SelectLayer, 
   HtmlLayer, 
   SvgLayer, 
-  EdgePos, 
-  DebugLayer
+  DebugLayer,
+  EdgeData
 } from './layers';
 
 interface GraphProps {
@@ -24,6 +24,7 @@ interface GraphProps {
 interface GraphState {
   readonly position: Vector3D,
   readonly mousePos: Vector2D,
+  readonly projMousePos: Vector2D,
   readonly width: number,
   readonly height: number,
   readonly vpCenter: Vector2D,
@@ -46,13 +47,37 @@ export const NodeFactoryContext = React.createContext<NodeFactory>(null);
  */
 export class GraphEditor extends React.Component<GraphProps, GraphState> {
   readonly ref: React.RefObject<HTMLDivElement>
+  private onNodeStartDragFn: (node: Node<any>) => void;
+  private animationStepFn: () => void;
+  private onMouseMoveFn: (e: React.MouseEvent<unknown>) => void;
+  private onMouseDownFn: (e: React.MouseEvent<unknown>) => void;
+  private onMouseUpFn: (e: React.MouseEvent<unknown>) => void;
+  private onMouseWheelFn: (e: React.WheelEvent) => void;
+  private onTouchStartFn: (e: React.TouchEvent) => void;
+  private onTouchEndFn: (e: React.TouchEvent)  => void;
+  private onTouchMoveFn: (e: React.TouchEvent) => void;
 
   constructor(props:GraphProps) {
     super(props);
+
+    this.onNodeStartDragFn = this.onNodeStartDrag.bind(this);
+    this.animationStepFn = this.animationStep.bind(this);
+    this.onMouseMoveFn = this.onMouseMove.bind(this);
+    this.onMouseDownFn = this.onMouseDown.bind(this);
+    this.onMouseUpFn = this.onMouseUp.bind(this);
+    this.onMouseWheelFn = this.onMouseWheel.bind(this);
+    this.onTouchStartFn = this.onTouchStart.bind(this);
+    this.onTouchEndFn = this.onTouchEnd.bind(this);
+    this.onTouchMoveFn = this.onTouchMove.bind(this);
+
     this.ref = React.createRef();
+
+    const position = move(new Vector3D(0, 0, 1), new Vector2D(), props.graph.bbox);
+  
     this.state = {
-      position: new Vector3D(0, 0, 1),
+      position,
       mousePos: new Vector2D(),
+      projMousePos: new Vector2D(),
       transformMtx: Matrix3D.identity(),
       invTransformMtx: Matrix3D.identity(),
       width: 0,
@@ -65,7 +90,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   componentDidMount() {
-    window.requestAnimationFrame(this.animationStep.bind(this));
+    window.requestAnimationFrame(this.animationStepFn);
   }
 
   animationStep() {    
@@ -74,43 +99,45 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     if (div) {
       const height = div.clientHeight;
       const width = div.clientWidth;
+
       if (width != this.state.width || height != this.state.height) {
+        const vpCenter = new Vector2D(width / 2, height / 2);
+        
         this.setState({
+          ...calcTransformMtx(this.state.position, vpCenter),
           width, 
           height, 
-          vpCenter: new Vector2D(width / 2, height / 2)
+          vpCenter,
         });
       }
     }
 
-    window.requestAnimationFrame(this.animationStep.bind(this));
+    window.requestAnimationFrame(this.animationStepFn);
   }
 
   render() {
     const { graph, nodeFactory } = this.props;
-    const { position, mode, width, height, mousePos, transformMtx, invTransformMtx } = this.state; 
+    const { position, mode, width, height, projMousePos, transformMtx } = this.state; 
     const nodes = graph.nodes;
   
-    const edges: EdgePos[] = [];
+    const edges: EdgeData[] = [];
     for (const node of nodes) {
       const adjacent = graph.getAdjacentNodes(node.id);
       if (adjacent.length === 0) continue;
   
       for (const edge of adjacent) {
-        const top = (edge.payload.type == FlowElementType.EXIT) ? 
-          20 : 55;
         edges.push({
+          key: '' + node.id + edge.id,
           startX: node.x,
-          startY: node.y + 55,
-          endX: edge.x - 20 || 0,
-          endY: edge.y + top || 0
+          startY: node.y,
+          endX: edge.x,
+          endY: edge.y,
         });
       }
     }
 
     const transform = Matrix3D.cssMatrix(transformMtx);
-    const projMouseCoords = mousePos.mulMtx3D(invTransformMtx);
-  
+ 
     // TODO: lod, drag
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
@@ -118,13 +145,13 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
           className="container" 
           ref={this.ref}
           // onKeyDown=
-          onWheel={this.onMouseWheel.bind(this)}
-          onMouseMove={this.onMouseMove.bind(this)}
-          onMouseDown={this.onMouseDown.bind(this)}
-          onMouseUp={this.onMouseUp.bind(this)}
-          onTouchStart={this.onTouchStart.bind(this)}
-          onTouchEnd={this.onTouchEnd.bind(this)}
-          onTouchMove={this.onTouchMove.bind(this)}
+          onWheel={this.onMouseWheelFn}
+          onMouseMove={this.onMouseMoveFn}
+          onMouseDown={this.onMouseDownFn}
+          onMouseUp={this.onMouseUpFn}
+          onTouchStart={this.onTouchStartFn}
+          onTouchEnd={this.onTouchEndFn}
+          onTouchMove={this.onTouchMoveFn}
         >
           {/* <GlLayer /> */}
        
@@ -137,7 +164,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             edges={edges} />
   
           <HtmlLayer 
-            onStartDrag={this.onNodeStartDrag.bind(this)}
+            onStartDrag={this.onNodeStartDragFn}
             graph={graph}
             mode={mode}
             width={width}
@@ -167,7 +194,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
               parentRef={this.ref}
               transform={transform}
               position={position}
-              mouseCoords={projMouseCoords}
+              mouseCoords={projMousePos}
               graph={graph}
               mode={mode}
               width={width}
@@ -191,48 +218,51 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
   onNodeStartDrag(node: Node<any>) {
     // CTRL
-    this.props.graph.addToSelection(node);
+    this.props.graph.setSelection(node);
+    // this.props.graph.addToSelection(node);
     this.setState({mode: Mode.Drag});
   }
 
   onMove(clientX: number, clientY: number) {
+    const { graph } = this.props;
     const { mode, selectOrigin, position: prevPos, mousePos, vpCenter } = this.state; 
+    const projMousePos = new Vector2D(clientX, clientY).mulMtx3D(this.state.invTransformMtx);
 
     if (mode === Mode.Select) {
       const { x: ox, y: oy } = selectOrigin;
       const bbox = new AABB(ox, oy, ox, oy);
-      bbox.addPoint(clientX, clientY);
+      bbox.addPoint(projMousePos.x, projMousePos.y);
       this.setState({selectRegion: bbox});
     }
     else if (mode === Mode.Move) {
-      const bbox = this.props.graph.bbox;
-
-      const transformMtx = calcTransformMtx(prevPos, vpCenter);
-      const invTransformMtx = Matrix3D.copy(transformMtx);
-      Matrix3D.invert(invTransformMtx);
-
-      const position = new Vector3D(
-        clamp(prevPos.x - (clientX - mousePos.x) / prevPos.z, bbox.minX, bbox.maxX),
-        clamp(prevPos.y - (clientY - mousePos.y) / prevPos.z, bbox.minY, bbox.maxY),
-        prevPos.z
+      const bbox = graph.bbox;
+      const shift = new Vector2D(
+        (clientX - mousePos.x) / prevPos.z, 
+        (clientY - mousePos.y) / prevPos.z
       );
 
       this.setState({
-        position,
+        position: move(prevPos, shift, bbox),
         mousePos: new Vector2D(clientX, clientY),
-        transformMtx,
-        invTransformMtx,
+        projMousePos,
+        ...calcTransformMtx(prevPos, vpCenter),
       });
     }
     else if (mode === Mode.Drag) {
-      this.props.graph.selected.forEach(node => {
-        node.x += clientX;
-        node.y += clientY;
-      });
-      this.forceUpdate();
+      // this.props.graph.selected.forEach(node => {
+      //   node.x = projMousePos.x;
+      //   node.y = projMousePos.y;
+      // });
+
+      graph.moveSelectedTo(projMousePos);
+
+      // this.forceUpdate();
     }
     else if (mode === Mode.Edit) {
-      this.setState({mousePos: new Vector2D(clientX, clientY)});
+      this.setState({
+        mousePos: new Vector2D(clientX, clientY),
+        projMousePos,
+      });
     }
   }
 
@@ -254,20 +284,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         });
         break;
     }
-
-    // if (mode == Mode.StartSelection) {
-    //   this.setState({ 
-    //     selectRegion: new AABB(clientX, clientY, clientX, clientY),
-    //     selectOrigin: new Vector2D(clientX, clientY),
-    //     mode: Mode.Select,
-    //   });
-    // }
-    // else if (mode === Mode.Edit) {
-    //   this.setState({
-    //     mode: Mode.Move,
-    //     mousePos: new Vector2D(clientX, clientY),
-    //   });
-    // }
   }
   
   onEndInteraction() {
@@ -283,18 +299,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         // this.props.graph.bbox.addPoint(new pos)
         break;
     }
-    // const { mode } = this.state;
-
-    // if (mode === Mode.Select) {
-    //   this.setState({mode: Mode.Edit});
-    // }
-    // else if (mode === Mode.Move) {
-    //   this.setState({mode: Mode.Edit});
-    // }
-    // else if (mode === Mode.Drag) {
-    //   this.setState({mode: Mode.Edit});
-    //   // this.props.graph.bbox.addPoint(new pos)
-    // }
   }
 
   //---------------------- Mouse
@@ -309,11 +313,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       z
     );
 
-    const transformMtx = calcTransformMtx(position, vpCenter);
-    const invTransformMtx = Matrix3D.copy(transformMtx);
-    Matrix3D.invert(invTransformMtx);
-    
-    this.setState({position, transformMtx, invTransformMtx});
+    this.setState({position, ...calcTransformMtx(position, vpCenter)});
   }
 
   onMouseMove(e: React.MouseEvent<unknown>) {
@@ -359,14 +359,27 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 }
 
+function move(prevPos: Vector3D, shift: Vector2D, bbox: AABB) {
+  return new Vector3D(
+    clamp(prevPos.x - shift.x, bbox.minX, bbox.maxX),
+    clamp(prevPos.y - shift.y, bbox.minY, bbox.maxY),
+    prevPos.z
+  );
+}
+
 function calcTransformMtx(pos: Vector3D, vpCenter: Vector2D) {
-  const cx = pos.x;
-  const cy = pos.y;
+  const { x, y, z } = pos;
 
-  const mtx = Matrix3D.translation(-pos.x + vpCenter.x, -pos.y + vpCenter.y);
-  Matrix3D.mul(mtx, Matrix3D.translation(cx, cy));
-  Matrix3D.mul(mtx, Matrix3D.scale(pos.z));
-  Matrix3D.mul(mtx, Matrix3D.translation(-cx, -cy));
+  const transformMtx = Matrix3D.translation(-x + vpCenter.x, -y + vpCenter.y);
+  Matrix3D.mul(transformMtx, Matrix3D.translation(x, y));
+  Matrix3D.mul(transformMtx, Matrix3D.scale(z));
+  Matrix3D.mul(transformMtx, Matrix3D.translation(-x, -y));
 
-  return mtx;
+  const invTransformMtx = Matrix3D.copy(transformMtx);
+  Matrix3D.invert(invTransformMtx);
+
+  return {
+    transformMtx,
+    invTransformMtx,
+  };
 }

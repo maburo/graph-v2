@@ -4,13 +4,21 @@ import { Mode } from '../graph';
 import { LayerProperties } from './layer-props';
 
 interface SvgLayerProps extends LayerProperties {
-  edges: EdgePos[],
+  edges: EdgeData[],
   transform: string,
 }
 
-export function SvgLayer(props: SvgLayerProps) {
-  const edges = props.edges.map(edge => (<Edge pos={edge} mode={props.mode} />));
+function svgLayer(props: SvgLayerProps) {
   const transform = props.transform;
+  const edges = props.edges.map(edge => (
+    <Edge 
+      key={edge.key} 
+      startX={edge.startX}
+      startY={edge.startY}
+      endX={edge.endX}
+      endY={edge.endY}
+      mode={props.mode} />
+  ));
  
   return (
     <svg className="render layer">
@@ -30,7 +38,10 @@ export function SvgLayer(props: SvgLayerProps) {
   );
 }
 
-export interface EdgePos {
+export const SvgLayer = React.memo(svgLayer);
+
+export interface EdgeData {
+  key: string,
   startX: number;
   startY: number;
   endX: number;
@@ -38,35 +49,45 @@ export interface EdgePos {
 }
 
 interface EdgeProperties {
+  key: string,
   mode: Mode,
-  pos: EdgePos,
+  // pos: EdgeData,
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
 }
 
 const COLOR_VALUES = ['0', '1', '2', '3', '4', '5', '6', '7', 
 '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F'];
 
-class Edge extends React.Component<EdgeProperties> {
+class Edge extends React.PureComponent<EdgeProperties> {
 
-  // shouldComponentUpdate() {
-  //   return this.props.mode === Mode.Edit || this.props.mode === Mode.Drag;
+  // shouldComponentUpdate(nextProps: EdgeProperties) {
+  //   const a = this.props as any;
+  //   const b = nextProps as any;
+
+  //   Object.keys(a).forEach(key => {
+  //     if (a[key] !== b[key]) {
+  //       console.log(key);
+  //     }
+  //   })
+  //   // return this.props.mode === Mode.Edit || this.props.mode === Mode.Drag;
+  //   return true;
   // }
 
   render() {
-    const pos = this.props.pos;
-    const startX = pos.startX;
-    const startY = pos.startY;
-    const x1 = pos.startX + (pos.endX - pos.startX) / 2;
-    const y1 = pos.startY;
+    const { startX, startY, endX, endY } = this.props;
+    const x1 = startX + (endX - startX) / 2;
+    const y1 = startY;
     const x2 = x1;
-    const y2 = pos.endY;
-    const endX = pos.endX;
-    const endY = pos.endY;
+    const y2 = endY;
 
-    const color = "#000";
-    // const color = '#'
-    //   + COLOR_VALUES[Math.floor(Math.random() * 16)] 
-    //   + COLOR_VALUES[Math.floor(Math.random() * 16)] 
-    //   + COLOR_VALUES[Math.floor(Math.random() * 16)];
+    // const color = "#000";
+    const color = '#'
+      + COLOR_VALUES[Math.floor(Math.random() * 16)] 
+      + COLOR_VALUES[Math.floor(Math.random() * 16)] 
+      + COLOR_VALUES[Math.floor(Math.random() * 16)];
 
     return (
       <path 

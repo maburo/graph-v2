@@ -1,0 +1,108 @@
+{
+  "id": 12434168,
+  "communicationType": "FLOW",
+  "name": "ETIQA : Claims + CC v1 05122019",
+  "status": "ACTIVE",
+  "schedule": {
+    "end": 1583300271000,
+    "timezoneId": 122
+  },
+  "createdAt": 1575524453892,
+  "modifiedAt": 1575524574260,
+  "startedAt": 1575524574435,
+  "launchedAt": 1575524574435,
+  "flowData": {
+    "startElements": [
+      {
+        "id": 1,
+        "type": "START_EVALUATE_INBOUND_MESSAGE",
+        "diagramX": -146,
+        "diagramY": 186,
+        "rules": [
+          {
+            "condition": {
+              "type": "MoResponse",
+              "value": "",
+              "valueType": "ANY_KEYWORD",
+              "receiver": {
+                "receiver": "60327804677",
+                "receiverType": "WHATSAPP",
+                "receiverId": 407620,
+                "receiverLabel": "60327804677",
+                "campaignChemistryEnabled": false,
+                "shared": false
+              }
+            },
+            "nextElementId": 2
+          },
+          {
+            "condition": {
+              "type": "MoResponse",
+              "value": "mula",
+              "valueType": "KEYWORD",
+              "matchType": "EQUALS",
+              "receiver": {
+                "receiver": "60327804677",
+                "receiverType": "WHATSAPP",
+                "receiverId": 407620,
+                "receiverLabel": "60327804677",
+                "campaignChemistryEnabled": false,
+                "shared": false
+              }
+            },
+            "nextElementId": 251
+          },
+          {
+            "condition": {
+              "type": "MoResponse",
+              "value": "start",
+              "valueType": "KEYWORD",
+              "matchType": "EQUALS",
+              "receiver": {
+                "receiver": "60327804677",
+                "receiverType": "WHATSAPP",
+                "receiverId": 407620,
+                "receiverLabel": "60327804677",
+                "campaignChemistryEnabled": false,
+                "shared": false
+              }
+            },
+            "nextElementId": 19
+          }
+        ]
+      }
+    ],
+    "flowElements": [
+      {
+        "id": 19,
+        "type": "SEND_ACTION",
+        "diagramX": 147,
+        "diagramY": 256,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_WHATSAPP",
+            "recipientsDataKeys": [],
+            "serviceData": {
+              "deliveryOptions": {
+                "validityPeriod": 2880
+              },
+              "sender": "60327804677",
+              "message": {
+                "type": "TEXT",
+                "text": "Opps! Sorry, i didnt get that. Please help me to understand better.\n\nYou may also talk to our Claims Care Representative, please contact us at 1-300-88-1007"
+              }
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "shouldForwardToCcaas": true
+          },
+          "nextElementId": 17
+        },
+        "rules": []
+      }
+    ]
+  },
+  "usingPeople": true,
+  "creatorUserId": "9E2845EDCE4CE22AAAA051C42C60DC61",
+  "starterUserId": "9E2845EDCE4CE22AAAA051C42C60DC61"
+}

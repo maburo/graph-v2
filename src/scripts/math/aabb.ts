@@ -21,8 +21,8 @@ export default class AABB {
   reset() {
     this.minX = Number.MAX_SAFE_INTEGER;
     this.minY = Number.MAX_SAFE_INTEGER;
-    this.maxX = Number.MAX_SAFE_INTEGER;
-    this.maxY = Number.MAX_SAFE_INTEGER;
+    this.maxX = Number.MIN_SAFE_INTEGER;
+    this.maxY = Number.MIN_SAFE_INTEGER;
   }
 
   containsPoint(x:number, y:number): boolean {
