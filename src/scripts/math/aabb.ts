@@ -2,10 +2,10 @@
  * Axis aligned bounding box
  */
 export default class AABB {
-  minX;
-  minY;
-  maxX;
-  maxY;
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
 
   constructor(minX:number = Number.MAX_SAFE_INTEGER, 
               minY:number = Number.MAX_SAFE_INTEGER,
@@ -18,9 +18,23 @@ export default class AABB {
     this.maxY = maxY;
   }
 
-  contains(x:number, y:number) {
+  reset() {
+    this.minX = Number.MAX_SAFE_INTEGER;
+    this.minY = Number.MAX_SAFE_INTEGER;
+    this.maxX = Number.MAX_SAFE_INTEGER;
+    this.maxY = Number.MAX_SAFE_INTEGER;
+  }
+
+  containsPoint(x:number, y:number): boolean {
     return x >= this.minX && x <= this.maxX && 
            y >= this.minY && y <= this.maxY;
+  }
+
+  containsBbox(bbox: AABB): boolean {
+    return (bbox.maxX <= this.maxX &&
+            bbox.minX >= this.minX &&
+            bbox.maxY <= this.maxY &&
+            bbox.minY >= this.minY);
   }
 
   addPoint(x:number, y:number) {

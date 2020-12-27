@@ -14,14 +14,14 @@ export interface Edge {
 }
 
 export class Graph<T> {
-  aabb: AABB = new AABB();
+  readonly bbox: AABB = new AABB();
   private elementsList: Node<T>[] = [];
   private elementsMap: Map<number, Node<T>> = new Map()
   private adjacencyMap: Map<number, number[]> = new Map();
   private selectedNodes: Set<Node<T>> = new Set();
 
   addNode(node: Node<T>) {
-    this.aabb.addPoint(node.x, node.y);
+    this.bbox.addPoint(node.x, node.y);
     this.elementsMap.set(node.id, node);
     this.elementsList.push(node);
   }
@@ -44,9 +44,9 @@ export class Graph<T> {
     this.elementsMap.delete(id);
     this.elementsList = this.elementsList.filter(node => node.id === id);
 
-    this.aabb = new AABB();
+    this.bbox.reset();
     for (const node of this.nodes) {
-      this.aabb.addPoint(node.x, node.y);
+      this.bbox.addPoint(node.x, node.y);
     }
   }
 
@@ -69,8 +69,13 @@ export class Graph<T> {
   }
 
   select(region: AABB): Set<Node<T>> {
-    this.selectedNodes = new Set(this.nodes.filter(node => region.contains(node.x, node.y)));
+    const selected = this.nodes.filter(node => region.containsBbox(node.bbox));
+    this.selectedNodes = new Set(selected);
     return this.selectedNodes;
+  }
+
+  addToSelection(node: Node<T>) {
+    this.selectedNodes.add(node);
   }
 
   get selected(): Set<Node<T>> {

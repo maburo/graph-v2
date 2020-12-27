@@ -9,6 +9,7 @@ import { Graph, Edge } from './scripts/components/vgraph';
 
 import { ExitNode, PauseNode, ActionNode } from './scripts/components/flow-nodes';
 import { AABB } from './scripts/math';
+import { NodeFactory } from './scripts/components/node-factory';
 
 const container = document.createElement('div');
 container.className = 'container';
@@ -38,36 +39,6 @@ loadGraph('/15065834.json');
 //   </div>
 // ), container);
 
-// ReactDOM.render((
-//   <svg width="800" height="600">
-//     <defs>
-//       <marker id="circle" markerWidth="4" markerHeight="4" refX="2" refY="2">
-//         <circle cx="2" cy="2" r="2" stroke="none" fill="#000" />
-//       </marker>
-//       <marker id="arrow" markerWidth="10" markerHeight="4" refX="0" refY="2">
-//         <path d="M0,0 L10,2 L0,4" fill="#000" />
-//       </marker>
-//     </defs>
-
-//     <path 
-//       d="M100,200 c50,0 50,20 100,20" 
-//       stroke="black" 
-//       fill="none"
-//       stroke-width="2px" 
-//       markerStart="url(#circle)"
-//       markerEnd="url(#arrow)"
-//     />
-
-//     <path 
-//       d="M100,100 C150,100 150,120 200,120" 
-//       stroke="black" 
-//       fill="none"
-//       stroke-width="2px" 
-//       markerStart="url(#circle)"
-//       markerEnd="url(#arrow)"
-//     />
-//   </svg>
-// ), container)
 
 function loadGraph(file: string) {
   fetch(file)
@@ -105,6 +76,7 @@ function loadGraph(file: string) {
       
       ReactDOM.render(
         <GraphEditor 
+          nodeFactory={new NodeFactory()}
           debug={true}
           graph={graph} 
           minZoom={0.05}

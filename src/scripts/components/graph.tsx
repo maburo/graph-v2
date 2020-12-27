@@ -2,11 +2,8 @@ import React, { useState, useEffect, useRef, EventHandler, useContext, useLayout
 import { ContextMenu } from './context-menu';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { Graph, Node } from './vgraph';
-import AABB from '../math/aabb';
-import { Vector2D } from '../math/vector';
-import { 
-  clamp, 
-} from '../math/util';
+import { AABB, Vector2D, clamp, Matrix3D, Vector3D } from '../math';
+import { NodeFactory } from './node-factory';
 import { 
   SelectLayer, 
   HtmlLayer, 
@@ -14,24 +11,24 @@ import {
   EdgePos, 
   DebugLayer
 } from './layers';
-import { Matrix3D } from '../math';
 
 interface GraphProps {
-  graph: Graph<FlowElement>
-  minZoom: number,
-  maxZoom: number,
-  zoomSense: number,
-  debug?: boolean,
+  readonly graph: Graph<FlowElement>
+  readonly minZoom: number,
+  readonly maxZoom: number,
+  readonly zoomSense: number,
+  readonly debug?: boolean,
+  readonly nodeFactory: NodeFactory,
 }
 
 interface GraphState {
-  readonly x: number,
-  readonly y: number,
-  readonly z: number,
-  readonly mx: number,
-  readonly my: number,
+  readonly position: Vector3D,
+  readonly mousePos: Vector2D,
   readonly width: number,
   readonly height: number,
+  readonly vpCenter: Vector2D,
+  readonly transformMtx: number[],
+  readonly invTransformMtx: number[],
   readonly selectRegion: AABB,
   readonly selectOrigin: Vector2D,
   readonly mode: Mode,
@@ -40,6 +37,8 @@ interface GraphState {
 export enum Mode {
   Edit, StartSelection, Select, Move, Drag
 }
+
+export const NodeFactoryContext = React.createContext<NodeFactory>(null);
 
 
 /**
@@ -52,15 +51,15 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     super(props);
     this.ref = React.createRef();
     this.state = {
-      x: 0,
-      y: 0,
-      z: 1,
-      mx: 0,
-      my: 0,
+      position: new Vector3D(0, 0, 1),
+      mousePos: new Vector2D(),
+      transformMtx: Matrix3D.identity(),
+      invTransformMtx: Matrix3D.identity(),
       width: 0,
       height: 0,
-      selectRegion: new AABB(0, 0, 0, 0), // TODO: min aabb size
-      selectOrigin: new Vector2D(0, 0),
+      vpCenter: new Vector2D(),
+      selectRegion: new AABB(0, 0, 0, 0), // TODO: min bbox size
+      selectOrigin: new Vector2D(),
       mode: Mode.Edit,
     }
   }
@@ -76,7 +75,11 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       const height = div.clientHeight;
       const width = div.clientWidth;
       if (width != this.state.width || height != this.state.height) {
-        this.setState({...this.state, width, height}, );
+        this.setState({
+          width, 
+          height, 
+          vpCenter: new Vector2D(width / 2, height / 2)
+        });
       }
     }
 
@@ -84,8 +87,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   render() {
-    const { graph } = this.props;
-    const { x, y, z, mode, width, height } = this.state; 
+    const { graph, nodeFactory } = this.props;
+    const { position, mode, width, height, mousePos, transformMtx, invTransformMtx } = this.state; 
     const nodes = graph.nodes;
   
     const edges: EdgePos[] = [];
@@ -104,18 +107,13 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         });
       }
     }
-    
-    const center = new Vector2D(width, height).div(2).add2d(x, y);
 
-    const mtx = Matrix3D.translation(-x, -y);
-    
-    Matrix3D.mul(mtx, Matrix3D.translation(center.x, center.y));
-    Matrix3D.mul(mtx, Matrix3D.scale(z));
-    Matrix3D.mul(mtx, Matrix3D.translation(-center.x, -center.y));
-    const transformMtx = Matrix3D.cssMatrix(mtx);
+    const transform = Matrix3D.cssMatrix(transformMtx);
+    const projMouseCoords = mousePos.mulMtx3D(invTransformMtx);
   
     // TODO: lod, drag
     return (
+      <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
           className="container" 
           ref={this.ref}
@@ -135,7 +133,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             mode={mode}
             width={width}
             height={height}
-            transform={transformMtx}
+            transform={transform}
             edges={edges} />
   
           <HtmlLayer 
@@ -144,7 +142,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             mode={mode}
             width={width}
             height={height}
-            transform={transformMtx}
+            transform={transform}
             nodes={nodes} />
   
           {
@@ -167,8 +165,9 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             this.props.debug &&
             <DebugLayer
               parentRef={this.ref}
-              transform={transformMtx}
-              position={{x, y, z}}
+              transform={transform}
+              position={position}
+              mouseCoords={projMouseCoords}
               graph={graph}
               mode={mode}
               width={width}
@@ -182,92 +181,139 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             items={[
               { id: 'add_node', text: "Add node", callback: () => {} },
               { id: 'select', text: "Select region", callback: () => {
-                this.setState({...this.state, mode: Mode.StartSelection})
+                this.setState({mode: Mode.StartSelection});
               } }
             ]} />
         </div>
+      </NodeFactoryContext.Provider>
     );
   }
 
   onNodeStartDrag(node: Node<any>) {
-    this.setState({...this.state, mode: Mode.Drag});
+    // CTRL
+    this.props.graph.addToSelection(node);
+    this.setState({mode: Mode.Drag});
   }
 
   onMove(clientX: number, clientY: number) {
-    const { mode, selectOrigin, x, y, z, mx, my } = this.state; 
+    const { mode, selectOrigin, position: prevPos, mousePos, vpCenter } = this.state; 
 
     if (mode === Mode.Select) {
-      const aabb = new AABB(selectOrigin.x, selectOrigin.y, selectOrigin.x, selectOrigin.y);
-      aabb.addPoint(clientX, clientY);
-      this.setState({...this.state, selectRegion: aabb});
+      const { x: ox, y: oy } = selectOrigin;
+      const bbox = new AABB(ox, oy, ox, oy);
+      bbox.addPoint(clientX, clientY);
+      this.setState({selectRegion: bbox});
     }
     else if (mode === Mode.Move) {
-      const aabb = this.props.graph.aabb;
+      const bbox = this.props.graph.bbox;
 
-      const hw = this.state.width / 2;
-      const hh = this.state.height / 2;
+      const transformMtx = calcTransformMtx(prevPos, vpCenter);
+      const invTransformMtx = Matrix3D.copy(transformMtx);
+      Matrix3D.invert(invTransformMtx);
+
+      const position = new Vector3D(
+        clamp(prevPos.x - (clientX - mousePos.x) / prevPos.z, bbox.minX, bbox.maxX),
+        clamp(prevPos.y - (clientY - mousePos.y) / prevPos.z, bbox.minY, bbox.maxY),
+        prevPos.z
+      );
 
       this.setState({
-        ...this.state, 
-        x: clamp((x - (clientX - mx) / z), aabb.minX - hw, aabb.maxX - hw), 
-        y: clamp((y - (clientY - my) / z), aabb.minY - hh, aabb.maxY - hh),
-        mx: clientX,
-        my: clientY,
+        position,
+        mousePos: new Vector2D(clientX, clientY),
+        transformMtx,
+        invTransformMtx,
       });
     }
     else if (mode === Mode.Drag) {
-
+      this.props.graph.selected.forEach(node => {
+        node.x += clientX;
+        node.y += clientY;
+      });
+      this.forceUpdate();
+    }
+    else if (mode === Mode.Edit) {
+      this.setState({mousePos: new Vector2D(clientX, clientY)});
     }
   }
 
   onStartInteraction(clientX: number, clientY: number) {
-    const { mode } = this.state;
+    // const { mode } = this.state;
 
-    if (mode == Mode.StartSelection) {
-      this.setState({...this.state, 
-        selectRegion: new AABB(clientX, clientY, clientX, clientY),
-        selectOrigin: new Vector2D(clientX, clientY),
-        mode: Mode.Select,
-      });
+    switch (this.state.mode) {
+      case Mode.StartSelection:
+        this.setState({ 
+          selectRegion: new AABB(clientX, clientY, clientX, clientY),
+          selectOrigin: new Vector2D(clientX, clientY),
+          mode: Mode.Select,
+        });
+        break;
+      case Mode.Edit:  
+        this.setState({
+          mode: Mode.Move,
+          mousePos: new Vector2D(clientX, clientY),
+        });
+        break;
     }
-    else if (mode === Mode.Edit) {
-      this.setState({
-        ...this.state, 
-        mode: Mode.Move,
-        mx: clientX,
-        my: clientY,
-      });
-    }
+
+    // if (mode == Mode.StartSelection) {
+    //   this.setState({ 
+    //     selectRegion: new AABB(clientX, clientY, clientX, clientY),
+    //     selectOrigin: new Vector2D(clientX, clientY),
+    //     mode: Mode.Select,
+    //   });
+    // }
+    // else if (mode === Mode.Edit) {
+    //   this.setState({
+    //     mode: Mode.Move,
+    //     mousePos: new Vector2D(clientX, clientY),
+    //   });
+    // }
   }
   
   onEndInteraction() {
-    const { mode } = this.state;
+    switch (this.state.mode) {
+      case Mode.Select:
+        this.setState({mode: Mode.Edit});
+        break;
+      case Mode.Move:
+        this.setState({mode: Mode.Edit});
+        break;
+      case Mode.Drag:
+        this.setState({mode: Mode.Edit});
+        // this.props.graph.bbox.addPoint(new pos)
+        break;
+    }
+    // const { mode } = this.state;
 
-    if (mode === Mode.Select) {
-      this.setState({...this.state, mode: Mode.Edit});
-    }
-    else if (mode === Mode.Move) {
-      this.setState({
-        ...this.state, 
-        mode: Mode.Edit,
-      });
-    }
-    else if (mode === Mode.Drag) {
-      this.setState({
-        ...this.state,
-        mode: Mode.Edit,
-      })
-    }
+    // if (mode === Mode.Select) {
+    //   this.setState({mode: Mode.Edit});
+    // }
+    // else if (mode === Mode.Move) {
+    //   this.setState({mode: Mode.Edit});
+    // }
+    // else if (mode === Mode.Drag) {
+    //   this.setState({mode: Mode.Edit});
+    //   // this.props.graph.bbox.addPoint(new pos)
+    // }
   }
 
   //---------------------- Mouse
   onMouseWheel(e: React.WheelEvent) {
-    const v = clamp(
-      this.state.z - e.deltaY * this.props.zoomSense * this.state.z, 
-      this.props.minZoom, 
-      this.props.maxZoom);
+    const { position: prevPosition, vpCenter } = this.state;
+    const { minZoom, maxZoom, zoomSense } = this.props;
+    const z = clamp(prevPosition.z - e.deltaY * zoomSense * prevPosition.z, minZoom, maxZoom);
 
-    this.setState({...this.state, z: v});
+    const position = new Vector3D(
+      prevPosition.x,
+      prevPosition.y,
+      z
+    );
+
+    const transformMtx = calcTransformMtx(position, vpCenter);
+    const invTransformMtx = Matrix3D.copy(transformMtx);
+    Matrix3D.invert(invTransformMtx);
+    
+    this.setState({position, transformMtx, invTransformMtx});
   }
 
   onMouseMove(e: React.MouseEvent<unknown>) {
@@ -311,4 +357,16 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       this.onMove(touch.clientX, touch.clientY);
     }
   }
+}
+
+function calcTransformMtx(pos: Vector3D, vpCenter: Vector2D) {
+  const cx = pos.x;
+  const cy = pos.y;
+
+  const mtx = Matrix3D.translation(-pos.x + vpCenter.x, -pos.y + vpCenter.y);
+  Matrix3D.mul(mtx, Matrix3D.translation(cx, cy));
+  Matrix3D.mul(mtx, Matrix3D.scale(pos.z));
+  Matrix3D.mul(mtx, Matrix3D.translation(-cx, -cy));
+
+  return mtx;
 }

@@ -2,17 +2,18 @@ import React, { useState, useEffect, useRef, EventHandler, useContext } from 're
 import { Mode } from '../graph';
 import { LayerProperties } from './layer-props';
 import { Node } from '../vgraph';
-import { AABB, Vector3D } from '../../math';
+import { AABB, Vector2D, Vector3D } from '../../math';
 
 interface DebugLayerProperties extends LayerProperties {
   transform: string,
   nodes: Node<any>[],
   parentRef?: React.MutableRefObject<any>,
   position: Vector3D,
+  mouseCoords: Vector2D,
 }
 
 export function DebugLayer(props: DebugLayerProperties) {
-  const { transform, graph, mode, position } = props;
+  const { transform, graph, mode, position, mouseCoords } = props;
 
   return (
     <div className="debug render layer">
@@ -22,53 +23,45 @@ export function DebugLayer(props: DebugLayerProperties) {
       >
         {renderNodeLabels(props.nodes)}
         {renderOriginGizmo()}
-        {renderBoundingBox(graph.aabb)}
+        {renderBoundingBox(graph.bbox)}
       </div>
 
       <div className="debug-info-overlay">
-        {renderModeLabel(mode)}
-        {renderPosition(position)}
+        {renderLabel(Mode[mode])}
+        {/* {renderLabel(`x: ${~~position.x} y: ${~~position.y} z: ${position.z.toFixed(2)}`)} */}
+        {renderLabel(`mx: ${~~mouseCoords.x} my: ${~~mouseCoords.y}`)}
       </div>
 
-      {renderCrosshair(props.width, props.height)}
+      {renderCrosshair(props.width, props.height, `(${~~position.x}, ${~~position.y}, ${position.z.toFixed(2)})`)}
     </div>
   )
 }
 
-function renderModeLabel(mode: Mode) {
+function renderLabel(value: string, minWidth: number = 150) {
   return (
-    <div className="label" style={{ minWidth: "130px" }}>
-      Mode: {Mode[mode]}
+    <div className="label" style={{ minWidth: `${minWidth}px` }}>
+      {value}
     </div>
   )
 }
 
-function renderPosition(position: Vector3D) {
-  const { x, y, z } = position;
-
-  return (
-    <div className="label" style={{ minWidth: "150px" }}>
-      {`x: ${x.toFixed(2)} y: ${y.toFixed(2)} z: ${z.toFixed(2)}`}
-    </div>
-  );
-}
-
-function renderCrosshair(vpWidth: number, vpHeight: number) {
+function renderCrosshair(vpWidth: number, vpHeight: number, label: string) {
   const radius = 15;
   const centerX = vpWidth / 2;
   const centerY = vpHeight / 2;
 
   return (
     <svg width={vpWidth} height={vpHeight}>
+      <text fontSize="12" x={centerX + 4} y={centerY - 6}>{label}</text>
       <line
-        stroke="#0007"
+        stroke="#000"
         x1={centerX - radius}
         x2={centerX + radius}
         y1={centerY}
         y2={centerY}
       />
       <line
-        stroke="#0007"
+        stroke="#000"
         x1={centerX}
         x2={centerX}
         y1={centerY - radius}

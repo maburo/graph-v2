@@ -47,9 +47,9 @@ const COLOR_VALUES = ['0', '1', '2', '3', '4', '5', '6', '7',
 
 class Edge extends React.Component<EdgeProperties> {
 
-  shouldComponentUpdate() {
-    return this.props.mode === Mode.Edit;
-  }
+  // shouldComponentUpdate() {
+  //   return this.props.mode === Mode.Edit || this.props.mode === Mode.Drag;
+  // }
 
   render() {
     const pos = this.props.pos;
