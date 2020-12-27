@@ -3,7 +3,10 @@ import { Vector2D } from '../../math';
 import { Mode } from '../graph';
 import { LayerProperties } from './layer-props';
 
+const EdgeComponent = React.memo(edgeComponent);
+
 interface SvgLayerProps extends LayerProperties {
+  update: Date,
   edges: EdgeData[],
   transform: string,
 }
@@ -11,7 +14,7 @@ interface SvgLayerProps extends LayerProperties {
 function svgLayer(props: SvgLayerProps) {
   const transform = props.transform;
   const edges = props.edges.map(edge => (
-    <Edge 
+    <EdgeComponent 
       key={edge.key} 
       startX={edge.startX}
       startY={edge.startY}
@@ -51,7 +54,6 @@ export interface EdgeData {
 interface EdgeProperties {
   key: string,
   mode: Mode,
-  // pos: EdgeData,
   startX: number;
   startY: number;
   endX: number;
@@ -61,43 +63,27 @@ interface EdgeProperties {
 const COLOR_VALUES = ['0', '1', '2', '3', '4', '5', '6', '7', 
 '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F'];
 
-class Edge extends React.PureComponent<EdgeProperties> {
+function edgeComponent(props: EdgeProperties) {
+  const { startX, startY, endX, endY } = props;
+  const x1 = startX + (endX - startX) / 2;
+  const y1 = startY;
+  const x2 = x1;
+  const y2 = endY;
 
-  // shouldComponentUpdate(nextProps: EdgeProperties) {
-  //   const a = this.props as any;
-  //   const b = nextProps as any;
+  // const color = "#000";
+  const color = '#'
+    + COLOR_VALUES[Math.floor(Math.random() * 16)] 
+    + COLOR_VALUES[Math.floor(Math.random() * 16)] 
+    + COLOR_VALUES[Math.floor(Math.random() * 16)];
 
-  //   Object.keys(a).forEach(key => {
-  //     if (a[key] !== b[key]) {
-  //       console.log(key);
-  //     }
-  //   })
-  //   // return this.props.mode === Mode.Edit || this.props.mode === Mode.Drag;
-  //   return true;
-  // }
-
-  render() {
-    const { startX, startY, endX, endY } = this.props;
-    const x1 = startX + (endX - startX) / 2;
-    const y1 = startY;
-    const x2 = x1;
-    const y2 = endY;
-
-    // const color = "#000";
-    const color = '#'
-      + COLOR_VALUES[Math.floor(Math.random() * 16)] 
-      + COLOR_VALUES[Math.floor(Math.random() * 16)] 
-      + COLOR_VALUES[Math.floor(Math.random() * 16)];
-
-    return (
-      <path 
-        d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX},${endY}`} 
-        stroke={color} 
-        fill="none"
-        stroke-width="2px" 
-        markerStart="url(#circle)"
-        markerEnd="url(#arrow)"
-      />
-    );
-  }
+  return (
+    <path 
+      d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX},${endY}`} 
+      stroke={color} 
+      fill="none"
+      stroke-width="2px" 
+      markerStart="url(#circle)"
+      markerEnd="url(#arrow)"
+    />
+  );
 }

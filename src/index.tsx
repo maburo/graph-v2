@@ -16,8 +16,8 @@ container.className = 'container';
 document.body.appendChild(container);
 
 // loadGraph('/big_graph.json');
-// loadGraph('/15065834.json');
-loadGraph('/small.json');
+loadGraph('/15065834.json');
+// loadGraph('/small.json');
 
 // ReactDOM.render((
 //   <div>
@@ -71,9 +71,6 @@ function loadGraph(file: string) {
       edges.forEach(edge => {
         graph.addEdge(edge);
       });
-
-      console.log(graph);
-      
       
       ReactDOM.render(
         <GraphEditor 

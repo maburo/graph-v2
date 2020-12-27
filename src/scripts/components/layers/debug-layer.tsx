@@ -28,8 +28,7 @@ export function DebugLayer(props: DebugLayerProperties) {
 
       <div className="debug-info-overlay">
         {renderLabel(Mode[mode])}
-        {/* {renderLabel(`x: ${~~position.x} y: ${~~position.y} z: ${position.z.toFixed(2)}`)} */}
-        {renderLabel(`mx: ${~~mouseCoords.x} my: ${~~mouseCoords.y}`)}
+        {renderLabel(`mx: ${mouseCoords.x.toFixed(2)} my: ${mouseCoords.y.toFixed(2)}`)}
       </div>
 
       {renderCrosshair(props.width, props.height, `(${~~position.x}, ${~~position.y}, ${position.z.toFixed(2)})`)}

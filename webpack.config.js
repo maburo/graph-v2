@@ -21,6 +21,10 @@ module.exports = {
     runtimeChunk: 'single',
   },
   resolve: {
+    alias: {
+      'react-dom$': 'react-dom/profiling',
+      'scheduler/tracing': 'scheduler/tracing-profiling',
+    },
     extensions: ['.ts', '.tsx', '.js', '.css', '.scss']
   },
   // externals: {

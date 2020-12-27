@@ -98,6 +98,7 @@ export function ActionNode(props: Props) {
                     <div className="ib-flow-action-group-title text-ellipsis">{title}</div>
 
                     <div className={messageTextClasses}>
+                        {actionText}
                         {/* {this.props.failover ? (
                             <div
                                 dangerouslySetInnerHTML={{

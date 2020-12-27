@@ -22,6 +22,7 @@ interface GraphProps {
 }
 
 interface GraphState {
+  readonly update: Date,
   readonly position: Vector3D,
   readonly mousePos: Vector2D,
   readonly projMousePos: Vector2D,
@@ -46,7 +47,8 @@ export const NodeFactoryContext = React.createContext<NodeFactory>(null);
  * Editor
  */
 export class GraphEditor extends React.Component<GraphProps, GraphState> {
-  readonly ref: React.RefObject<HTMLDivElement>
+  readonly ref: React.RefObject<HTMLDivElement>;
+
   private onNodeStartDragFn: (node: Node<any>) => void;
   private animationStepFn: () => void;
   private onMouseMoveFn: (e: React.MouseEvent<unknown>) => void;
@@ -75,6 +77,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     const position = move(new Vector3D(0, 0, 1), new Vector2D(), props.graph.bbox);
   
     this.state = {
+      update: new Date(),
       position,
       mousePos: new Vector2D(),
       projMousePos: new Vector2D(),
@@ -156,6 +159,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
           {/* <GlLayer /> */}
        
           <SvgLayer 
+            update={this.state.update}
             graph={graph}
             mode={mode}
             width={width}
@@ -164,6 +168,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             edges={edges} />
   
           <HtmlLayer 
+            update={this.state.update}
             onStartDrag={this.onNodeStartDragFn}
             graph={graph}
             mode={mode}
@@ -224,51 +229,49 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   onMove(clientX: number, clientY: number) {
+    const update = new Date();
     const { graph } = this.props;
-    const { mode, selectOrigin, position: prevPos, mousePos, vpCenter } = this.state; 
     const projMousePos = new Vector2D(clientX, clientY).mulMtx3D(this.state.invTransformMtx);
-
-    if (mode === Mode.Select) {
-      const { x: ox, y: oy } = selectOrigin;
-      const bbox = new AABB(ox, oy, ox, oy);
-      bbox.addPoint(projMousePos.x, projMousePos.y);
-      this.setState({selectRegion: bbox});
-    }
-    else if (mode === Mode.Move) {
-      const bbox = graph.bbox;
-      const shift = new Vector2D(
-        (clientX - mousePos.x) / prevPos.z, 
-        (clientY - mousePos.y) / prevPos.z
-      );
-
-      this.setState({
-        position: move(prevPos, shift, bbox),
-        mousePos: new Vector2D(clientX, clientY),
-        projMousePos,
-        ...calcTransformMtx(prevPos, vpCenter),
-      });
-    }
-    else if (mode === Mode.Drag) {
-      // this.props.graph.selected.forEach(node => {
-      //   node.x = projMousePos.x;
-      //   node.y = projMousePos.y;
-      // });
-
-      graph.moveSelectedTo(projMousePos);
-
-      // this.forceUpdate();
-    }
-    else if (mode === Mode.Edit) {
-      this.setState({
-        mousePos: new Vector2D(clientX, clientY),
-        projMousePos,
-      });
+    const { 
+      mode, 
+      selectOrigin, 
+      position: prevPos, 
+      mousePos: currMousePos, 
+      vpCenter 
+    } = this.state; 
+    
+    switch (mode) {
+      case Mode.Select:
+        const { x: ox, y: oy } = selectOrigin;
+        const bbox = new AABB(ox, oy, ox, oy);
+        bbox.addPoint(projMousePos.x, projMousePos.y);
+        this.setState({selectRegion: bbox});
+        break;
+      case Mode.Move:
+        const shift = new Vector2D(
+          (currMousePos.x - clientX) / prevPos.z, 
+          (currMousePos.y - clientY) / prevPos.z);
+        this.setState({
+          position: move(prevPos, shift, graph.bbox),
+          mousePos: new Vector2D(clientX, clientY),
+          projMousePos,
+          ...calcTransformMtx(prevPos, vpCenter)
+        });
+        break;
+      case Mode.Drag:
+        graph.moveSelectedTo(projMousePos);
+        this.setState({update});
+        break;
+      case Mode.Edit:
+        this.setState({
+          mousePos: new Vector2D(clientX, clientY),
+          projMousePos,
+        });
+        break;
     }
   }
 
   onStartInteraction(clientX: number, clientY: number) {
-    // const { mode } = this.state;
-
     switch (this.state.mode) {
       case Mode.StartSelection:
         this.setState({ 
@@ -303,17 +306,28 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
   //---------------------- Mouse
   onMouseWheel(e: React.WheelEvent) {
+    const projMousePos = new Vector2D(e.clientX, e.clientY)
+      .mulMtx3D(this.state.invTransformMtx);
+    
     const { position: prevPosition, vpCenter } = this.state;
-    const { minZoom, maxZoom, zoomSense } = this.props;
-    const z = clamp(prevPosition.z - e.deltaY * zoomSense * prevPosition.z, minZoom, maxZoom);
+    const { minZoom, maxZoom, zoomSense, graph } = this.props;
+    const { x: px, y: py, z: pz } = prevPosition;
 
-    const position = new Vector3D(
-      prevPosition.x,
-      prevPosition.y,
-      z
-    );
+    const nz = clamp(pz - e.deltaY * zoomSense * pz, minZoom, maxZoom);
+    const nx = clamp(px + (projMousePos.x - px) * (nz - pz), graph.bbox.minX, graph.bbox.maxX);
+    const ny = clamp(py + (projMousePos.y - py) * (nz - pz), graph.bbox.minY, graph.bbox.maxY);
 
-    this.setState({position, ...calcTransformMtx(position, vpCenter)});
+    const transformMtx = Matrix3D.translation(-nx + vpCenter.x, -ny + vpCenter.y);
+    Matrix3D.mul(transformMtx, Matrix3D.translation(projMousePos.x, projMousePos.y));
+    Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
+    Matrix3D.mul(transformMtx, Matrix3D.translation(-projMousePos.x, -projMousePos.y));
+  
+    const invTransformMtx = Matrix3D.copy(transformMtx);
+    Matrix3D.invert(invTransformMtx);
+
+    const newPos = new Vector3D(nx, ny, nz);
+
+    this.setState({position: newPos, transformMtx, invTransformMtx, projMousePos});
   }
 
   onMouseMove(e: React.MouseEvent<unknown>) {
@@ -361,8 +375,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
 function move(prevPos: Vector3D, shift: Vector2D, bbox: AABB) {
   return new Vector3D(
-    clamp(prevPos.x - shift.x, bbox.minX, bbox.maxX),
-    clamp(prevPos.y - shift.y, bbox.minY, bbox.maxY),
+    clamp(prevPos.x + shift.x, bbox.minX, bbox.maxX),
+    clamp(prevPos.y + shift.y, bbox.minY, bbox.maxY),
     prevPos.z
   );
 }

@@ -5,13 +5,27 @@ import { Mode, NodeFactoryContext } from '../graph';
 import { LayerProperties } from './layer-props';
 
 interface HtmlLayerProperties extends LayerProperties {
+  update: Date,
   onStartDrag: (node: Node<any>) => void,
   nodes: Node<any>[],
   transform: string,
 }
 
-function htmlLayer(props: HtmlLayerProperties) { // node-factory arg?
-  const { nodes, transform, mode, graph, onStartDrag } = props;
+export class HtmlLayer extends React.PureComponent<HtmlLayerProperties> {
+// function htmlLayer(props: HtmlLayerProperties) { // node-factory arg?
+
+  // shouldComponentUpdate(next: HtmlLayerProperties) {
+  //   const a = this.props as any;
+  //   const b = next as any;
+
+  //   Object.keys(a).forEach(key => {
+  //     if (a[key] !== b[key]) console.log('>> html layer', key);
+  //   })
+  //   return true;
+  // }
+
+  render() {
+  const { nodes, transform, mode, graph, onStartDrag } = this.props;
 
   return (
     <div
@@ -21,6 +35,9 @@ function htmlLayer(props: HtmlLayerProperties) { // node-factory arg?
       {
         nodes.map(node => (
           <HtmlNode
+            key={node.id}
+            x={node.x}
+            y={node.y}
             onStartDrag={onStartDrag}
             graph={graph}
             mode={mode}
@@ -30,10 +47,13 @@ function htmlLayer(props: HtmlLayerProperties) { // node-factory arg?
     </div>
   );
 }
+}
 
-export const HtmlLayer = React.memo(htmlLayer);
+// export const HtmlLayer = React.memo(htmlLayer);
 
 interface NodeProperties {
+  x: number,
+  y: number,
   mode: Mode,
   node: Node<any>,
   graph: Graph<any>,
@@ -46,14 +66,20 @@ class HtmlNode extends React.PureComponent<NodeProperties> {
     super(props);
   }
 
-  // shouldComponentUpdate() {
-  //   return this.props.mode === Mode.Edit || this.props.mode === Mode.Drag;
+  // shouldComponentUpdate(next: NodeProperties) {
+  //   const a = this.props as any;
+  //   const b = next as any;
+
+  //   Object.keys(a).forEach(key => {
+  //     if (a[key] !== b[key]) console.log('>> node', key);
+  //   })
+  //   return false;
   // }
 
   render() {
-    const node = this.props.node;
+    const { x, y, node } = this.props;
     let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
-
+    
     return (
       <NodeFactoryContext.Consumer>
         { factory => (
@@ -67,8 +93,8 @@ class HtmlNode extends React.PureComponent<NodeProperties> {
             // onTouchStart={() => { }}
             // onTouchEnd={() => { }}
             style={{
-              left: node.x + 'px',
-              top: node.y + 'px'
+              left: x + 'px',
+              top: y + 'px'
             }}
             className={className}
           >
