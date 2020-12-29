@@ -1,0 +1,38 @@
+@import "~@infobip/moments-components/lib/ib-flow-styles/variables";
+
+.information-message {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    color: #242424;
+    border: 1px solid;
+    border-radius: 2px;
+
+    &.information-message_warning {
+        border-color: $flow-warning-color;
+    }
+
+    &.information-message_error {
+        border-color: #c84714;
+    }
+
+    &.information-message_info {
+        border-color: #347BB2;
+    }
+
+    &-content {
+        margin: 25px 20px 25px 0;
+    }
+
+    &-title {
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    img {
+        position: relative;
+        margin: 30px;
+        width: 30px;
+        height: 30px;
+    }
+}

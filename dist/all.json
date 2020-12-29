@@ -1,0 +1,2195 @@
+{
+  "id": 12434168,
+  "communicationType": "FLOW",
+  "name": "ETIQA : Claims + CC v1 05122019",
+  "status": "ACTIVE",
+  "schedule": {
+    "end": 1583300271000,
+    "timezoneId": 122
+  },
+  "createdAt": 1575524453892,
+  "modifiedAt": 1575524574260,
+  "startedAt": 1575524574435,
+  "launchedAt": 1575524574435,
+  "flowData": {
+    "startElements": [
+      {
+        "id": 5,
+        "oldActionGroupId": null,
+        "type": "START_IVR_INBOUND",
+        "diagramX": -893,
+        "diagramY": 391,
+        "action": {
+          "type": "StartInboundCallIvrAction",
+          "sender": null,
+          "senders": [
+            "38595262644"
+          ],
+          "moNumberId": null,
+          "moNumbersIds": [
+            10080076
+          ],
+          "campaignName": null,
+          "nextElementId": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 6,
+        "oldActionGroupId": null,
+        "type": "START_EVALUATE_DATE_TIME_ATTRIBUTE",
+        "diagramX": -891,
+        "diagramY": 502,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "PersonDateTimeAttribute",
+              "attribute": "data\u000110/11/2020",
+              "attributeType": "DATE_TIME",
+              "matchType": "IS_IN",
+              "timeSeconds": 172800,
+              "isRecurringEveryYear": false
+            },
+            "nextElementId": null
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 7,
+        "oldActionGroupId": null,
+        "type": "START_FLOW_WEBHOOK",
+        "diagramX": -894,
+        "diagramY": 625,
+        "action": {
+          "type": "FlowWebhookAction",
+          "nextElementId": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 4,
+        "oldActionGroupId": null,
+        "type": "START_EVALUATE_INBOUND_MESSAGE",
+        "diagramX": -905,
+        "diagramY": 202,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "MoResponse",
+              "value": "234",
+              "keywords": null,
+              "valueType": "KEYWORD",
+              "matchType": "EQUALS",
+              "receiver": {
+                "receiver": "",
+                "receiverType": "SMS",
+                "receiverId": null,
+                "receiverLabel": null,
+                "campaignChemistryEnabled": null,
+                "shared": null
+              }
+            },
+            "nextElementId": null
+          },
+          {
+            "condition": {
+              "type": "MoResponse",
+              "value": null,
+              "keywords": null,
+              "valueType": "ANY_KEYWORD",
+              "matchType": null,
+              "receiver": {
+                "receiver": "",
+                "receiverType": "SMS",
+                "receiverId": null,
+                "receiverLabel": null,
+                "campaignChemistryEnabled": null,
+                "shared": null
+              }
+            },
+            "nextElementId": null
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 1,
+        "oldActionGroupId": null,
+        "type": "START_RESOLVE_ONETIME_AUDIENCE",
+        "diagramX": -876,
+        "diagramY": -209,
+        "action": {
+          "type": "ResolveOnetimeAudienceAction",
+          "peopleQuery": {
+            "peopleIds": [],
+            "segmentIds": [],
+            "tagIds": [],
+            "destinations": null,
+            "fileAudience": null,
+            "recipientsFilter": null,
+            "requestTypeId": null
+          },
+          "logicalJoin": null,
+          "nextElementId": 8
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 2,
+        "oldActionGroupId": null,
+        "type": "START_EVALUATE_PEOPLE_EVENT",
+        "diagramX": -896,
+        "diagramY": -113,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "PersonPlaceholder",
+              "placeholder": "data\u0001#placeholderish",
+              "evaluationType": "EQUALS",
+              "value": "asd",
+              "variableToCompare": null,
+              "dataType": "ALPHANUMERIC"
+            },
+            "nextElementId": null
+          },
+          {
+            "condition": {
+              "type": "PersonPlaceholder",
+              "placeholder": "data\u0001   testPlace",
+              "evaluationType": "EQUALS",
+              "value": "werwe",
+              "variableToCompare": null,
+              "dataType": "ALPHANUMERIC"
+            },
+            "nextElementId": null
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 3,
+        "oldActionGroupId": null,
+        "type": "START_EVALUATE_BEHAVIOUR_EVENT",
+        "diagramX": -899,
+        "diagramY": 73,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "PeopleEvent",
+              "eventDefinitionId": "fyyvfvfy",
+              "occurrence": {
+                "operator": "GREATER_OR_EQUAL",
+                "times": 1
+              },
+              "timeline": {
+                "occurred": "ALL",
+                "operator": "AFTER",
+                "start": 90,
+                "end": 30,
+                "unit": "DAYS"
+              },
+              "payloads": [],
+              "timeAndOccurrenceSet": false,
+              "useCampaignFromPreviousElement": false,
+              "requestType": null
+            },
+            "nextElementId": null
+          }
+        ],
+        "collect": null
+      }
+    ],
+    "flowElements": [
+      {
+        "id": 15,
+        "oldActionGroupId": null,
+        "type": "FAILOVER_ACTION",
+        "diagramX": -54,
+        "diagramY": -245,
+        "action": {
+          "type": "FailoverAction",
+          "failoverSteps": [
+            {
+              "type": "SendMessageAction",
+              "serviceMessagingData": {
+                "requestType": "APPLICATION_TYPE_NEW_PUSH_NOTIF",
+                "sendingRequestType": null,
+                "recipientsDataKeys": null,
+                "serviceData": {
+                  "message": "zdfsdf",
+                  "title": "",
+                  "silent": false,
+                  "sound": true,
+                  "vibrate": true,
+                  "inApp": false,
+                  "customPayload": {
+                    "isJson": false
+                  },
+                  "deliveryOptions": {
+                    "canPullMessage": false,
+                    "validityPeriod": 2880
+                  },
+                  "dataPayloadMap": [],
+                  "geo": {
+                    "areas": [
+                      {
+                        "id": "6713245DA3638FDECFE448C550AD7681",
+                        "title": "Zagreb 123",
+                        "radiusInMeters": 9492.918822372478,
+                        "latitude": 45.80869126677998,
+                        "longitude": 15.972061157226562
+                      },
+                      {
+                        "id": "A277A2A0D0612AFB652E9D2D80E02BF2",
+                        "title": "Pula",
+                        "radiusInMeters": 5257.181821144568,
+                        "latitude": 44.86803631018752,
+                        "longitude": 13.845863342285156
+                      },
+                      {
+                        "id": "2D553275EE4DA208C82B7292FD1E6F32",
+                        "title": "Zagreb, Sesvete",
+                        "radiusInMeters": 2000,
+                        "latitude": 45.82688538784567,
+                        "longitude": 16.108875274658203
+                      },
+                      {
+                        "id": "9346BA2251B67F515C7A34563CD9C42C",
+                        "title": "India",
+                        "radiusInMeters": 1495733.9333353965,
+                        "latitude": 20.482508824426315,
+                        "longitude": 77.71823485401899
+                      },
+                      {
+                        "id": "38599FD4183778717210B24F7A029A32",
+                        "title": "India, Pune",
+                        "radiusInMeters": 57946.8699662042,
+                        "latitude": 18.500447458475094,
+                        "longitude": 73.861083984375
+                      },
+                      {
+                        "id": "107AB921757DEAC9BE79EC6259B31C8A",
+                        "title": "Aaaaa sve",
+                        "radiusInMeters": 5611507.336497462,
+                        "latitude": 56.88210536849639,
+                        "longitude": 61.22966654710717
+                      },
+                      {
+                        "id": "FC647643AD4A658D4074193A63F2AE9A",
+                        "title": "Africa",
+                        "radiusInMeters": 4341707.19785668,
+                        "latitude": 1.6292368917426134,
+                        "longitude": 13.805018317457552
+                      },
+                      {
+                        "id": "69DC9BA7B26A26E828167FE85ECDDCB7",
+                        "title": "St.Petersburg",
+                        "radiusInMeters": 10000,
+                        "latitude": 59.95,
+                        "longitude": 30.3
+                      },
+                      {
+                        "id": "C0F16C86FCA7F7227BEB1D5A68E49DE4",
+                        "title": "Something random",
+                        "radiusInMeters": 5257.181821144568,
+                        "latitude": 69,
+                        "longitude": 96
+                      },
+                      {
+                        "id": "E763E42AAB76E5AE7CB67C7AFA63107D",
+                        "title": "Saint Petersburg",
+                        "radiusInMeters": 11000,
+                        "latitude": 59.95,
+                        "longitude": 30.3
+                      },
+                      {
+                        "id": "140B5A76DAC9F021BE87890067A902D3",
+                        "title": "Pula office area",
+                        "radiusInMeters": 34.37310572836552,
+                        "latitude": 44.86795605717611,
+                        "longitude": 13.851923637570735
+                      },
+                      {
+                        "id": "FD18E25626DC9AA0793E8665ECC56836",
+                        "title": "Pulkovo Airport Whole Area",
+                        "radiusInMeters": 3152.739791944506,
+                        "latitude": 59.80045444037752,
+                        "longitude": 30.26183982056955
+                      },
+                      {
+                        "id": "0608528B49795C98E31C5698C37E5590",
+                        "title": "Pulkovo Airport Terminal Area",
+                        "radiusInMeters": 138.31856430125026,
+                        "latitude": 59.79994347493811,
+                        "longitude": 30.271325108666588
+                      },
+                      {
+                        "id": "B2B06094C028B29EEA7D11C21DE6234F",
+                        "title": "Petrograskaya-metro",
+                        "radiusInMeters": 95.11742798877934,
+                        "latitude": 59.9664662226589,
+                        "longitude": 30.311803551297317
+                      },
+                      {
+                        "id": "0275F0DB807D0E7F9C6AAEEB3A4735F6",
+                        "title": "asdasd",
+                        "radiusInMeters": 452.0407992383413,
+                        "latitude": 41.97019588049248,
+                        "longitude": 122.02311873435974
+                      },
+                      {
+                        "id": "7119BB1F888CC582B4E42ABC7EA72600",
+                        "title": "asd522asd",
+                        "radiusInMeters": 1465431.6192026697,
+                        "latitude": 36.03133177633187,
+                        "longitude": -105.1171875
+                      },
+                      {
+                        "id": "B36D11A3BF6DF304158FDD1BF9E97585",
+                        "title": "Autofocus and enter submit test",
+                        "radiusInMeters": 1.3496962411547251E7,
+                        "latitude": 43.068887774169625,
+                        "longitude": -31.11328125
+                      },
+                      {
+                        "id": "DE6580E4F1D273EC6A18568667C8AC71",
+                        "title": "asdsa",
+                        "radiusInMeters": 1298866.2416708753,
+                        "latitude": 54.826007999094955,
+                        "longitude": -126.2109375
+                      },
+                      {
+                        "id": "3299D7EE9AD955E2375F4B11815846D4",
+                        "title": "SPB-IB-Office",
+                        "radiusInMeters": 96.53874740407369,
+                        "latitude": 59.96098843895351,
+                        "longitude": 30.303382875552643
+                      },
+                      {
+                        "id": "FFAAA4AD345339A632337177AF634FD2",
+                        "title": "mali",
+                        "radiusInMeters": 3127789.580129301,
+                        "latitude": 13.923403897723386,
+                        "longitude": 1.7578125
+                      },
+                      {
+                        "id": "CD0E32AF7DF16FECC9851D1D0C8865FB",
+                        "title": "some bla",
+                        "radiusInMeters": 939741.1118006062,
+                        "latitude": 40.17887331434696,
+                        "longitude": 16.171875
+                      },
+                      {
+                        "id": "663614174F92F8E785BFE62DB754DA50",
+                        "title": "ZG Zoo",
+                        "radiusInMeters": 1815.6710775361403,
+                        "latitude": 45.8144438351014,
+                        "longitude": 16.008024170888575
+                      },
+                      {
+                        "id": "225D97341C4261E5C39A92C9D105F844",
+                        "title": "ZG Office",
+                        "radiusInMeters": 323.8431124312696,
+                        "latitude": 45.7933372304352,
+                        "longitude": 15.944294929504395
+                      },
+                      {
+                        "id": "F049B2350D9323D8BEC42842FE1CF82A",
+                        "title": "Oko Cibone",
+                        "radiusInMeters": 166.41703579987347,
+                        "latitude": 45.80227590431043,
+                        "longitude": 15.963440539109001
+                      },
+                      {
+                        "id": "88203718EB0E441D869875ADCD7E66D4",
+                        "title": "Area oko trga",
+                        "radiusInMeters": 243.71531150777525,
+                        "latitude": 45.8132247676055,
+                        "longitude": 15.976797938346863
+                      },
+                      {
+                        "id": "0CB1946F5FB686BF13F6A969D2C19634",
+                        "title": "ZG highland",
+                        "radiusInMeters": 792.2450685065647,
+                        "latitude": 45.842056218960565,
+                        "longitude": 15.973564405549268
+                      },
+                      {
+                        "id": "8454776F8B24612A86157B9ADFFE2AA4",
+                        "title": "France",
+                        "radiusInMeters": 330197.7384038529,
+                        "latitude": 46.316584181822186,
+                        "longitude": 2.109375
+                      },
+                      {
+                        "id": "5DC14EF87C1FA68296A24A7BBB3C2BC9",
+                        "title": "bla",
+                        "radiusInMeters": 1047153.4442388184,
+                        "latitude": 34.85515637177897,
+                        "longitude": -50.109534753830076
+                      },
+                      {
+                        "id": "5888C4ABC4C0B2339F44609B7C530243",
+                        "title": "area in the Atlantic ocean",
+                        "radiusInMeters": 977014.097590495,
+                        "latitude": 35.6800320749345,
+                        "longitude": -46.35792487431718
+                      },
+                      {
+                        "id": "C54A32BE28C689524FA2EDD9CAC609D6",
+                        "title": "IO test AREA",
+                        "radiusInMeters": 44000.50878239476,
+                        "latitude": 59.982980744581994,
+                        "longitude": 30.18962674017962
+                      },
+                      {
+                        "id": "7E365020DF40E513E366D8344A4133BC",
+                        "title": "IO test AREA 1",
+                        "radiusInMeters": 2959714.3393599857,
+                        "latitude": 49.1529696561704,
+                        "longitude": 41.484375
+                      },
+                      {
+                        "id": "4582AFDD94C3372D19F7626B60DEBD3A",
+                        "title": "Center world area",
+                        "radiusInMeters": 1445780.297896363,
+                        "latitude": 23.76619086146634,
+                        "longitude": 2.9781117917898428
+                      },
+                      {
+                        "id": "C73FF16124CFDB1B416F980449DFA479",
+                        "title": "my new area to delete",
+                        "radiusInMeters": 900922.6323945208,
+                        "latitude": 48.07904441450831,
+                        "longitude": -56.94325147955254
+                      },
+                      {
+                        "id": "E8CE82B1E8EB3AD7F187591336EB11CB",
+                        "title": "nova regija5",
+                        "radiusInMeters": 500,
+                        "latitude": 14.55,
+                        "longitude": 40.55
+                      },
+                      {
+                        "id": "54D0043940E9E245E622A4D3EC15D801",
+                        "title": "one new",
+                        "radiusInMeters": 2153623.9423813247,
+                        "latitude": 25.482951175355307,
+                        "longitude": -26.54296875
+                      },
+                      {
+                        "id": "47931F9AFEDF3C7BB5EDD9A7A5FB6592",
+                        "title": "Carrefour - AV S Elcano 3380",
+                        "radiusInMeters": 500,
+                        "latitude": -34.57537,
+                        "longitude": -58.4598
+                      },
+                      {
+                        "id": "FB53E2D8C5ECF604564FC6965E857014",
+                        "title": "fdsfdsfdsafdsafdsa",
+                        "radiusInMeters": 248363.0166136657,
+                        "latitude": 21.446497238688373,
+                        "longitude": 14.171294591652213
+                      },
+                      {
+                        "id": "8ECDF8B997B964C27D521D8A22DC0F2C",
+                        "title": "new",
+                        "radiusInMeters": 1059589.1442243487,
+                        "latitude": 27.762433844516888,
+                        "longitude": 16.875
+                      },
+                      {
+                        "id": "18DD358713EA4E03B9885D31C78FF45E",
+                        "title": "ba",
+                        "radiusInMeters": 1252429.247687119,
+                        "latitude": 27.762433844516888,
+                        "longitude": 10.8984375
+                      },
+                      {
+                        "id": "AB59394BDE9E74AC85803C71F0C9FF48",
+                        "title": "bo",
+                        "radiusInMeters": 353933.30684870866,
+                        "latitude": 23.967315884173022,
+                        "longitude": 2.8125
+                      },
+                      {
+                        "id": "EBB20FC3581B8BD320C835A22BAFD639",
+                        "title": "Greece",
+                        "radiusInMeters": 245134.01829325198,
+                        "latitude": 39.493557099924146,
+                        "longitude": 23.189014976171393
+                      },
+                      {
+                        "id": "BBDA2482CE89B3D3FCADB72A5E0A7DF7",
+                        "title": "Ireland",
+                        "radiusInMeters": 130667.88112068828,
+                        "latitude": 53.180886401684894,
+                        "longitude": -7.855690355593197
+                      },
+                      {
+                        "id": "82AB6CD1F9120569CD2D2241C4D7A98A",
+                        "title": "Lisobon",
+                        "radiusInMeters": 14335.925145851099,
+                        "latitude": 38.76531016385249,
+                        "longitude": -9.152557859754438
+                      },
+                      {
+                        "id": "3D801183F012AB722DCB5ED8795F2540",
+                        "title": "Lisbon",
+                        "radiusInMeters": 17206.70309345495,
+                        "latitude": 38.773158803848,
+                        "longitude": -9.172658053484042
+                      },
+                      {
+                        "id": "E8655C73EF600A3E5EDE4CDE018E3D4D",
+                        "title": "zagreb",
+                        "radiusInMeters": 88531.81996364087,
+                        "latitude": 45.60351099990084,
+                        "longitude": 16.021949973564915
+                      },
+                      {
+                        "id": "E86908190287ED16EFB62D4EF93339AE",
+                        "title": "zagreb 3212323",
+                        "radiusInMeters": 1921.3509166593667,
+                        "latitude": 45.80343879817135,
+                        "longitude": 15.947165412304685
+                      },
+                      {
+                        "id": "41C19320E9F5D82DBD2AD2DE81C9D566",
+                        "title": "Barcelona 101",
+                        "radiusInMeters": 23338.805906664416,
+                        "latitude": 41.38873399147808,
+                        "longitude": 2.138602613130274
+                      },
+                      {
+                        "id": "60B5C61800F8019A8AE9DA312B20DE57",
+                        "title": "TestGeoArea",
+                        "radiusInMeters": 1587.918822372478,
+                        "latitude": 45.80869126677998,
+                        "longitude": 15.972061157226562
+                      },
+                      {
+                        "id": "D925897B88926DCA8BAEC67BAA08B286",
+                        "title": "Sacramento #229",
+                        "radiusInMeters": 20000,
+                        "latitude": 38.58454678946578,
+                        "longitude": -121.48832469140626
+                      },
+                      {
+                        "id": "961C1A8D3110B62E86152B11DD241FD6",
+                        "title": "Sacramento #22",
+                        "radiusInMeters": 57958.57285036882,
+                        "latitude": 38.544948798338865,
+                        "longitude": -121.43335112447886
+                      },
+                      {
+                        "id": "F541361FFDECE6C1DC3B3DFDAC3A313F",
+                        "title": "Untitled Area",
+                        "radiusInMeters": 100558.19210729604,
+                        "latitude": 38.0250340631586,
+                        "longitude": -120.90687908824049
+                      },
+                      {
+                        "id": "F421FA80219B8A95789CF6595F08391F",
+                        "title": "Sacramento #3",
+                        "radiusInMeters": 112777.99052569865,
+                        "latitude": 38.40827937499645,
+                        "longitude": -121.98545603906251
+                      },
+                      {
+                        "id": "3B43C8B055BFBE95EB56EE51CA5EFC90",
+                        "title": "My area",
+                        "radiusInMeters": 124686.55447092808,
+                        "latitude": 38.1841008462585,
+                        "longitude": -122.44688182031251
+                      },
+                      {
+                        "id": "D2F99A3D41B529934B534936156B1AAC",
+                        "title": "name",
+                        "radiusInMeters": 429474.7717079467,
+                        "latitude": 21.517349957897284,
+                        "longitude": -1.7622106072767423
+                      },
+                      {
+                        "id": "F24747220D480E82AD6B721A850C7E91",
+                        "title": "hdhdhd",
+                        "radiusInMeters": 429474.7717079467,
+                        "latitude": 21.517349957897284,
+                        "longitude": -1.7622106072767423
+                      },
+                      {
+                        "id": "F0157F58AF506DBE549305DCFB5B9EB5",
+                        "title": "dhhd",
+                        "radiusInMeters": 706459.507058764,
+                        "latitude": 22.919072029371804,
+                        "longitude": 0.9228515625
+                      },
+                      {
+                        "id": "45661C8528AFC92EF2B672037BF2868F",
+                        "title": "name6",
+                        "radiusInMeters": 249179.18786854777,
+                        "latitude": 17.711425288276615,
+                        "longitude": 9.113103615233516
+                      },
+                      {
+                        "id": "BC6EC416570C23962C15E42EEF23FCF0",
+                        "title": "jhjh",
+                        "radiusInMeters": 389492.59735148004,
+                        "latitude": 18.058630202618723,
+                        "longitude": -1.8173615689154026
+                      },
+                      {
+                        "id": "0BF620CC6420569785313BC9560C58AB",
+                        "title": "jhjhjk",
+                        "radiusInMeters": 274085.5078644253,
+                        "latitude": 18.564130110243163,
+                        "longitude": -2.96630859375
+                      },
+                      {
+                        "id": "734D9615BB266FF3C4FF46F74B2DAB8E",
+                        "title": "yr",
+                        "radiusInMeters": 689399.2195746598,
+                        "latitude": 20.633951801194257,
+                        "longitude": -2.5927734375
+                      },
+                      {
+                        "id": "C6C3E23455A7121AA75D5DD14860F0A7",
+                        "title": "1",
+                        "radiusInMeters": 513107.2182285649,
+                        "latitude": 25.88011686244945,
+                        "longitude": 6.50390625
+                      },
+                      {
+                        "id": "609A5F02859C87FAA54D78A6F1788881",
+                        "title": "testttt",
+                        "radiusInMeters": 8053865.110746192,
+                        "latitude": 31.0991713593193,
+                        "longitude": 1.58203125
+                      },
+                      {
+                        "id": "0E485719E3DF4AD533E6271A72E9E3C0",
+                        "title": "asdfg",
+                        "radiusInMeters": 808398.561996813,
+                        "latitude": 45.374637489624,
+                        "longitude": 21.26953125
+                      }
+                    ],
+                    "selectedAreas": [],
+                    "recurring": {
+                      "single": true,
+                      "intervalUnit": "MINUTES"
+                    },
+                    "timeWindow": {
+                      "days": [
+                        "MON",
+                        "TUE",
+                        "WED",
+                        "THU",
+                        "FRI",
+                        "SAT",
+                        "SUN"
+                      ],
+                      "allDay": true
+                    }
+                  },
+                  "areAdvancedOptionsEdited": true,
+                  "sender": {
+                    "value": "8F8527AA03BC9BACF1AA8F0926882655",
+                    "label": "Mobile Messaging Demo"
+                  },
+                  "notificationType": "PUSH",
+                  "primaryInAppButton": "Open",
+                  "dismissInAppButton": "Cancel"
+                },
+                "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+                "deliveryNotificationsData": null,
+                "shouldForwardToCcaas": null,
+                "urlShorteningParams": null,
+                "isPrioritySending": false
+              },
+              "nextElementId": 0,
+              "sendTimeOptimizationStrategyType": null,
+              "validityPeriodInMinutes": null,
+              "shouldWaitUntilBulkCompleted": false,
+              "timeWindow": null,
+              "deliveryRate": null
+            },
+            {
+              "type": "SendMessageAction",
+              "serviceMessagingData": {
+                "requestType": "APPLICATION_TYPE_SMS_MT",
+                "sendingRequestType": null,
+                "recipientsDataKeys": null,
+                "serviceData": {
+                  "message": "123123",
+                  "coding": {
+                    "transliterationKey": "1"
+                  },
+                  "dataPayloadMap": [],
+                  "deliveryOptions": {
+                    "isFlashMessage": false,
+                    "validityPeriod": 2880
+                  },
+                  "nliSpecification": {},
+                  "transliterationSpecificationId": "1"
+                },
+                "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+                "deliveryNotificationsData": null,
+                "shouldForwardToCcaas": null,
+                "urlShorteningParams": null,
+                "isPrioritySending": false
+              },
+              "nextElementId": 0,
+              "sendTimeOptimizationStrategyType": null,
+              "validityPeriodInMinutes": null,
+              "shouldWaitUntilBulkCompleted": false,
+              "timeWindow": null,
+              "deliveryRate": null
+            }
+          ],
+          "actionServiceData": {
+            "canPullMessage": false
+          },
+          "nextElementId": 16,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 18,
+        "oldActionGroupId": null,
+        "type": "EVALUATE_BEHAVIOUR_EVENT",
+        "diagramX": 542,
+        "diagramY": -225,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "PeopleEvent",
+              "eventDefinitionId": null,
+              "occurrence": {
+                "operator": "GREATER_OR_EQUAL",
+                "times": 1
+              },
+              "timeline": {
+                "occurred": "ALL",
+                "operator": "AFTER",
+                "start": 90,
+                "end": 30,
+                "unit": "DAYS"
+              },
+              "payloads": null,
+              "timeAndOccurrenceSet": false,
+              "useCampaignFromPreviousElement": false,
+              "requestType": null
+            },
+            "nextElementId": 38
+          },
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 19
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 17,
+        "oldActionGroupId": null,
+        "type": "EVALUATE_PARTICIPANT_DATA",
+        "diagramX": 551,
+        "diagramY": -22,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "Logical",
+              "logicalJoin": "AND",
+              "conditions": []
+            },
+            "nextElementId": 36
+          },
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 37
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 25,
+        "oldActionGroupId": null,
+        "type": "START_CONVERSATION",
+        "diagramX": 1344,
+        "diagramY": -172,
+        "action": {
+          "type": "StartConversationAction",
+          "tagIds": [
+            "A456F23F81845C661537F3A78F290EA3"
+          ],
+          "nextElementId": 26
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 26,
+        "oldActionGroupId": null,
+        "type": "ADD_TO_BLACKLIST",
+        "diagramX": 1362,
+        "diagramY": 110,
+        "action": {
+          "type": "AddToBlacklistAction",
+          "blacklistType": "MSISDN",
+          "nextElementId": 27
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 27,
+        "oldActionGroupId": null,
+        "type": "REMOVE_FROM_BLACKLIST",
+        "diagramX": 1360,
+        "diagramY": 233,
+        "action": {
+          "type": "RemoveFromBlacklistAction",
+          "blacklistType": "ALL",
+          "nextElementId": 28
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 28,
+        "oldActionGroupId": null,
+        "type": "PERFORM_EXPERIMENT_ACTION",
+        "diagramX": 1031,
+        "diagramY": 352,
+        "action": {
+          "type": "PerformExperimentAction"
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "ExperimentAudience",
+              "percentage": 50
+            },
+            "nextElementId": 29
+          },
+          {
+            "condition": {
+              "type": "ExperimentAudience",
+              "percentage": 50
+            },
+            "nextElementId": 41
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 29,
+        "oldActionGroupId": null,
+        "type": "CALL_URL",
+        "diagramX": 1415,
+        "diagramY": 426,
+        "action": {
+          "type": "CallUrlFlowAction",
+          "url": "http://asdas.com",
+          "methodType": "POST",
+          "header": [],
+          "body": "",
+          "bodyType": "KEY_VALUE",
+          "waitForResponse": true,
+          "variables": [],
+          "headerVariables": null,
+          "recipientsDataKeys": null,
+          "responseTimeoutSeconds": null,
+          "encodeUrlParameters": null,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 30
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 32,
+        "oldActionGroupId": null,
+        "type": "DIAL_IVR_ACTION",
+        "diagramX": 1829,
+        "diagramY": 225,
+        "action": {
+          "type": "DialIvrAction",
+          "sender": "123456",
+          "contentType": "NUMBER",
+          "to": null,
+          "dialToMany": [
+            "{$firstName}"
+          ],
+          "parallel": false,
+          "ringTimeout": 30,
+          "dialToIp": {
+            "dialNumber": null,
+            "ipAddress": "",
+            "port": null
+          }
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 42
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 33,
+        "oldActionGroupId": null,
+        "type": "PLAY_IVR_ACTION",
+        "diagramX": 2205,
+        "diagramY": -61,
+        "action": {
+          "type": "PlayFlowAction",
+          "messageType": "TEXT_TO_SPEECH",
+          "fileUploadData": null,
+          "fileUrl": null,
+          "recordedFileName": null,
+          "ttsData": {
+            "message": "",
+            "speechRate": 1.0,
+            "languageCode": null,
+            "voice": null,
+            "fileId": null,
+            "synthesizedFileId": null,
+            "languageManuallySelected": false
+          },
+          "pause": null
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 34
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 36,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 901,
+        "diagramY": 43,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 37,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 901,
+        "diagramY": 133,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 38,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 892,
+        "diagramY": -70,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 39,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 391,
+        "diagramY": 342,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 40,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 411,
+        "diagramY": 565,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 43,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 2573,
+        "diagramY": 287,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 42,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 1983,
+        "diagramY": 387,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 41,
+        "oldActionGroupId": null,
+        "type": "EXIT",
+        "diagramX": 1174,
+        "diagramY": 596,
+        "action": {
+          "type": "ExitFlowAction"
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 23,
+        "oldActionGroupId": null,
+        "type": "ADD_TAG",
+        "diagramX": 1037,
+        "diagramY": -18,
+        "action": {
+          "type": "AddTagAction",
+          "tagIds": [
+            5401
+          ],
+          "resolvedTags": {
+            "5401": "Upload_2020-12-25_12:26:24"
+          },
+          "nextElementId": 24
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 24,
+        "oldActionGroupId": null,
+        "type": "REMOVE_TAG",
+        "diagramX": 970,
+        "diagramY": -170,
+        "action": {
+          "type": "RemoveTagAction",
+          "tagIds": [
+            5401
+          ],
+          "resolvedTags": {
+            "5401": "Upload_2020-12-25_12:26:24"
+          },
+          "nextElementId": 25
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 31,
+        "oldActionGroupId": null,
+        "type": "COLLECT_IVR_ACTION",
+        "diagramX": 1830,
+        "diagramY": -21,
+        "action": {
+          "type": "CollectIvrAction",
+          "variableName": "sdfsd",
+          "maxInputLength": 3,
+          "inputWaitingTime": 3,
+          "sendToReports": "ALWAYS",
+          "mappedValues": null
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "IvrResponseCode",
+              "matchType": "EQUALS",
+              "value": null,
+              "mappedValue": null
+            },
+            "nextElementId": 33
+          },
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 32
+          }
+        ],
+        "collect": {
+          "collectDefinitions": {
+            "sdfsd": {
+              "dataType": "STRING",
+              "source": "IVR_DTMF",
+              "apiResponseExtractionPath": null
+            }
+          }
+        }
+      },
+      {
+        "id": 30,
+        "oldActionGroupId": null,
+        "type": "START_CALL_IVR_ACTION",
+        "diagramX": 1836,
+        "diagramY": -187,
+        "action": {
+          "type": "StartCallIvrAction",
+          "sender": "3876266443321",
+          "campaignName": null,
+          "record": false,
+          "validityPeriod": null,
+          "validityPeriodMinutes": 2880,
+          "retry": {
+            "numberOfRetries": null,
+            "minimumRetryPeriod": null,
+            "maximumRetryPeriod": null
+          },
+          "notify": {
+            "callbackUrl": null,
+            "contentType": "APPLICATION_JSON",
+            "callbackData": null
+          },
+          "areAdvancedOptionsEdited": false,
+          "dataPayloadMap": null,
+          "dataPayload": null,
+          "nextElementId": null,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 31
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 34,
+        "oldActionGroupId": null,
+        "type": "RECORD_IVR_ACTION",
+        "diagramX": 2215,
+        "diagramY": 94,
+        "action": {
+          "type": "RecordIvrAction",
+          "maxRecordingDuration": 2,
+          "escapeDigits": "",
+          "beep": false,
+          "maxSilence": 2,
+          "fileName": "asdfsaf"
+        },
+        "rules": [
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 35
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 35,
+        "oldActionGroupId": null,
+        "type": "IVR_HANG_UP",
+        "diagramX": 2223,
+        "diagramY": 267,
+        "action": {
+          "type": "HangUpIvrAction",
+          "nextElementId": 43
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 22,
+        "oldActionGroupId": null,
+        "type": "UPDATE_PERSON_ACTION",
+        "diagramX": 600,
+        "diagramY": 203,
+        "action": {
+          "type": "UpdatePersonAction",
+          "fields": [
+            {
+              "field": "data\u0001   testPlace",
+              "value": "23",
+              "placeholder": "",
+              "fieldType": "VALUE"
+            }
+          ],
+          "nextElementId": 23
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 21,
+        "oldActionGroupId": null,
+        "type": "PAUSE",
+        "diagramX": 699,
+        "diagramY": 398,
+        "action": {
+          "type": "PauseAction",
+          "duration": 34,
+          "unit": "MINUTES",
+          "nextElementId": 22
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 20,
+        "oldActionGroupId": null,
+        "type": "EVALUATE_DATE_TIME_ATTRIBUTE",
+        "diagramX": 61,
+        "diagramY": 410,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "PersonDateTimeAttribute",
+              "attribute": "data\u0001123123",
+              "attributeType": "DATE_TIME",
+              "matchType": "IS_IN",
+              "timeSeconds": 86400,
+              "isRecurringEveryYear": false
+            },
+            "nextElementId": 21
+          },
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 40
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 19,
+        "oldActionGroupId": null,
+        "type": "EVALUATE_ATTRIBUTE_EVENT",
+        "diagramX": 41,
+        "diagramY": 187,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "PersonPlaceholder",
+              "placeholder": "data\u0001   testPlace",
+              "evaluationType": "EQUALS",
+              "value": "23",
+              "variableToCompare": null,
+              "dataType": "ALPHANUMERIC"
+            },
+            "nextElementId": 20
+          },
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 39
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 16,
+        "oldActionGroupId": null,
+        "type": "EVALUATE_INBOUND_MESSAGE",
+        "diagramX": 128,
+        "diagramY": -141,
+        "action": null,
+        "rules": [
+          {
+            "condition": {
+              "type": "MoResponse",
+              "value": "345",
+              "keywords": null,
+              "valueType": "KEYWORD",
+              "matchType": "EQUALS",
+              "receiver": {
+                "receiver": "",
+                "receiverType": "SMS",
+                "receiverId": null,
+                "receiverLabel": null,
+                "campaignChemistryEnabled": null,
+                "shared": null
+              }
+            },
+            "nextElementId": 18
+          },
+          {
+            "condition": {
+              "type": "Else",
+              "waitMinutes": null,
+              "waitSeconds": null
+            },
+            "nextElementId": 17
+          }
+        ],
+        "collect": null
+      },
+      {
+        "id": 8,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -480,
+        "diagramY": -170,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_SMS_MT",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "message": "sdfsdafsda",
+              "coding": {
+                "transliterationKey": "1"
+              },
+              "dataPayloadMap": [],
+              "deliveryOptions": {
+                "isFlashMessage": false,
+                "validityPeriod": 2880
+              },
+              "sender": "447000003",
+              "nliSpecification": {},
+              "transliterationSpecificationId": "1"
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 9,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 9,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -467,
+        "diagramY": -68,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_VIBER",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "deliveryOptions": {
+                "validityPeriod": 2880
+              },
+              "sender": "IBViber",
+              "message": "asfsda fsd",
+              "promotional": true
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 10,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 10,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -466,
+        "diagramY": 38,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_FACEBOOK",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "deliveryOptions": {
+                "validityPeriod": 2880
+              },
+              "sender": "100347881625423",
+              "message": {
+                "type": "TEXT",
+                "text": "sdf sfad sd"
+              }
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 11,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 11,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -473,
+        "diagramY": 150,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "EMAIL",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "senderDomainId": 10661,
+              "sender": "noreply@infobiiip.com",
+              "senderName": "Infobip IO",
+              "replyTo": "",
+              "subject": "<p>asfsdf</p>",
+              "message": "",
+              "parsedText": "",
+              "localAttachments": [],
+              "richText": true,
+              "bodyContainer": {
+                "sectionContainer": [
+                  {
+                    "rowId": 1,
+                    "sectionId": 1,
+                    "columnLayout": [
+                      "col-xs-12 col-sm-12"
+                    ],
+                    "sectionStyle": {},
+                    "contentContainer": {
+                      "0": {
+                        "contentType": "TEXT",
+                        "properties": {},
+                        "blockStyle": {},
+                        "messageText": "<p>sd afsd afsd </p>"
+                      }
+                    }
+                  }
+                ],
+                "bodyStyle": {}
+              },
+              "tracking": {
+                "opens": true,
+                "clicks": false
+              },
+              "contentHtml": "",
+              "dataPayloadMap": [],
+              "html": "",
+              "deliveryOptions": {
+                "validityPeriod": 2880
+              },
+              "contentSize": 0,
+              "preheader": "<p>sdfasdfas</p>"
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 12,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 12,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -469,
+        "diagramY": 258,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_NEW_PUSH_NOTIF",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "message": "push text",
+              "title": "push title",
+              "silent": false,
+              "sound": true,
+              "vibrate": true,
+              "inApp": false,
+              "customPayload": {
+                "isJson": false
+              },
+              "deliveryOptions": {
+                "canPullMessage": false,
+                "validityPeriod": 2880
+              },
+              "dataPayloadMap": [
+                {
+                  "name": "msisdn",
+                  "key": "{$destinations\u0001msisdn}",
+                  "type": "CONTACT",
+                  "dataType": "STRING"
+                }
+              ],
+              "geo": {
+                "areas": [
+                  {
+                    "id": "6713245DA3638FDECFE448C550AD7681",
+                    "title": "Zagreb 123",
+                    "radiusInMeters": 9492.918822372478,
+                    "latitude": 45.80869126677998,
+                    "longitude": 15.972061157226562
+                  },
+                  {
+                    "id": "A277A2A0D0612AFB652E9D2D80E02BF2",
+                    "title": "Pula",
+                    "radiusInMeters": 5257.181821144568,
+                    "latitude": 44.86803631018752,
+                    "longitude": 13.845863342285156
+                  },
+                  {
+                    "id": "2D553275EE4DA208C82B7292FD1E6F32",
+                    "title": "Zagreb, Sesvete",
+                    "radiusInMeters": 2000,
+                    "latitude": 45.82688538784567,
+                    "longitude": 16.108875274658203
+                  },
+                  {
+                    "id": "9346BA2251B67F515C7A34563CD9C42C",
+                    "title": "India",
+                    "radiusInMeters": 1495733.9333353965,
+                    "latitude": 20.482508824426315,
+                    "longitude": 77.71823485401899
+                  },
+                  {
+                    "id": "38599FD4183778717210B24F7A029A32",
+                    "title": "India, Pune",
+                    "radiusInMeters": 57946.8699662042,
+                    "latitude": 18.500447458475094,
+                    "longitude": 73.861083984375
+                  },
+                  {
+                    "id": "107AB921757DEAC9BE79EC6259B31C8A",
+                    "title": "Aaaaa sve",
+                    "radiusInMeters": 5611507.336497462,
+                    "latitude": 56.88210536849639,
+                    "longitude": 61.22966654710717
+                  },
+                  {
+                    "id": "FC647643AD4A658D4074193A63F2AE9A",
+                    "title": "Africa",
+                    "radiusInMeters": 4341707.19785668,
+                    "latitude": 1.6292368917426134,
+                    "longitude": 13.805018317457552
+                  },
+                  {
+                    "id": "69DC9BA7B26A26E828167FE85ECDDCB7",
+                    "title": "St.Petersburg",
+                    "radiusInMeters": 10000,
+                    "latitude": 59.95,
+                    "longitude": 30.3
+                  },
+                  {
+                    "id": "C0F16C86FCA7F7227BEB1D5A68E49DE4",
+                    "title": "Something random",
+                    "radiusInMeters": 5257.181821144568,
+                    "latitude": 69,
+                    "longitude": 96
+                  },
+                  {
+                    "id": "E763E42AAB76E5AE7CB67C7AFA63107D",
+                    "title": "Saint Petersburg",
+                    "radiusInMeters": 11000,
+                    "latitude": 59.95,
+                    "longitude": 30.3
+                  },
+                  {
+                    "id": "140B5A76DAC9F021BE87890067A902D3",
+                    "title": "Pula office area",
+                    "radiusInMeters": 34.37310572836552,
+                    "latitude": 44.86795605717611,
+                    "longitude": 13.851923637570735
+                  },
+                  {
+                    "id": "FD18E25626DC9AA0793E8665ECC56836",
+                    "title": "Pulkovo Airport Whole Area",
+                    "radiusInMeters": 3152.739791944506,
+                    "latitude": 59.80045444037752,
+                    "longitude": 30.26183982056955
+                  },
+                  {
+                    "id": "0608528B49795C98E31C5698C37E5590",
+                    "title": "Pulkovo Airport Terminal Area",
+                    "radiusInMeters": 138.31856430125026,
+                    "latitude": 59.79994347493811,
+                    "longitude": 30.271325108666588
+                  },
+                  {
+                    "id": "B2B06094C028B29EEA7D11C21DE6234F",
+                    "title": "Petrograskaya-metro",
+                    "radiusInMeters": 95.11742798877934,
+                    "latitude": 59.9664662226589,
+                    "longitude": 30.311803551297317
+                  },
+                  {
+                    "id": "0275F0DB807D0E7F9C6AAEEB3A4735F6",
+                    "title": "asdasd",
+                    "radiusInMeters": 452.0407992383413,
+                    "latitude": 41.97019588049248,
+                    "longitude": 122.02311873435974
+                  },
+                  {
+                    "id": "7119BB1F888CC582B4E42ABC7EA72600",
+                    "title": "asd522asd",
+                    "radiusInMeters": 1465431.6192026697,
+                    "latitude": 36.03133177633187,
+                    "longitude": -105.1171875
+                  },
+                  {
+                    "id": "B36D11A3BF6DF304158FDD1BF9E97585",
+                    "title": "Autofocus and enter submit test",
+                    "radiusInMeters": 1.3496962411547251E7,
+                    "latitude": 43.068887774169625,
+                    "longitude": -31.11328125
+                  },
+                  {
+                    "id": "DE6580E4F1D273EC6A18568667C8AC71",
+                    "title": "asdsa",
+                    "radiusInMeters": 1298866.2416708753,
+                    "latitude": 54.826007999094955,
+                    "longitude": -126.2109375
+                  },
+                  {
+                    "id": "3299D7EE9AD955E2375F4B11815846D4",
+                    "title": "SPB-IB-Office",
+                    "radiusInMeters": 96.53874740407369,
+                    "latitude": 59.96098843895351,
+                    "longitude": 30.303382875552643
+                  },
+                  {
+                    "id": "FFAAA4AD345339A632337177AF634FD2",
+                    "title": "mali",
+                    "radiusInMeters": 3127789.580129301,
+                    "latitude": 13.923403897723386,
+                    "longitude": 1.7578125
+                  },
+                  {
+                    "id": "CD0E32AF7DF16FECC9851D1D0C8865FB",
+                    "title": "some bla",
+                    "radiusInMeters": 939741.1118006062,
+                    "latitude": 40.17887331434696,
+                    "longitude": 16.171875
+                  },
+                  {
+                    "id": "663614174F92F8E785BFE62DB754DA50",
+                    "title": "ZG Zoo",
+                    "radiusInMeters": 1815.6710775361403,
+                    "latitude": 45.8144438351014,
+                    "longitude": 16.008024170888575
+                  },
+                  {
+                    "id": "225D97341C4261E5C39A92C9D105F844",
+                    "title": "ZG Office",
+                    "radiusInMeters": 323.8431124312696,
+                    "latitude": 45.7933372304352,
+                    "longitude": 15.944294929504395
+                  },
+                  {
+                    "id": "F049B2350D9323D8BEC42842FE1CF82A",
+                    "title": "Oko Cibone",
+                    "radiusInMeters": 166.41703579987347,
+                    "latitude": 45.80227590431043,
+                    "longitude": 15.963440539109001
+                  },
+                  {
+                    "id": "88203718EB0E441D869875ADCD7E66D4",
+                    "title": "Area oko trga",
+                    "radiusInMeters": 243.71531150777525,
+                    "latitude": 45.8132247676055,
+                    "longitude": 15.976797938346863
+                  },
+                  {
+                    "id": "0CB1946F5FB686BF13F6A969D2C19634",
+                    "title": "ZG highland",
+                    "radiusInMeters": 792.2450685065647,
+                    "latitude": 45.842056218960565,
+                    "longitude": 15.973564405549268
+                  },
+                  {
+                    "id": "8454776F8B24612A86157B9ADFFE2AA4",
+                    "title": "France",
+                    "radiusInMeters": 330197.7384038529,
+                    "latitude": 46.316584181822186,
+                    "longitude": 2.109375
+                  },
+                  {
+                    "id": "5DC14EF87C1FA68296A24A7BBB3C2BC9",
+                    "title": "bla",
+                    "radiusInMeters": 1047153.4442388184,
+                    "latitude": 34.85515637177897,
+                    "longitude": -50.109534753830076
+                  },
+                  {
+                    "id": "5888C4ABC4C0B2339F44609B7C530243",
+                    "title": "area in the Atlantic ocean",
+                    "radiusInMeters": 977014.097590495,
+                    "latitude": 35.6800320749345,
+                    "longitude": -46.35792487431718
+                  },
+                  {
+                    "id": "C54A32BE28C689524FA2EDD9CAC609D6",
+                    "title": "IO test AREA",
+                    "radiusInMeters": 44000.50878239476,
+                    "latitude": 59.982980744581994,
+                    "longitude": 30.18962674017962
+                  },
+                  {
+                    "id": "7E365020DF40E513E366D8344A4133BC",
+                    "title": "IO test AREA 1",
+                    "radiusInMeters": 2959714.3393599857,
+                    "latitude": 49.1529696561704,
+                    "longitude": 41.484375
+                  },
+                  {
+                    "id": "4582AFDD94C3372D19F7626B60DEBD3A",
+                    "title": "Center world area",
+                    "radiusInMeters": 1445780.297896363,
+                    "latitude": 23.76619086146634,
+                    "longitude": 2.9781117917898428
+                  },
+                  {
+                    "id": "C73FF16124CFDB1B416F980449DFA479",
+                    "title": "my new area to delete",
+                    "radiusInMeters": 900922.6323945208,
+                    "latitude": 48.07904441450831,
+                    "longitude": -56.94325147955254
+                  },
+                  {
+                    "id": "E8CE82B1E8EB3AD7F187591336EB11CB",
+                    "title": "nova regija5",
+                    "radiusInMeters": 500,
+                    "latitude": 14.55,
+                    "longitude": 40.55
+                  },
+                  {
+                    "id": "54D0043940E9E245E622A4D3EC15D801",
+                    "title": "one new",
+                    "radiusInMeters": 2153623.9423813247,
+                    "latitude": 25.482951175355307,
+                    "longitude": -26.54296875
+                  },
+                  {
+                    "id": "47931F9AFEDF3C7BB5EDD9A7A5FB6592",
+                    "title": "Carrefour - AV S Elcano 3380",
+                    "radiusInMeters": 500,
+                    "latitude": -34.57537,
+                    "longitude": -58.4598
+                  },
+                  {
+                    "id": "FB53E2D8C5ECF604564FC6965E857014",
+                    "title": "fdsfdsfdsafdsafdsa",
+                    "radiusInMeters": 248363.0166136657,
+                    "latitude": 21.446497238688373,
+                    "longitude": 14.171294591652213
+                  },
+                  {
+                    "id": "8ECDF8B997B964C27D521D8A22DC0F2C",
+                    "title": "new",
+                    "radiusInMeters": 1059589.1442243487,
+                    "latitude": 27.762433844516888,
+                    "longitude": 16.875
+                  },
+                  {
+                    "id": "18DD358713EA4E03B9885D31C78FF45E",
+                    "title": "ba",
+                    "radiusInMeters": 1252429.247687119,
+                    "latitude": 27.762433844516888,
+                    "longitude": 10.8984375
+                  },
+                  {
+                    "id": "AB59394BDE9E74AC85803C71F0C9FF48",
+                    "title": "bo",
+                    "radiusInMeters": 353933.30684870866,
+                    "latitude": 23.967315884173022,
+                    "longitude": 2.8125
+                  },
+                  {
+                    "id": "EBB20FC3581B8BD320C835A22BAFD639",
+                    "title": "Greece",
+                    "radiusInMeters": 245134.01829325198,
+                    "latitude": 39.493557099924146,
+                    "longitude": 23.189014976171393
+                  },
+                  {
+                    "id": "BBDA2482CE89B3D3FCADB72A5E0A7DF7",
+                    "title": "Ireland",
+                    "radiusInMeters": 130667.88112068828,
+                    "latitude": 53.180886401684894,
+                    "longitude": -7.855690355593197
+                  },
+                  {
+                    "id": "82AB6CD1F9120569CD2D2241C4D7A98A",
+                    "title": "Lisobon",
+                    "radiusInMeters": 14335.925145851099,
+                    "latitude": 38.76531016385249,
+                    "longitude": -9.152557859754438
+                  },
+                  {
+                    "id": "3D801183F012AB722DCB5ED8795F2540",
+                    "title": "Lisbon",
+                    "radiusInMeters": 17206.70309345495,
+                    "latitude": 38.773158803848,
+                    "longitude": -9.172658053484042
+                  },
+                  {
+                    "id": "E8655C73EF600A3E5EDE4CDE018E3D4D",
+                    "title": "zagreb",
+                    "radiusInMeters": 88531.81996364087,
+                    "latitude": 45.60351099990084,
+                    "longitude": 16.021949973564915
+                  },
+                  {
+                    "id": "E86908190287ED16EFB62D4EF93339AE",
+                    "title": "zagreb 3212323",
+                    "radiusInMeters": 1921.3509166593667,
+                    "latitude": 45.80343879817135,
+                    "longitude": 15.947165412304685
+                  },
+                  {
+                    "id": "41C19320E9F5D82DBD2AD2DE81C9D566",
+                    "title": "Barcelona 101",
+                    "radiusInMeters": 23338.805906664416,
+                    "latitude": 41.38873399147808,
+                    "longitude": 2.138602613130274
+                  },
+                  {
+                    "id": "60B5C61800F8019A8AE9DA312B20DE57",
+                    "title": "TestGeoArea",
+                    "radiusInMeters": 1587.918822372478,
+                    "latitude": 45.80869126677998,
+                    "longitude": 15.972061157226562
+                  },
+                  {
+                    "id": "D925897B88926DCA8BAEC67BAA08B286",
+                    "title": "Sacramento #229",
+                    "radiusInMeters": 20000,
+                    "latitude": 38.58454678946578,
+                    "longitude": -121.48832469140626
+                  },
+                  {
+                    "id": "961C1A8D3110B62E86152B11DD241FD6",
+                    "title": "Sacramento #22",
+                    "radiusInMeters": 57958.57285036882,
+                    "latitude": 38.544948798338865,
+                    "longitude": -121.43335112447886
+                  },
+                  {
+                    "id": "F541361FFDECE6C1DC3B3DFDAC3A313F",
+                    "title": "Untitled Area",
+                    "radiusInMeters": 100558.19210729604,
+                    "latitude": 38.0250340631586,
+                    "longitude": -120.90687908824049
+                  },
+                  {
+                    "id": "F421FA80219B8A95789CF6595F08391F",
+                    "title": "Sacramento #3",
+                    "radiusInMeters": 112777.99052569865,
+                    "latitude": 38.40827937499645,
+                    "longitude": -121.98545603906251
+                  },
+                  {
+                    "id": "3B43C8B055BFBE95EB56EE51CA5EFC90",
+                    "title": "My area",
+                    "radiusInMeters": 124686.55447092808,
+                    "latitude": 38.1841008462585,
+                    "longitude": -122.44688182031251
+                  },
+                  {
+                    "id": "D2F99A3D41B529934B534936156B1AAC",
+                    "title": "name",
+                    "radiusInMeters": 429474.7717079467,
+                    "latitude": 21.517349957897284,
+                    "longitude": -1.7622106072767423
+                  },
+                  {
+                    "id": "F24747220D480E82AD6B721A850C7E91",
+                    "title": "hdhdhd",
+                    "radiusInMeters": 429474.7717079467,
+                    "latitude": 21.517349957897284,
+                    "longitude": -1.7622106072767423
+                  },
+                  {
+                    "id": "F0157F58AF506DBE549305DCFB5B9EB5",
+                    "title": "dhhd",
+                    "radiusInMeters": 706459.507058764,
+                    "latitude": 22.919072029371804,
+                    "longitude": 0.9228515625
+                  },
+                  {
+                    "id": "45661C8528AFC92EF2B672037BF2868F",
+                    "title": "name6",
+                    "radiusInMeters": 249179.18786854777,
+                    "latitude": 17.711425288276615,
+                    "longitude": 9.113103615233516
+                  },
+                  {
+                    "id": "BC6EC416570C23962C15E42EEF23FCF0",
+                    "title": "jhjh",
+                    "radiusInMeters": 389492.59735148004,
+                    "latitude": 18.058630202618723,
+                    "longitude": -1.8173615689154026
+                  },
+                  {
+                    "id": "0BF620CC6420569785313BC9560C58AB",
+                    "title": "jhjhjk",
+                    "radiusInMeters": 274085.5078644253,
+                    "latitude": 18.564130110243163,
+                    "longitude": -2.96630859375
+                  },
+                  {
+                    "id": "734D9615BB266FF3C4FF46F74B2DAB8E",
+                    "title": "yr",
+                    "radiusInMeters": 689399.2195746598,
+                    "latitude": 20.633951801194257,
+                    "longitude": -2.5927734375
+                  },
+                  {
+                    "id": "C6C3E23455A7121AA75D5DD14860F0A7",
+                    "title": "1",
+                    "radiusInMeters": 513107.2182285649,
+                    "latitude": 25.88011686244945,
+                    "longitude": 6.50390625
+                  },
+                  {
+                    "id": "609A5F02859C87FAA54D78A6F1788881",
+                    "title": "testttt",
+                    "radiusInMeters": 8053865.110746192,
+                    "latitude": 31.0991713593193,
+                    "longitude": 1.58203125
+                  },
+                  {
+                    "id": "0E485719E3DF4AD533E6271A72E9E3C0",
+                    "title": "asdfg",
+                    "radiusInMeters": 808398.561996813,
+                    "latitude": 45.374637489624,
+                    "longitude": 21.26953125
+                  }
+                ],
+                "selectedAreas": [],
+                "recurring": {
+                  "single": true,
+                  "intervalUnit": "MINUTES"
+                },
+                "timeWindow": {
+                  "days": [
+                    "MON",
+                    "TUE",
+                    "WED",
+                    "THU",
+                    "FRI",
+                    "SAT",
+                    "SUN"
+                  ],
+                  "allDay": true
+                }
+              },
+              "areAdvancedOptionsEdited": true,
+              "sender": {
+                "value": "8F8527AA03BC9BACF1AA8F0926882655",
+                "label": "Mobile Messaging Demo"
+              },
+              "notificationType": "PUSH",
+              "primaryInAppButton": "Open",
+              "dismissInAppButton": "Cancel"
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 13,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 13,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -471,
+        "diagramY": 368,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_RCS",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "deliveryOptions": {
+                "validityPeriod": 2880
+              },
+              "sender": "new sql",
+              "message": {
+                "type": "TEXT",
+                "suggestions": [],
+                "text": "sdf sdf "
+              }
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 14,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      },
+      {
+        "id": 14,
+        "oldActionGroupId": null,
+        "type": "SEND_ACTION",
+        "diagramX": -462,
+        "diagramY": 478,
+        "action": {
+          "type": "SendMessageAction",
+          "serviceMessagingData": {
+            "requestType": "APPLICATION_TYPE_WHATSAPP",
+            "sendingRequestType": null,
+            "recipientsDataKeys": null,
+            "serviceData": {
+              "deliveryOptions": {
+                "validityPeriod": 2880
+              },
+              "sender": "385992691435",
+              "message": {
+                "type": "TEXT",
+                "text": "ds fasdfsda"
+              }
+            },
+            "messageFlow": "CUP;OMNI_CAMPAIGN_SERVICE",
+            "deliveryNotificationsData": null,
+            "shouldForwardToCcaas": null,
+            "urlShorteningParams": null,
+            "isPrioritySending": false
+          },
+          "nextElementId": 15,
+          "sendTimeOptimizationStrategyType": null,
+          "validityPeriodInMinutes": null,
+          "shouldWaitUntilBulkCompleted": false,
+          "timeWindow": null,
+          "deliveryRate": null
+        },
+        "rules": [],
+        "collect": null
+      }
+    ],
+    "flowSettings": {
+      "flowRecurrence": true,
+      "reenterDelaySeconds": 0,
+      "reenterLimitations": [],
+      "goal": null
+    }
+  }
+}

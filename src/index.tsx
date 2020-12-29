@@ -15,12 +15,8 @@ const container = document.createElement('div');
 container.className = 'container';
 document.body.appendChild(container);
 
-const qwe = document.createElement('div')
-qwe.innerHTML = '<span>sdf<br/> asfsf<br /> s'
-document.body.appendChild(qwe)
-
-loadGraph('/big_graph.json');
-// loadGraph('/15065834.json');
+// loadGraph('/big_graph.json');
+loadGraph('/all.json');
 // loadGraph('/small.json');
 
 // ReactDOM.render((

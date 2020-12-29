@@ -91,6 +91,8 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin(),
-    // htmlHotPlugin
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ]
 }

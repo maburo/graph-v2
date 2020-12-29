@@ -1,0 +1,26 @@
+@import 'client/src/styles/mixins';
+
+.condition-header {
+    position: relative;
+    display: flex;
+
+    &__remove-button {
+        margin-left: auto;
+        font-size: $font-size-small;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+}
+
+.condition-body {
+    background: $background-secondary;
+    margin-top: 4px;
+    padding: 16px;
+
+    &__form {
+        display: block;
+        background: $background-primary;
+        padding: 12px 16px;
+        @include box(0);
+    }
+}
