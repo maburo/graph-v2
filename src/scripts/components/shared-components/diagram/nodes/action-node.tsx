@@ -45,12 +45,14 @@ interface Props {
     // zoomLevel?: number;
     showMetricsTraffic?: boolean;
     showMetricsAllRecipientCount?: boolean;
+    renderContent: () => JSX.Element;
 }
 
 export class ActionNode extends React.Component<Props> {
     // shouldComponentUpdate(nextProps: Props) {
     //     return compareWithoutFunctions(this.props, nextProps);
     // }
+
 
     render() {
         const elementDefinition = getAllFlowElements().find(el => el.type === this.props.type);
@@ -92,7 +94,8 @@ export class ActionNode extends React.Component<Props> {
                     <div className="ib-flow-action-group-title text-ellipsis">{title}</div>
 
                     <div className={messageTextClasses}>
-                        {this.props.failover ? (
+                        { this.props.renderContent() }
+                        {/* {this.props.failover ? (
                             <div
                                 dangerouslySetInnerHTML={{
                                     __html: sanitizeHtml(actionText, {
@@ -109,7 +112,7 @@ export class ActionNode extends React.Component<Props> {
                                     MAX_NUMBER_OF_ELEMENTS_AFTER_WHICH_DISABLE_TRUNCATE
                                 }
                             />
-                        )}
+                        )} */}
                     </div>
                 </div>
                 {!this.props.readonly && (

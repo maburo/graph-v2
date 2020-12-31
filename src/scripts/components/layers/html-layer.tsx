@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
 
-import { Graph, Node } from '../vgraph';
-import { Mode, NodeFactoryContext } from '../graph';
+import { Graph, Node } from '../graph';
+import { Mode, NodeFactoryContext } from '../graph-editor';
 import { LayerProperties } from './layer-props';
 
 interface HtmlLayerProperties extends LayerProperties {

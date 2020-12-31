@@ -5,6 +5,8 @@ export interface Node<T> {
   id: number,
   x: number,
   y: number,
+  ox: number,
+  oy: number,
   bbox: AABB,
   payload: T
 }
@@ -83,11 +85,14 @@ export class Graph<T> {
   }
 
   addToSelection(node: Node<T>) {
+    node.ox = node.x;
+    node.oy = node.y;
     this.selectedNodes.add(node);
   }
 
   setSelection(node: Node<T>) {
-    this.selectedNodes = new Set([node]);
+    this.selectedNodes = new Set();
+    this.addToSelection(node);
   }
 
   get selected(): Set<Node<T>> {
@@ -100,8 +105,8 @@ export class Graph<T> {
 
   moveSelectedTo(pos: Vector2D) {
     this.selectedNodes.forEach(node => {
-      node.x = pos.x;
-      node.y = pos.y;
+      node.x = node.ox + pos.x;
+      node.y = node.oy + pos.y;
     });
     this.calcBbox();
   }

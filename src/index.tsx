@@ -4,8 +4,8 @@ import './styles/omni.scss';
 import * as ReactDOM from 'react-dom';
 import React from 'react';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
-import { GraphEditor } from './scripts/components/graph';
-import { Graph, Edge } from './scripts/components/vgraph';
+import { GraphEditor } from './scripts/components/graph-editor';
+import { Graph, Edge } from './scripts/components/graph';
 
 import { ExitNode, PauseNode, ActionNode } from './scripts/components/flow-nodes';
 import { AABB } from './scripts/math';
@@ -58,6 +58,8 @@ function loadGraph(file: string) {
           id: el.id,
           x: el.diagramX,
           y: el.diagramY,
+          ox: 0,
+          oy: 0,
           payload: el,
           bbox: new AABB(),
         });

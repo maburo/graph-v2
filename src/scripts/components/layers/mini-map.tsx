@@ -1,6 +1,6 @@
 import { FlowElementType } from '@infobip/moments-components';
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
-import { Graph, Node} from '../vgraph';
+import { Graph, Node} from '../graph';
 import { LayerProperties } from './layer-props';
 import { Vector2D } from '../../math/vector';
 

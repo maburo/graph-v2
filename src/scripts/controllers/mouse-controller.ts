@@ -1,4 +1,4 @@
-import { GraphEditor } from "../components/graph";
+import { GraphEditor } from "../components/graph-editor";
 
 export default class MouseController {
   readonly onMouseMove: (e: React.MouseEvent) => void;

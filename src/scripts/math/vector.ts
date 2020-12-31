@@ -9,6 +9,10 @@ export class Vector3D {
     this.z = z;
   }
 
+  get xy(): Vector2D {
+    return new Vector2D(this.x, this.y);
+  }
+
   setXY(x: number, y: number): Vector3D {
     return new Vector3D(this.x + x, this.y + y, this.z);
   }
@@ -57,5 +61,9 @@ export class Vector2D {
     return new Vector2D(
       this.x * m[0] + this.y * m[1] + m[2], 
       this.x * m[3] + this.y * m[4] + m[5]);
+  }
+
+  copy(): Vector2D {
+    return new Vector2D(this.x, this.y);
   }
 }

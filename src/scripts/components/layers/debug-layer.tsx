@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
-import { Mode } from '../graph';
+import { Mode } from '../graph-editor';
 import { LayerProperties } from './layer-props';
-import { Node } from '../vgraph';
+import { Node } from '../graph';
 import { AABB, Vector2D, Vector3D } from '../../math';
 
 interface DebugLayerProperties extends LayerProperties {

@@ -10,7 +10,7 @@ import {
   StartInboundNode,
   StartNode,
 } from './shared-components/diagram/nodes'
-import { Node } from "./vgraph"
+import { Node } from "./graph"
 
 export class NodeFactory {
 
@@ -65,6 +65,7 @@ export class NodeFactory {
             failover={node.payload.type === FlowElementType.FAILOVER_ACTION}
             onDelete={() => {}}
             onDuplicate={() => {}}
+            renderContent={() => null}
             // zoomLevel={this.props.store.diagramDimensions.zoomLevel}
             totalNumberOfElements={10}
             // validationResult={this.getValidationResult(element)}
