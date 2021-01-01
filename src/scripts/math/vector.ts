@@ -1,3 +1,5 @@
+import { AABB } from ".";
+
 export class Vector3D {
   x: number;
   y: number;
@@ -65,5 +67,9 @@ export class Vector2D {
 
   copy(): Vector2D {
     return new Vector2D(this.x, this.y);
+  }
+
+  toAABB() {
+    return new AABB(this.x, this.y, this.x, this.y);
   }
 }

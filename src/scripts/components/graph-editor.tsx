@@ -37,8 +37,8 @@ interface GraphState {
   readonly vpCenter: Vector2D,
   readonly transformMtx: number[],
   readonly invTransformMtx: number[],
-  readonly selectRegion: AABB,
   readonly intercationOrigin: Vector2D,
+  readonly intercationEnd: Vector2D,
   readonly mode: Mode,
 }
 
@@ -47,14 +47,6 @@ export enum Mode {
 }
 
 export const NodeFactoryContext = React.createContext<NodeFactory>(null);
-
-const m = Matrix3D.translation(2, 7)
-Matrix3D.mul(m, Matrix3D.translation(5, 7))
-Matrix3D.mul(m, Matrix3D.scale(3))
-Matrix3D.mul(m, Matrix3D.translation(-5, -7))
-console.log(m);
-
-
 
 /**
  * Editor
@@ -90,8 +82,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       width: 0,
       height: 0,
       vpCenter: new Vector2D(),
-      selectRegion: new AABB(0, 0, 0, 0), // TODO: min bbox size
       intercationOrigin: new Vector2D(),
+      intercationEnd: new Vector2D(),
       mode: Mode.Edit,
     }
   }
@@ -125,11 +117,18 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     window.requestAnimationFrame(this.animationStepFn);
   }
 
-  // private edges: EdgeData[] = [];
-
   render() {
     const { graph, nodeFactory } = this.props;
-    const { position, mode, width, height, projMousePos, transformMtx } = this.state; 
+    const { 
+      position, 
+      mode, 
+      width, 
+      height, 
+      projMousePos, 
+      transformMtx,
+      intercationOrigin,
+      intercationEnd,
+    } = this.state; 
     const transform = Matrix3D.cssMatrix(transformMtx);
     const nodes = graph.nodes;
   
@@ -152,7 +151,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       }
     }
  
-    // TODO: lod, drag
+    // TODO: lod
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
@@ -195,7 +194,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
               graph={graph}
               width={width}
               height={height}
-              region={this.state.selectRegion}
+              region={AABB.from(this.state.intercationOrigin, this.state.intercationEnd)}
             />
           }
 
@@ -256,10 +255,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     const update = new Date();
     const { graph } = this.props;
     // const projMousePos = new Vector2D(clientX, clientY).mulMtx3D(this.state.invTransformMtx);
-    // const projMousePos = new Vector2D(clientX, clientY)
-    // .sub(this.state.vpCenter)
-    // .div(this.state.position.z)
-    // .add(this.state.position.xy)
+
     const projMousePos = screenToWorld(
       new Vector2D(clientX, clientY), 
       this.state.position, 
@@ -275,11 +271,9 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     
     switch (mode) {
       case Mode.Select:
-        const { x: ox, y: oy } = intercationOrigin;
-        const bbox = new AABB(ox, oy, ox, oy);
-        bbox.addPoint(projMousePos.x, projMousePos.y);
-        this.setState({selectRegion: bbox});
+        this.setState({intercationEnd: new Vector2D(clientX, clientY)});
         break;
+
       case Mode.Move:
         const shift = new Vector2D(
           (currMousePos.x - clientX) / prevPos.z, 
@@ -291,11 +285,13 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
           ...calcTransformMtx(prevPos, vpCenter)
         });
         break;
+
       case Mode.Drag:
         const projIntOrigin = intercationOrigin.mulMtx3D(this.state.invTransformMtx);     
         graph.moveSelectedTo(projMousePos.copy().sub(projIntOrigin));
         this.setState({update});
         break;
+
       case Mode.Edit:
         this.setState({
           mousePos: new Vector2D(clientX, clientY),
@@ -308,9 +304,9 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   onStartInteraction(clientX: number, clientY: number) {
     switch (this.state.mode) {
       case Mode.StartSelection:
-        this.setState({ 
-          selectRegion: new AABB(clientX, clientY, clientX, clientY),
+        this.setState({
           intercationOrigin: new Vector2D(clientX, clientY),
+          intercationEnd: new Vector2D(clientX, clientY),
           mode: Mode.Select,
         });
         break;
@@ -324,8 +320,20 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
   
   onEndInteraction(clientX: number, clientY: number) {
+    const {
+      position,
+      vpCenter,
+      intercationOrigin,
+      intercationEnd,
+    } = this.state;
+
     switch (this.state.mode) {
       case Mode.Select:
+        this.props.graph.select(
+          AABB.from(
+            screenToWorld(intercationOrigin, position, vpCenter), 
+            screenToWorld(intercationEnd, position, vpCenter))
+        );
         this.setState({mode: Mode.Edit});
         break;
       case Mode.Move:
@@ -420,6 +428,8 @@ function zoomToCenter(
   return {position, ...calcTransformMtx(position, vpCenter)};
 }
 
+// https://stackoverflow.com/questions/21561724/opengl-google-maps-style-2d-camera-zoom-to-mouse-cursor
+// https://godotengine.org/qa/25983/camera2d-zoom-position-towards-the-mouse
 function zoomToCursor(
   delta: number,
   mousePos: Vector2D,
@@ -435,50 +445,73 @@ function zoomToCursor(
   // const ny = clamp(py + (projMousePos.y - py) * (nz - pz), bbox.minY, bbox.maxY);
 
   const worldMouseCoords = screenToWorld(mousePos, position, vpCenter);
+  // const worldMouseCoords = screenToWorld(
+  //   vpCenter.copy().add(new Vector2D(100, 100)), 
+  //   position, 
+  //   vpCenter)
   const { x: ox, y: oy } = worldMouseCoords;
 
-  const nx = px + (ox - px) / (nz-pz);
-  const ny = py + (oy - py) / (nz-pz);
-  console.log(`zDelta ${nz-pz}, px: ${px} ox: ${ox} diff ${ox - px}; nx: ${nx}`);
+  const zoomDelta = nz - pz;
+  const nx = px + (ox - px) * zoomDelta;
+  const ny = py + (oy - py) * zoomDelta;
 
-  const transformMtx = Matrix3D.translation(-nx + vpCenter.x, -ny + vpCenter.y);
-  Matrix3D.mul(transformMtx, Matrix3D.translation(ox, oy));
-  Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
-  Matrix3D.mul(transformMtx, Matrix3D.translation(-ox, -oy));
+  // const nx = px;
+  // const ny = py;
 
-  const md = new Vector2D(mousePos.x - vpCenter.x, mousePos.y - vpCenter.y);
-  worldMouseCoords.mulMtx3D(Matrix3D.invert(Matrix3D.copy(transformMtx)));
+  // const nx = px + (ox - px) * -0.005;
+  // const ny = py + (oy - py) * -0.005;
 
-  // const transformMtx = [
-  //   nz, 0, (nz * -px) + vpCenter.x,
-  //   0, nz, (nz * -py) + vpCenter.y,
-  //   0, 0, 1
-  // ]
+  // console.log(`zDelta ${zoomDelta.toFixed(2)}, diff ${ox - px}; ${(ox -px) * zoomDelta}`);
+
+  // const transformMtx = Matrix3D.translation(-nx + vpCenter.x, -ny + vpCenter.y);
+  // Matrix3D.mul(transformMtx, Matrix3D.translation(ox, oy));
+  // Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
+  // Matrix3D.mul(transformMtx, Matrix3D.translation(-ox, -oy));
+
+  // // const md = new Vector2D(mousePos.x - vpCenter.x, mousePos.y - vpCenter.y);
+  // // worldMouseCoords.mulMtx3D(Matrix3D.invert(Matrix3D.copy(transformMtx)));
+
+  // // const transformMtx = [
+  // //   nz, 0, (nz * -px) + vpCenter.x,
+  // //   0, nz, (nz * -py) + vpCenter.y,
+  // //   0, 0, 1
+  // // ]
   
 
-  // const zz = 1 - nz;
-  // const transformMtx = [
-  //   nz, 0, projMousePos.x * zz + nx,
-  //   0, nz, projMousePos.y * zz + ny,
-  //   0, 0, 1
-  // ]
+  // // const zz = 1 - nz;
+  // // const transformMtx = [
+  // //   nz, 0, projMousePos.x * zz + nx,
+  // //   0, nz, projMousePos.y * zz + ny,
+  // //   0, 0, 1
+  // // ]
 
 
-  // const ox = -px + vpCenter.x;
-  // const oy = -py + vpCenter.y;
+  // // const ox = -px + vpCenter.x;
+  // // const oy = -py + vpCenter.y;
   
-  // const transformMtx = [
-  //   nz, 0, (nz * -nx) + worldMouseCoords.x + nx,
-  //   0, nz, (nz * -ny) + worldMouseCoords.y + ny,
-  //   0, 0, 1
-  // ]
+  // // const transformMtx = [
+  // //   nz, 0, (nz * -nx) + worldMouseCoords.x + nx,
+  // //   0, nz, (nz * -ny) + worldMouseCoords.y + ny,
+  // //   0, 0, 1
+  // // ]
+
+  const transformMtx = [
+    nz, 0, (nz * -nx) + vpCenter.x,
+    0, nz, (nz * -ny) + vpCenter.y,
+    0, 0, 1
+  ]
 
   const invTransformMtx = Matrix3D.copy(transformMtx);
   Matrix3D.invert(invTransformMtx);
 
   const newPos = new Vector3D(nx, ny, nz);
 
-  return {position: newPos, transformMtx, invTransformMtx};
+  return {
+    position: newPos, 
+    transformMtx, invTransformMtx,
+    // mousePos: mousePos,
+    // projMousePos: worldMouseCoords,
+  };
 }
 
 function screenToWorld(screen: Vector2D, position: Vector3D, vpCenter: Vector2D): Vector2D {

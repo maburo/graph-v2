@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, EventHandler, useContext } from 're
 import { render } from 'react-dom';
 import { Vector2D } from '../../math';
 import { Node } from '../graph';
-import { Mode } from '../graph-editor';
 import { LayerProperties } from './layer-props';
 
 // const EdgeComponent = React.memo(edgeComponent);

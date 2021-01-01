@@ -1,3 +1,5 @@
+import { Vector2D } from "./vector";
+
 /**
  * Axis aligned bounding box
  */
@@ -51,6 +53,12 @@ export default class AABB {
     if (this.minY > y) {
       this.minY = y;
     }
+
+    return this;
+  }
+
+  addPoint2D(vec: Vector2D) {
+    return this.addPoint(vec.x, vec.y);
   }
 
   get width() {
@@ -59,6 +67,15 @@ export default class AABB {
 
   get height() {
     return Math.abs(this.maxY - this.minY);
+  }
+
+  static from(a: Vector2D, b: Vector2D) {
+    return new AABB(
+      Math.min(a.x, b.x),
+      Math.min(a.y, b.y),
+      Math.max(a.x, b.x),
+      Math.max(a.y, b.y)
+    )
   }
 
   // get center():Vector2D {

@@ -26,6 +26,8 @@ export function DebugLayer(props: DebugLayerProperties) {
         {renderBoundingBox(graph.bbox)}
       </div>
 
+      {renderGrid(transform)}
+
       <div className="debug-info-overlay">
         {renderLabel(Mode[mode])}
         {renderLabel(`mx: ${mouseCoords.x.toFixed(2)} my: ${mouseCoords.y.toFixed(2)}`)}
@@ -33,6 +35,27 @@ export function DebugLayer(props: DebugLayerProperties) {
 
       {renderCrosshair(props.width, props.height, `(${~~position.x}, ${~~position.y}, ${position.z.toFixed(2)})`)}
     </div>
+  )
+}
+
+function renderGrid(transform: string) {
+  const size = 5000;
+  const step = 100;
+  const lines = [];
+  for (let i = -size; i < size; i += step) {
+    lines.push((<line stroke="#0004" x1={-size} x2={size} y1={i} y2={i} />))
+  }
+
+  for (let i = -size; i < size; i += step) {
+    lines.push((<line stroke="#0004" x1={i} x2={i} y1={-size} y2={size} />))
+  }
+
+  return (
+    <svg width="100%" height="100%">
+      <g transform={transform}>
+        {lines}
+      </g>
+    </svg>
   )
 }
 
@@ -50,7 +73,11 @@ function renderCrosshair(vpWidth: number, vpHeight: number, label: string) {
   const centerY = vpHeight / 2;
 
   return (
-    <svg width={vpWidth} height={vpHeight}>
+    <svg 
+      width={vpWidth} 
+      height={vpHeight} 
+      style={{position: 'absolute', top: 0, left: 0}}
+      >
       <text fontSize="12" x={centerX + 4} y={centerY - 6}>{label}</text>
       <line
         stroke="#000"

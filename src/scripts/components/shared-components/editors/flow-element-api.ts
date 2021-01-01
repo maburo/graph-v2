@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+// import * as _ from 'lodash';
 import {
     FlowCommonConfig,
     FlowData,
@@ -51,7 +51,7 @@ export function getFlowElementApi(
     campaign: FlowData,
     requestType?: RequestType,
 ): FlowElementApi | null {
-    const resolvedRequestType = requestType || _.get(element, 'action.serviceMessagingData.requestType');
+    const resolvedRequestType = requestType || element.action?.serviceMessagingData?.requestType;
 
     switch (element.type) {
         // case FlowElementType.ADD_TO_BLACKLIST:

@@ -103,11 +103,32 @@ export class Graph<T> {
     return this.selectedNodes.has(node);
   }
 
-  moveSelectedTo(pos: Vector2D) {
+  moveSelectedTo(pos: Vector2D, moveChildren?: boolean) {
     this.selectedNodes.forEach(node => {
       node.x = node.ox + pos.x;
       node.y = node.oy + pos.y;
     });
+
+    if (moveChildren) {
+      this.findAllChildren(this.findAllChildren(this.selectedNodes))
+    }
+
     this.calcBbox();
+  } 
+
+  private findAllChildren(nodes: Node<T>[] | Set<Node<T>>): Node<T>[] {
+    const children: Node<T>[] = [];
+    const visited = new Set(nodes);
+
+    nodes.forEach((node: Node<T>) => {
+      const adjacent = this.getAdjacentNodes(node.id);
+      children.push(...adjacent, ...this.findAllChildren(adjacent.filter(visited.has)))
+    });
+
+    return children;
   }
 }
+
+
+
+

@@ -76,7 +76,7 @@ export class FlowElementEditor extends React.Component<PanelProps, PanelState> {
                         'failover-action': flowElementType === FlowElementType.FAILOVER_ACTION,
                     })}
                 >
-                    <div className="omni-editor-content" id="omni-editor-content">
+                    {/* <div className="omni-editor-content" id="omni-editor-content">
                         {!this.state.hasError ? (
                             flowElementApi.getEditorComponent(this.props)
                         ) : (
@@ -90,7 +90,7 @@ export class FlowElementEditor extends React.Component<PanelProps, PanelState> {
                                 </InformationMessage.Text>
                             </InformationMessage>
                         )}
-                    </div>
+                    </div> */}
                 </div>
 
                 {flowElementType !== FlowElementType.FAILOVER_ACTION && (
