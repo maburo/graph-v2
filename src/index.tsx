@@ -7,7 +7,6 @@ import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { GraphEditor } from './scripts/components/graph-editor';
 import { Graph, Edge } from './scripts/components/graph';
 
-import { ExitNode, PauseNode, ActionNode } from './scripts/components/flow-nodes';
 import { AABB, Vector2D } from './scripts/math';
 import { NodeFactory } from './scripts/components/node-factory';
 
@@ -61,7 +60,7 @@ function loadGraph(file: string) {
           ox: 0,
           oy: 0,
           payload: el,
-          bbox: calcNodeSize(el),
+          size: calcNodeSize(el),
         });
         
         if (el.action?.nextElementId) edges.push({from: el.id, to: el.action.nextElementId});
@@ -77,7 +76,7 @@ function loadGraph(file: string) {
       ReactDOM.render(
         <GraphEditor 
           nodeFactory={new NodeFactory()}
-          debug={true}
+          // debug={true}
           graph={graph} 
           zoom={{
             min: 0.05,
@@ -93,7 +92,7 @@ function loadGraph(file: string) {
 }
 
 
-function calcNodeSize(node: FlowElement): AABB {
+function calcNodeSize(node: FlowElement): Vector2D {
   switch (node.type) {
     case FlowElementType.SEND_ACTION:
     case FlowElementType.ADD_TAG:
@@ -118,7 +117,7 @@ function calcNodeSize(node: FlowElement): AABB {
     case FlowElementType.START_CALL_IVR_ACTION:
     case FlowElementType.PERFORM_EXPERIMENT_ACTION:
     case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
-      return new AABB(node.diagramX, node.diagramY, node.diagramX + 330, node.diagramY + 102);
+      return new Vector2D(330, 102);
     case FlowElementType.START_RESOLVE_ONETIME_AUDIENCE:
     case FlowElementType.START_FLOW_WEBHOOK:
     case FlowElementType.START_IVR_INBOUND:
@@ -126,12 +125,12 @@ function calcNodeSize(node: FlowElement): AABB {
     case FlowElementType.START_EVALUATE_PEOPLE_EVENT:
     case FlowElementType.START_EVALUATE_BEHAVIOUR_EVENT:
     case FlowElementType.START_EVALUATE_DATE_TIME_ATTRIBUTE:
-      return new AABB(node.diagramX, node.diagramY, node.diagramX + 300, node.diagramY + 60);
+      return new Vector2D(300, 60);
     case FlowElementType.PAUSE:
-      return new AABB(node.diagramX, node.diagramY, node.diagramX + 127, node.diagramY + 52);
+      return new Vector2D(127, 52);
     case FlowElementType.EXIT:
-      return new AABB(node.diagramX, node.diagramY, node.diagramX + 132, node.diagramY + 42);
+      return new Vector2D(132, 42);
     default:
-      return new AABB(node.diagramX, node.diagramY, node.diagramX + 10, node.diagramY + 10);
+      return new Vector2D(10, 10);
     }
 }

@@ -48,6 +48,8 @@ interface Props {
     renderContent: () => JSX.Element;
 }
 
+import icon from '../../../../../../assets/img/icon-sms-color.svg';
+
 export class ActionNode extends React.Component<Props> {
     // shouldComponentUpdate(nextProps: Props) {
     //     return compareWithoutFunctions(this.props, nextProps);
@@ -87,7 +89,7 @@ export class ActionNode extends React.Component<Props> {
             >
                 <div className="ib-flow-action-group-left-border" />
                 <div className="ib-flow-action-group-icon">
-                    <img src={elementPreview ? elementPreview.icon : ''} alt="" />
+                    <img src={icon} alt="" />
                 </div>
 
                 <div className="ib-flow-action-group-text-container">

@@ -150,21 +150,24 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         });
       }
     }
- 
-    // TODO: lod
+    
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
-          className="container" 
+          className="container omni-canvas-bg" 
+          style={{
+            backgroundPositionX: -position.x,
+            backgroundPositionY: -position.y,
+            // backgroundSize: `${16*position.z}px ${16*position.z}px`,
+          }}
           ref={this.ref}
-          // onKeyDown=
           onMouseMove={this.mouseController.onMouseMove}
           onMouseDown={this.mouseController.onMouseDown}
           onMouseUp={this.mouseController.onMouseUp}
           onTouchStart={this.touchController.onTouchStart}
           onTouchEnd={this.touchController.onTouchEnd}
           onTouchMove={this.touchController.onTouchMove}
-        >
+          >
           {/* <GlLayer /> */}
        
           <SvgLayer 
@@ -194,7 +197,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
               graph={graph}
               width={width}
               height={height}
-              region={AABB.from(this.state.intercationOrigin, this.state.intercationEnd)}
+              region={AABB.from(intercationOrigin, intercationEnd)}
             />
           }
 
@@ -348,15 +351,15 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   //---------------------- Mouse
   onZoom(delta: number, ox: number, oy: number) {
     const { position, vpCenter } = this.state;
-    // this.setState(zoomToCenter(delta, position, vpCenter, this.props.zoom));
-    this.setState(prev => zoomToCursor(
-      delta, 
-      new Vector2D(ox, oy), 
-      position, 
-      vpCenter, 
-      this.props.zoom, 
-      this.props.graph.bbox
-    ));
+    this.setState(zoomToCenter(delta, position, vpCenter, this.props.zoom));
+    // this.setState(prev => zoomToCursor(
+    //   delta, 
+    //   new Vector2D(ox, oy), 
+    //   position, 
+    //   vpCenter, 
+    //   this.props.zoom, 
+    //   this.props.graph.bbox
+    // ));
   }
 }
 
@@ -382,27 +385,12 @@ function calcTransformMtx(pos: Vector3D, vpCenter: Vector2D) {
   // Matrix3D.mul(transformMtx, Matrix3D.scale(z));
   // Matrix3D.mul(transformMtx, Matrix3D.translation(-x, -y));
 
-  // const cx = -x + vpCenter.x;
-  // const cy = -y + vpCenter.y;
   const transformMtx = [
     z, 0, (z * -x) + vpCenter.x,
     0, z, (z * -y) + vpCenter.y,
     0, 0, 1
   ]
 
-  // const transformMtx = [
-  //   z, 0, (z * -x) + cx + x,
-  //   0, z, (z * -y) + cy + y,
-  //   0, 0, 1
-  // ]
-  // const zz = 1 - z;
-  // const transformMtx = [
-  //   z, 0, x * zz + cx,
-  //   0, z, y * zz + cy,
-  //   0, 0, 1
-  // ]
-  // const cssmtx = `matrix(${z},0,0,${z},${(z * -x) + cx + x},${(z * -y) + cy + y})`
-  
   const invTransformMtx = Matrix3D.copy(transformMtx);
   Matrix3D.invert(invTransformMtx);
 
@@ -441,70 +429,30 @@ function zoomToCursor(
   const { x: px, y: py, z: pz } = position;
 
   const nz = clamp(pz - delta * zoom.sense * pz, zoom.min, zoom.max);
-  // const nx = clamp(px + (projMousePos.x - px) * (nz - pz), bbox.minX, bbox.maxX);
-  // const ny = clamp(py + (projMousePos.y - py) * (nz - pz), bbox.minY, bbox.maxY);
+  const mouseWorldPos = screenToWorld(mousePos, position, vpCenter);
+  const { x: ox, y: oy } = mouseWorldPos;
 
-  const worldMouseCoords = screenToWorld(mousePos, position, vpCenter);
-  // const worldMouseCoords = screenToWorld(
-  //   vpCenter.copy().add(new Vector2D(100, 100)), 
-  //   position, 
-  //   vpCenter)
-  const { x: ox, y: oy } = worldMouseCoords;
-
-  const zoomDelta = nz - pz;
-  const nx = px + (ox - px) * zoomDelta;
-  const ny = py + (oy - py) * zoomDelta;
-
-  // const nx = px;
-  // const ny = py;
-
-  // const nx = px + (ox - px) * -0.005;
-  // const ny = py + (oy - py) * -0.005;
-
-  // console.log(`zDelta ${zoomDelta.toFixed(2)}, diff ${ox - px}; ${(ox -px) * zoomDelta}`);
-
-  // const transformMtx = Matrix3D.translation(-nx + vpCenter.x, -ny + vpCenter.y);
-  // Matrix3D.mul(transformMtx, Matrix3D.translation(ox, oy));
-  // Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
-  // Matrix3D.mul(transformMtx, Matrix3D.translation(-ox, -oy));
-
-  // // const md = new Vector2D(mousePos.x - vpCenter.x, mousePos.y - vpCenter.y);
-  // // worldMouseCoords.mulMtx3D(Matrix3D.invert(Matrix3D.copy(transformMtx)));
-
-  // // const transformMtx = [
-  // //   nz, 0, (nz * -px) + vpCenter.x,
-  // //   0, nz, (nz * -py) + vpCenter.y,
-  // //   0, 0, 1
-  // // ]
-  
-
-  // // const zz = 1 - nz;
-  // // const transformMtx = [
-  // //   nz, 0, projMousePos.x * zz + nx,
-  // //   0, nz, projMousePos.y * zz + ny,
-  // //   0, 0, 1
-  // // ]
-
-
-  // // const ox = -px + vpCenter.x;
-  // // const oy = -py + vpCenter.y;
-  
-  // // const transformMtx = [
-  // //   nz, 0, (nz * -nx) + worldMouseCoords.x + nx,
-  // //   0, nz, (nz * -ny) + worldMouseCoords.y + ny,
-  // //   0, 0, 1
-  // // ]
-
-  const transformMtx = [
-    nz, 0, (nz * -nx) + vpCenter.x,
-    0, nz, (nz * -ny) + vpCenter.y,
-    0, 0, 1
-  ]
+  const transformMtx = Matrix3D.translation(-px + vpCenter.x, -py + vpCenter.y);
+  // const transformMtx = Matrix3D.identity()
+  Matrix3D.mul(transformMtx, Matrix3D.translation(ox, oy));
+  Matrix3D.mul(transformMtx, Matrix3D.scale(nz));
+  Matrix3D.mul(transformMtx, Matrix3D.translation(-ox, -oy));
+ 
+  // const transformMtx = [
+  //   nz, 0, (nz * -nx) + vpCenter.x,
+  //   0, nz, (nz * -ny) + vpCenter.y,
+  //   0, 0, 1
+  // ]
 
   const invTransformMtx = Matrix3D.copy(transformMtx);
   Matrix3D.invert(invTransformMtx);
 
-  const newPos = new Vector3D(nx, ny, nz);
+  const newMousePos = mouseWorldPos.mulMtx3D(transformMtx);
+  
+  const shift = newMousePos.sub(mouseWorldPos);
+  console.log(mouseWorldPos, newMousePos, shift);
+
+  const newPos = new Vector3D(pz + shift.x, py + shift.y, nz);
 
   return {
     position: newPos, 

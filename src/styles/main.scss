@@ -109,3 +109,24 @@ body {
     background-color: rgba(91, 157, 233, 0.514);
   }
 }
+
+.omni-flow-new-path-overlay {
+  stroke-width: 5px;
+  stroke: rgba(41, 184, 153, 0.2);
+}
+
+.omni-flow-path-path-overlay {
+  // opacity: 0.3;
+  stroke: rgba(41, 184, 153, 0);
+}
+
+.omni-flow-path-path-overlay:hover,
+.omni-flow-path-path-overlay.dragging {
+  // opacity: 1;
+  stroke: rgba(41, 184, 153, 0.2);
+  filter: drop-shadow(#0084ff);
+}
+
+.omni-flow-path-path.dragging {
+  stroke: #545454;
+}

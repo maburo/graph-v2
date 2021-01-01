@@ -1,6 +1,10 @@
 @import './variables';
 @import './mixins/analyze-mode';
 
+.omni-canvas-bg {
+    background: #ededed url("../../assets/img/canvas/canvas-bg-dots.png") repeat left top;
+}
+
 .flow-start-element {
   .flow-start-element-header {
       width: 300px;

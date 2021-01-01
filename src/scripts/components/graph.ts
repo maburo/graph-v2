@@ -7,7 +7,7 @@ export interface Node<T> {
   y: number,
   ox: number,
   oy: number,
-  bbox: AABB,
+  size: Vector2D,
   payload: T
 }
 
@@ -24,7 +24,7 @@ export class Graph<T> {
   private selectedNodes: Set<Node<T>> = new Set();
 
   addNode(node: Node<T>) {
-    this.bbox.addPoint(node.x, node.y);
+    this.addNodeToBbox(node);
     this.elementsMap.set(node.id, node);
     this.elementsList.push(node);
   }
@@ -47,13 +47,6 @@ export class Graph<T> {
     this.elementsMap.delete(id);
     this.elementsList = this.elementsList.filter(node => node.id === id);
     this.calcBbox();
-  }
-
-  private calcBbox() {
-    this.bbox.reset();
-    for (const node of this.nodes) {
-      this.bbox.addPoint(node.x, node.y);
-    }
   }
 
   get empty(): boolean {
@@ -79,7 +72,7 @@ export class Graph<T> {
   }
 
   select(region: AABB): Set<Node<T>> {
-    const selected = this.nodes.filter(node => region.containsBbox(node.bbox));
+    const selected = this.nodes.filter(node => region.containsBbox(new AABB(node.x, node.y, node.x + node.size.x, node.y + node.size.y)));
     this.selectedNodes = new Set(selected);
     return this.selectedNodes;
   }
@@ -109,12 +102,25 @@ export class Graph<T> {
       node.y = node.oy + pos.y;
     });
 
-    if (moveChildren) {
-      this.findAllChildren(this.findAllChildren(this.selectedNodes))
-    }
+    // if (moveChildren) {
+    //   this.findAllChildren(this.selectedNodes).forEach(node => {
+    //     node.x = node.ox + pos.x;
+    //     node.y = node.oy + pos.y;
+    //   });
+    // }
 
     this.calcBbox();
-  } 
+  }
+
+  private calcBbox() {
+    this.bbox.reset();
+    this.nodes.forEach(this.addNodeToBbox.bind(this));
+  }
+
+  private addNodeToBbox(node: Node<T>) {
+    this.bbox.addPoint(node.x, node.y);
+    this.bbox.addPoint(node.x + node.size.x, node.y + node.size.y);
+  }
 
   private findAllChildren(nodes: Node<T>[] | Set<Node<T>>): Node<T>[] {
     const children: Node<T>[] = [];

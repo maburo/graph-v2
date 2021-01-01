@@ -53,7 +53,7 @@ export default class AABB {
     if (this.minY > y) {
       this.minY = y;
     }
-
+    
     return this;
   }
 

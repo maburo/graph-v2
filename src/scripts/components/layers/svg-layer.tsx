@@ -108,14 +108,27 @@ class EdgeComponent extends React.PureComponent<EdgeProperties> {
     + COLOR_VALUES[Math.floor(Math.random() * 16)];
 
   return (
-    <path 
-      d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX-20},${endY}`} 
-      stroke={color} 
-      fill="none"
-      stroke-width="2px" 
-      markerStart="url(#circle)"
-      markerEnd="url(#arrow)"
-    />
+    <g>
+      <path 
+        className="omni-flow-path-path-overlay"
+        d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX-20},${endY}`} 
+        stroke={color} 
+        fill="none"
+        stroke-width="10px" 
+        />
+
+      <path 
+        style={{
+          pointerEvents: 'none'
+        }}
+        d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX-20},${endY}`} 
+        stroke={color} 
+        fill="none"
+        stroke-width="2px" 
+        markerStart="url(#circle)"
+        markerEnd="url(#arrow)"
+        />
+    </g>
   );
 }
 }

@@ -23,8 +23,6 @@ import { RULES_NODE_RULE_DIFF, RULES_NODE_RULE_PADDING } from '../utils/diagram-
 import { TruncateWithEllipsis } from '../../truncate-with-ellipsis';
 import { triggerOptions } from '../../start/start-creator/start-creator';
 
-console.log('>>>>',startIcon);
-
 import { Metrics } from './metrics/metrics';
 
 // const __: Localization = _.partial(I18n.__, 'Diagram.StartNode');

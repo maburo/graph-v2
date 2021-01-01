@@ -30,7 +30,7 @@ export class HtmlLayer extends React.PureComponent<HtmlLayerProperties> {
   return (
     <div
       className="render layer"
-      style={{ transform, transformOrigin: "0px 0px" }}
+      style={{ transform, transformOrigin: "0px 0px", width: 0, height: 0 }}
     >
       {
         nodes.map(node => (

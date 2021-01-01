@@ -25,6 +25,8 @@ interface Props {
     onDuplicate?: (id: number) => void;
 }
 
+import icon from '../../../../../../assets/img/canvas/icon-pause-action-color.svg';
+
 export class PauseNode extends React.Component<Props> {
     shouldComponentUpdate(nextProps: Props) {
         return compareWithoutFunctions(this.props, nextProps);
@@ -40,7 +42,7 @@ export class PauseNode extends React.Component<Props> {
         return (
             <div className={classes} data-flow-element-type={this.props.type} data-flow-element-id={this.props.id}>
                 <div className="icon">
-                    <img src={elementPreview?.icon ?? ''} />
+                    <img src={icon} />
                 </div>
                 {/* todo: use element preview */}
                 <div className="title">{elementPreview?.title ?? ''}</div>
