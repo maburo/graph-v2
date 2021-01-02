@@ -7,7 +7,7 @@ import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { GraphEditor } from './scripts/components/graph-editor';
 import { Graph, Edge } from './scripts/components/graph';
 
-import { AABB, Vector2D } from './scripts/math';
+import { AABB, Vector2D, zoomToCursor } from './scripts/math';
 import { NodeFactory } from './scripts/components/node-factory';
 
 const container = document.createElement('div');
@@ -76,6 +76,7 @@ function loadGraph(file: string) {
       ReactDOM.render(
         <GraphEditor 
           nodeFactory={new NodeFactory()}
+          zoomFunc={zoomToCursor}
           // debug={true}
           graph={graph} 
           zoom={{

@@ -1,13 +1,13 @@
-import { HtmlLayer } from './html-layer';
+import { NodesLayer } from './nodes-layer';
 import { SelectLayer } from './select-layer';
-import { SvgLayer, EdgeData } from './svg-layer';
+import { EdgesLayer, EdgeData } from './edges-layer';
 import { DebugLayer } from './debug-layer';
 import { MiniMapLayer } from './mini-map';
 
 export {
-  HtmlLayer,
+  NodesLayer,
   SelectLayer,
-  SvgLayer,
+  EdgesLayer,
   EdgeData,
   DebugLayer,
   MiniMapLayer,

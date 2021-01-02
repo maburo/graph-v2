@@ -1,5 +1,3 @@
-import { AABB } from ".";
-
 export class Vector3D {
   x: number;
   y: number;
@@ -9,14 +7,6 @@ export class Vector3D {
     this.x = x;
     this.y = y;
     this.z = z;
-  }
-
-  get xy(): Vector2D {
-    return new Vector2D(this.x, this.y);
-  }
-
-  setXY(x: number, y: number): Vector3D {
-    return new Vector3D(this.x + x, this.y + y, this.z);
   }
 }
 
@@ -32,12 +22,6 @@ export class Vector2D {
   add(vec: Vector2D): Vector2D {
     this.x += vec.x;
     this.y += vec.y;
-    return this;
-  }
-
-  add2d(x: number, y: number): Vector2D {
-    this.x += x;
-    this.y += y;
     return this;
   }
 
@@ -67,9 +51,5 @@ export class Vector2D {
 
   copy(): Vector2D {
     return new Vector2D(this.x, this.y);
-  }
-
-  toAABB() {
-    return new AABB(this.x, this.y, this.x, this.y);
   }
 }

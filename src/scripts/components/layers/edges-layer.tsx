@@ -7,14 +7,14 @@ import { LayerProperties } from './layer-props';
 
 // const EdgeComponent = React.memo(edgeComponent);
 
-interface SvgLayerProps extends LayerProperties {
+interface EdgesLayerProps extends LayerProperties {
   update: Date,
   edges: EdgeData[],
   transform: string,
 }
 
 // function svgLayer(props: SvgLayerProps) {
-export class SvgLayer extends React.PureComponent<SvgLayerProps> {
+export class EdgesLayer extends React.PureComponent<EdgesLayerProps> {
   // shouldComponentUpdate(next: SvgLayerProps) {
   //   const a = this.props as any;
   //   const b = next as any;

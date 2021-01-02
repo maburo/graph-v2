@@ -78,8 +78,6 @@ export class Graph<T> {
   }
 
   addToSelection(node: Node<T>) {
-    node.ox = node.x;
-    node.oy = node.y;
     this.selectedNodes.add(node);
   }
 
@@ -102,12 +100,12 @@ export class Graph<T> {
       node.y = node.oy + pos.y;
     });
 
-    // if (moveChildren) {
-    //   this.findAllChildren(this.selectedNodes).forEach(node => {
-    //     node.x = node.ox + pos.x;
-    //     node.y = node.oy + pos.y;
-    //   });
-    // }
+    if (moveChildren) {
+      this.findAllChildren(this.selectedNodes).forEach(node => {
+        node.x = node.ox + pos.x;
+        node.y = node.oy + pos.y;
+      });
+    }
 
     this.calcBbox();
   }
@@ -134,7 +132,3 @@ export class Graph<T> {
     return children;
   }
 }
-
-
-
-

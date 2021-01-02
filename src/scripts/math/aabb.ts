@@ -77,9 +77,4 @@ export default class AABB {
       Math.max(a.y, b.y)
     )
   }
-
-  // get center():Vector2D {
-  //   return new Vector2D(this.minX + this.width / 2,
-  //                      this.minY + this.height / 2);
-  // }
 }

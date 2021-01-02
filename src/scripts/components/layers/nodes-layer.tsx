@@ -11,7 +11,7 @@ interface HtmlLayerProperties extends LayerProperties {
   transform: string,
 }
 
-export class HtmlLayer extends React.PureComponent<HtmlLayerProperties> {
+export class NodesLayer extends React.PureComponent<HtmlLayerProperties> {
 // function htmlLayer(props: HtmlLayerProperties) { // node-factory arg?
 
   // shouldComponentUpdate(next: HtmlLayerProperties) {

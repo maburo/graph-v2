@@ -1,3 +1,5 @@
+import { Vector2D, Vector3D } from ".";
+
 const degreeToRad = Math.PI / 180;
 
 export class Matrix3D {
@@ -97,5 +99,13 @@ export class Matrix3D {
 
   static cssMatrix(m: Array<number>) {
     return `matrix(${m[0]},${m[3]},${m[1]},${m[4]},${m[2]},${m[5]})`;
+  }
+
+  static transformMatrix(position: Vector3D, vpCenter: Vector2D) {
+    const z = position.z;
+    const tx = (z * -position.x) + vpCenter.x;
+    const ty = (z * -position.y) + vpCenter.y;
+
+    return `matrix(${z},0,0,${z},${tx},${ty})`;
   }
 }
