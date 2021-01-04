@@ -24,7 +24,7 @@ import {
   MouseController, 
   TouchController 
 } from '../controllers';
-import { calcEdgeConnectionCoord } from './layers/svg-layer';
+import { calcEdgeConnectionCoord } from './layers/edges-layer';
 
 export interface ZoomSettings {
   readonly min: number,
@@ -44,7 +44,7 @@ interface GraphState {
   readonly update: Date,
   readonly position: Vector3D,
   readonly mousePos: Vector2D,
-  readonly projMousePos: Vector2D,
+  // readonly projMousePos: Vector2D,
   readonly width: number,
   readonly height: number,
   readonly vpCenter: Vector2D,
@@ -90,7 +90,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       update: new Date(),
       position,
       mousePos: new Vector2D(),
-      projMousePos: new Vector2D(),
+      // projMousePos: new Vector2D(),
       transformMtx: Matrix3D.cssMatrix(Matrix3D.identity()),
       width: 0,
       height: 0,
@@ -117,14 +117,14 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     const { clientHeight, clientWidth } = div;
 
     if (clientWidth != this.state.width || clientHeight != this.state.height) {
-      const vpCenter = new Vector2D(clientWidth / 2, clientHeight / 2)
+      const vpCenter = new Vector2D(clientWidth * .5, clientHeight * .5);
 
-      this.setState({
-        transformMtx: Matrix3D.transformMatrix(this.state.position, vpCenter),
+      this.setState(prev => ({
+        transformMtx: Matrix3D.transformMatrix(prev.position, vpCenter),
         width: clientWidth, 
         height: clientHeight, 
         vpCenter,
-      });
+      }));
     }
 
     window.requestAnimationFrame(this.animationStepFn);
@@ -137,7 +137,9 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       mode, 
       width, 
       height, 
-      projMousePos, 
+      mousePos,
+      vpCenter,
+      // projMousePos, 
       transformMtx,
       intercationOrigin,
       intercationEnd,
@@ -229,7 +231,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
               parentRef={this.ref}
               transform={transformMtx}
               position={position}
-              mouseCoords={projMousePos}
+              mouseCoords={screenToWorld(mousePos, position, vpCenter)}
               graph={graph}
               mode={mode}
               width={width}
@@ -254,65 +256,69 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   onNodeStartDrag(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
+
+    const { graph } = this.props;
+    const { position, vpCenter } = this.state;
+    const mousePos = new Vector2D(e.clientX, e.clientY);
     
     const id = parseInt(e.currentTarget.getAttribute('data-id'));
-    const node = this.props.graph.getNode(id);
-    
-    // CTRL +
-    // ALT branch
-    this.props.graph.setSelection(node);
-    // this.props.graph.addToSelection(node);
-    this.setState(prev => ({
+    const node = graph.getNode(id);
+    const pos = screenToWorld(mousePos, position, vpCenter)
+
+    if (e.shiftKey) {
+      graph.addToSelection(node);
+    } else {
+      graph.setSelection(node);
+    }
+    graph.startDrag(pos);
+
+    this.setState({
       mode: Mode.Drag,
-      intercationOrigin: prev.mousePos.copy(),
-    }));
+      intercationOrigin: mousePos,
+    });
   }
 
   onMove(clientX: number, clientY: number, altKey: boolean = false) {
     const update = new Date();
     const { graph } = this.props;
-    
-    const projMousePos = screenToWorld(
-      new Vector2D(clientX, clientY), 
-      this.state.position, 
-      this.state.vpCenter);
-
-    const { 
-      mode, 
-      intercationOrigin, 
-      position: prevPos, 
-      mousePos: currMousePos, 
-      vpCenter 
-    } = this.state; 
+    const mousePos = new Vector2D(clientX, clientY);
+    const projMousePos = screenToWorld(mousePos, this.state.position, this.state.vpCenter);
+    const mode = this.state.mode;
+    // const { 
+    //   mode, 
+    //   intercationOrigin, 
+    //   position: prevPos, 
+    //   mousePos: currMousePos, 
+    //   vpCenter 
+    // } = this.state; 
     
     switch (mode) {
       case Mode.Select:
-        this.setState({intercationEnd: new Vector2D(clientX, clientY)});
+        this.setState({intercationEnd: mousePos});
         break;
 
       case Mode.Move:
-        const shift = new Vector2D(
-          (currMousePos.x - clientX) / prevPos.z, 
-          (currMousePos.y - clientY) / prevPos.z);
-        this.setState({
-          position: move(prevPos, shift, graph.bbox),
-          mousePos: new Vector2D(clientX, clientY),
-          projMousePos,
-          transformMtx: Matrix3D.transformMatrix(prevPos, vpCenter),
+        this.setState(prev => {
+          // prev.mousePos.sub(mousePos).div(prev.position.z);
+          const shift = new Vector2D(
+            (prev.mousePos.x - clientX) / prev.position.z, 
+            (prev.mousePos.y - clientY) / prev.position.z);
+
+          return {
+            position: move(prev.position, shift, graph.bbox),
+            mousePos,
+            transformMtx: Matrix3D.transformMatrix(prev.position, prev.vpCenter),
+          }
         });
         break;
 
       case Mode.Drag:
-        const projIntOrigin = screenToWorld(intercationOrigin, prevPos, vpCenter);
-        graph.moveSelectedTo(projMousePos.copy().sub(projIntOrigin), altKey);
+        graph.dragSelectedTo(projMousePos, altKey);
         this.setState({update});
         break;
 
       case Mode.Edit:
-        this.setState({
-          mousePos: new Vector2D(clientX, clientY),
-          projMousePos,
-        });
+        this.setState({mousePos});
         break;
     }
   }

@@ -2,13 +2,15 @@ import './styles/main.scss';
 import './styles/omni.scss';
 
 import * as ReactDOM from 'react-dom';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { GraphEditor } from './scripts/components/graph-editor';
 import { Graph, Edge } from './scripts/components/graph';
 
 import { AABB, Vector2D, zoomToCursor } from './scripts/math';
 import { NodeFactory } from './scripts/components/node-factory';
+
+import Editor from './scripts/components/editor';
 
 const container = document.createElement('div');
 container.className = 'container';
@@ -57,8 +59,6 @@ function loadGraph(file: string) {
           id: el.id,
           x: el.diagramX,
           y: el.diagramY,
-          ox: 0,
-          oy: 0,
           payload: el,
           size: calcNodeSize(el),
         });
@@ -72,19 +72,26 @@ function loadGraph(file: string) {
       edges.forEach(edge => {
         graph.addEdge(edge);
       });
+
+      // const node33 = graph.nodes.find(el => el.id === 33)
+      // graph.findAllChildren([node33])
       
       ReactDOM.render(
-        <GraphEditor 
-          nodeFactory={new NodeFactory()}
-          zoomFunc={zoomToCursor}
-          // debug={true}
-          graph={graph} 
-          zoom={{
-            min: 0.05,
-            max: 1,
-            sense: 0.001,
-          }}
-        />, container
+        <div className="root">
+          <GraphEditor 
+            nodeFactory={new NodeFactory()}
+            zoomFunc={zoomToCursor}
+            debug={true}
+            graph={graph} 
+            zoom={{
+              min: 0.05,
+              max: 1,
+              sense: 0.001,
+            }}
+            />
+          {/* <Editor /> */}
+        </div>
+        , container
       )
     })
     .catch((error) => {

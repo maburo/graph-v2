@@ -20,15 +20,11 @@ export class Vector2D {
   }
 
   add(vec: Vector2D): Vector2D {
-    this.x += vec.x;
-    this.y += vec.y;
-    return this;
+    return new Vector2D(this.x + vec.x, this.y + vec.y);
   }
 
   sub(vec: Vector2D): Vector2D {
-    this.x -= vec.x;
-    this.y -= vec.y;
-    return this;
+    return new Vector2D(this.x - vec.x, this.y - vec.y);
   }
 
   mul(scalar: number): Vector2D {

@@ -1,27 +1,37 @@
 import { Vector2D } from '../math';
 import AABB from '../math/aabb';
 
+type ID = number;
+type NodeMap<T> = Map<ID, Node<T>>;
+type NodeSet<T> = Set<Node<T>>;
+
+interface DragContext<T> {
+  origin: Vector2D;
+  startPositions: Map<ID, Vector2D>;
+  nodes: Node<T>[];
+  hasChildren: boolean;
+}
+
 export interface Node<T> {
-  id: number,
-  x: number,
-  y: number,
-  ox: number,
-  oy: number,
-  size: Vector2D,
-  payload: T
+  id: ID;
+  x: number;
+  y: number;
+  size: Vector2D;
+  payload: T;
 }
 
 export interface Edge {
-  from: number,
-  to: number
+  from: number;
+  to: number;
 }
 
 export class Graph<T> {
   readonly bbox: AABB = new AABB();
   private elementsList: Node<T>[] = [];
-  private elementsMap: Map<number, Node<T>> = new Map()
-  private adjacencyMap: Map<number, number[]> = new Map();
-  private selectedNodes: Set<Node<T>> = new Set();
+  private elementsMap: NodeMap<T> = new Map()
+  private adjacencyMap: Map<ID, ID[]> = new Map();
+  private selectedNodes: NodeSet<T> = new Set();
+  private dragContext: DragContext<T>;
 
   addNode(node: Node<T>) {
     this.addNodeToBbox(node);
@@ -46,7 +56,7 @@ export class Graph<T> {
   removeNode(id: number) {
     this.elementsMap.delete(id);
     this.elementsList = this.elementsList.filter(node => node.id === id);
-    this.calcBbox();
+    this.reCalcBbox();
   }
 
   get empty(): boolean {
@@ -71,22 +81,26 @@ export class Graph<T> {
     return ids.map(id => this.elementsMap.get(id));
   }
 
-  select(region: AABB): Set<Node<T>> {
+  /**
+   * Selection
+   */
+  select(region: AABB): NodeSet<T> {
     const selected = this.nodes.filter(node => region.containsBbox(new AABB(node.x, node.y, node.x + node.size.x, node.y + node.size.y)));
     this.selectedNodes = new Set(selected);
     return this.selectedNodes;
   }
 
-  addToSelection(node: Node<T>) {
+  addToSelection(node: Node<T>): NodeSet<T> {
     this.selectedNodes.add(node);
+    return this.selectedNodes;
   }
 
-  setSelection(node: Node<T>) {
+  setSelection(node: Node<T>): NodeSet<T> {
     this.selectedNodes = new Set();
-    this.addToSelection(node);
+    return this.addToSelection(node);
   }
 
-  get selected(): Set<Node<T>> {
+  get selected(): NodeSet<T> {
     return this.selectedNodes;
   }
 
@@ -94,23 +108,56 @@ export class Graph<T> {
     return this.selectedNodes.has(node);
   }
 
-  moveSelectedTo(pos: Vector2D, moveChildren?: boolean) {
-    this.selectedNodes.forEach(node => {
-      node.x = node.ox + pos.x;
-      node.y = node.oy + pos.y;
-    });
+  /**
+   * Drag
+   */
+  startDrag(origin: Vector2D) {
+    const nodes = [...this.selectedNodes];
 
-    if (moveChildren) {
-      this.findAllChildren(this.selectedNodes).forEach(node => {
-        node.x = node.ox + pos.x;
-        node.y = node.oy + pos.y;
-      });
-    }
-
-    this.calcBbox();
+    this.dragContext = {
+      hasChildren: false,
+      origin,
+      nodes,
+      startPositions: nodes.reduce((acc, node) => acc.set(node.id, new Vector2D(node.x, node.y)), new Map<ID, Vector2D>())
+    };
   }
 
-  private calcBbox() {
+  dragSelectedTo(pos: Vector2D, moveChildren?: boolean) {
+    const { origin, startPositions, nodes, hasChildren } = this.dragContext;
+    const shift = pos.sub(origin);
+
+    if (moveChildren && !hasChildren) {
+      const selected = [...this.selectedNodes];
+      this.findAllChildren(selected).forEach(node => {
+        nodes.push(node);
+        startPositions.set(node.id, new Vector2D(node.x, node.y));
+      });
+      this.dragContext.hasChildren = true;
+    } else if (!moveChildren && hasChildren) {
+      nodes.filter(el => !this.selectedNodes.has(el))
+      .forEach(el => {
+        const pos = startPositions.get(el.id);
+        el.x = pos.x;
+        el.y = pos.y;
+      });
+
+      this.dragContext.nodes = [...this.selectedNodes];
+      this.dragContext.hasChildren = false;
+    }
+
+    nodes.forEach(node => {
+      const pos = startPositions.get(node.id).add(shift)
+      node.x = pos.x;
+      node.y = pos.y;
+    });
+
+    this.reCalcBbox();
+  }
+
+  /**
+   * Clears bounding box and recalcs its size
+   */
+  private reCalcBbox() {
     this.bbox.reset();
     this.nodes.forEach(this.addNodeToBbox.bind(this));
   }
@@ -120,14 +167,28 @@ export class Graph<T> {
     this.bbox.addPoint(node.x + node.size.x, node.y + node.size.y);
   }
 
-  private findAllChildren(nodes: Node<T>[] | Set<Node<T>>): Node<T>[] {
+  /**
+   * Recursevly searches for children nodes
+   * @param nodes starting array
+   * @param visited a set which contains already visited nodes
+   */
+  private findAllChildren(nodes: Node<T>[]): Node<T>[] {
+    if (nodes.length === 0) return [];
+
     const children: Node<T>[] = [];
     const visited = new Set(nodes);
-
-    nodes.forEach((node: Node<T>) => {
-      const adjacent = this.getAdjacentNodes(node.id);
-      children.push(...adjacent, ...this.findAllChildren(adjacent.filter(visited.has)))
-    });
+    const isNotVisited = (node: Node<T>) => !visited.has(node);
+    const toVisit: Node<T>[] = nodes.reduce((acc, node) => {
+      acc.push(...this.getAdjacentNodes(node.id).filter(isNotVisited));
+      return acc;
+    }, []);
+   
+    while (toVisit.length > 0) {
+      const node = toVisit.pop()
+      children.push(node);
+      visited.add(node);
+      toVisit.push(...this.getAdjacentNodes(node.id).filter(isNotVisited));
+    }
 
     return children;
   }
