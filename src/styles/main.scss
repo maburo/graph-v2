@@ -73,6 +73,7 @@ body {
 
   .node {
     position: absolute;
+    box-sizing: border-box;
     
     .default {
       background-color: #a0a0a0;

@@ -21,7 +21,7 @@ function onWheelFn(this: GraphEditor, e: React.WheelEvent) {
 
 function onMouseMoveFn(this: GraphEditor, e: React.MouseEvent) {
   e.preventDefault();
-  this.onMove(e.clientX, e.clientY, e.altKey);
+  this.onMove(e.clientX, e.clientY, e.shiftKey, e.altKey);
 }
 
 function onMouseUpFn(this: GraphEditor, e: React.MouseEvent<unknown>) {

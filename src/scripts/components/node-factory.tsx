@@ -22,6 +22,7 @@ export class NodeFactory {
         return (
           <StartNode
             type={node.payload.type}
+            rules={node.payload.rules}
             id={node.id}
             loadingStatistics={false}
             onAddRule={() => {}}
@@ -38,6 +39,7 @@ export class NodeFactory {
         return (
           <StartInboundNode
             key={node.id}
+            rules={node.payload.rules}
             loadingStatistics={false}
             onAddRule={() => {}}
             onRemoveRule={() => {}}
@@ -104,6 +106,7 @@ export class NodeFactory {
             key={node.id}
             loadingStatistics={false}
             addingRuleDisabled={false}
+            rules={node.payload.rules}
             onAddRule={() => {}}
             onRemoveRule={() => {}}
             onDelete={() => {}}

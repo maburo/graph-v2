@@ -1,7 +1,8 @@
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
 import { render } from 'react-dom';
-import { Vector2D } from '../../math';
+import { start } from 'repl';
+import { clamp, Vector2D } from '../../math';
 import { Node } from '../graph';
 import { LayerProperties } from './layer-props';
 
@@ -76,6 +77,8 @@ interface EdgeProperties {
   endY: number;
 }
 
+const curve = 50;
+const curveFactor = 2/curve;
 const COLOR_VALUES = ['0', '1', '2', '3', '4', '5', '6', '7', 
 '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F'];
 
@@ -96,22 +99,27 @@ class EdgeComponent extends React.PureComponent<EdgeProperties> {
     const props = this.props;
 
   const { startX, startY, endX, endY } = props;
-  const x1 = startX + (endX - startX) / 2;
-  const y1 = startY;
-  const x2 = x1;
-  const y2 = endY;
+  
+  const halfLen = (endX - startX) * .5;
+  const curveMag = -clamp((halfLen - curve) * curveFactor, Number.MIN_SAFE_INTEGER, 0);
+  const factor = curve * curveMag;
+  const centerX = startX + halfLen;
+  const x1 = centerX + factor;
+  const x2 = centerX - factor;
+  const path = `M ${startX} ${startY} C${x1} ${startY}, ${x2} ${endY} ${endX-10} ${endY}`;
 
-  // const color = "#000";
-  const color = '#'
-    + COLOR_VALUES[Math.floor(Math.random() * 16)] 
-    + COLOR_VALUES[Math.floor(Math.random() * 16)] 
-    + COLOR_VALUES[Math.floor(Math.random() * 16)];
+  const color = "#000";
+  // const color = '#'
+  //   + COLOR_VALUES[Math.floor(Math.random() * 16)] 
+  //   + COLOR_VALUES[Math.floor(Math.random() * 16)] 
+  //   + COLOR_VALUES[Math.floor(Math.random() * 16)];
 
+  
   return (
     <g>
       <path 
         className="omni-flow-path-path-overlay"
-        d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX-20},${endY}`} 
+        d={path} 
         stroke={color} 
         fill="none"
         stroke-width="10px" 
@@ -121,10 +129,10 @@ class EdgeComponent extends React.PureComponent<EdgeProperties> {
         style={{
           pointerEvents: 'none'
         }}
-        d={`M${startX},${startY} C${x1},${y1} ${x2},${y2} ${endX-20},${endY}`} 
+        d={path} 
         stroke={color} 
         fill="none"
-        stroke-width="2px" 
+        stroke-width="1px" 
         markerStart="url(#circle)"
         markerEnd="url(#arrow)"
         />
@@ -166,8 +174,8 @@ export function calcOutCoords(node: Node<FlowElement>) {
     case FlowElementType.PERFORM_EXPERIMENT_ACTION:
     case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
       return {
-        fromX: node.x + 330,
-        fromY: node.y + 102 / 2,
+        fromX: node.x + 300,
+        fromY: node.y + 80 / 2,
       }
     case FlowElementType.START_RESOLVE_ONETIME_AUDIENCE:
     case FlowElementType.START_FLOW_WEBHOOK:
@@ -178,12 +186,12 @@ export function calcOutCoords(node: Node<FlowElement>) {
     case FlowElementType.START_EVALUATE_DATE_TIME_ATTRIBUTE:
       return {
         fromX: node.x + 300,
-        fromY: node.y + 60 /2,
+        fromY: node.y + 80 /2,
       }
     case FlowElementType.PAUSE:
       return {
-        fromX: node.x + 127,
-        fromY: node.y + 52 / 2,
+        fromX: node.x + 125,
+        fromY: node.y + 50 / 2,
       }
     default:
       return { fromX: node.x, fromY: node.y };
@@ -215,11 +223,11 @@ export function calcInCoords(from: Node<FlowElement>, to: Node<FlowElement>) {
     case FlowElementType.START_CALL_IVR_ACTION:
     case FlowElementType.PERFORM_EXPERIMENT_ACTION:
     case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
-      return { toX: to.x, toY: to.y + 102 / 2 };
+      return { toX: to.x, toY: to.y + 80 / 2 };
     case FlowElementType.EXIT:
-      return { toX: to.x, toY: to.y + 42 / 2 };
+      return { toX: to.x, toY: to.y + 40 / 2 };
     case FlowElementType.PAUSE:
-      return { toX: to.x, toY: to.y + 52 / 2 };
+      return { toX: to.x, toY: to.y + 50 / 2 };
     default:
       return { toX: to.x, toY: to.y };
     }

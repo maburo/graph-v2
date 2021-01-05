@@ -16,9 +16,10 @@ const container = document.createElement('div');
 container.className = 'container';
 document.body.appendChild(container);
 
-// loadGraph('/big_graph.json');
-loadGraph('/all.json');
+loadGraph('/big_graph.json');
+// loadGraph('/all.json');
 // loadGraph('/small.json');
+// loadGraph('/rules.json');
 
 // ReactDOM.render((
 //   <div>
@@ -81,11 +82,11 @@ function loadGraph(file: string) {
           <GraphEditor 
             nodeFactory={new NodeFactory()}
             zoomFunc={zoomToCursor}
-            debug={true}
+            // debug={true}
             graph={graph} 
             zoom={{
               min: 0.05,
-              max: 1,
+              max: 2,
               sense: 0.001,
             }}
             />

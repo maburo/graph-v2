@@ -154,6 +154,10 @@ export class Graph<T> {
     this.reCalcBbox();
   }
 
+  endDrag() {
+    this.reCalcBbox();
+  }
+
   /**
    * Clears bounding box and recalcs its size
    */

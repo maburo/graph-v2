@@ -44,7 +44,6 @@ interface GraphState {
   readonly update: Date,
   readonly position: Vector3D,
   readonly mousePos: Vector2D,
-  // readonly projMousePos: Vector2D,
   readonly width: number,
   readonly height: number,
   readonly vpCenter: Vector2D,
@@ -84,13 +83,12 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     this.onNodeStartDragFn = this.onNodeStartDrag.bind(this);
     this.animationStepFn = this.animationStep.bind(this);
 
-    const position = move(new Vector3D(0, 0, 1), new Vector2D(), props.graph.bbox);
+    const position = move(new Vector3D(-457, -100, 1), new Vector2D(), props.graph.bbox);
   
     this.state = {
       update: new Date(),
       position,
       mousePos: new Vector2D(),
-      // projMousePos: new Vector2D(),
       transformMtx: Matrix3D.cssMatrix(Matrix3D.identity()),
       width: 0,
       height: 0,
@@ -278,7 +276,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     });
   }
 
-  onMove(clientX: number, clientY: number, altKey: boolean = false) {
+  onMove(clientX: number, clientY: number, shiftKey: boolean = false, altKey: boolean = false) {
     const update = new Date();
     const { graph } = this.props;
     const mousePos = new Vector2D(clientX, clientY);
@@ -299,7 +297,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
       case Mode.Move:
         this.setState(prev => {
-          // prev.mousePos.sub(mousePos).div(prev.position.z);
           const shift = new Vector2D(
             (prev.mousePos.x - clientX) / prev.position.z, 
             (prev.mousePos.y - clientY) / prev.position.z);
@@ -313,7 +310,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         break;
 
       case Mode.Drag:
-        graph.dragSelectedTo(projMousePos, altKey);
+        graph.dragSelectedTo(projMousePos, shiftKey);
         this.setState({update});
         break;
 
@@ -362,6 +359,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         this.setState({mode: Mode.Edit});
         break;
       case Mode.Drag:
+        this.props.graph.endDrag();
         this.setState({mode: Mode.Edit});
         break;
     }

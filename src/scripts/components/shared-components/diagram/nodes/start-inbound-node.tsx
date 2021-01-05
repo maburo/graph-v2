@@ -24,6 +24,8 @@ import { triggerOptions } from '../../start/start-creator/start-creator';
 
 import { Metrics } from './metrics/metrics';
 
+import { renderRules } from './rules';
+
 // const __: Localization = _.partial(I18n.__, 'Diagram');
 const __ = (s: string) => s;
 
@@ -118,11 +120,8 @@ export class StartInboundNode extends React.Component<Props> {
                     )}
                 </div>
 
-                <div className="ib-flow-decision-path">
-                    {this.renderBasePath(this.props.rules?.length)}
-                </div>
 
-                {this.renderRules()}
+                { renderRules(this.props.rules) }
 
                 {this.props.rules?.length > 0 && this.props.canAddRule && (
                     <div className="ib-flow-decision-group-shnipple-wrapper">
@@ -147,52 +146,6 @@ export class StartInboundNode extends React.Component<Props> {
         }
     };
 
-    private renderRules = () => {
-        return (
-            <div className="ib-flow-decision-group-decisions">
-                {this.props.rules?.map((rule: FlowRule, index: number) => {
-                    const ruleContent = this.props.elementPreview
-                        ? this.props.elementPreview.rulesContent?.[index]
-                        : __('Define content in panel');
-
-                    return (
-                        <div
-                            key={index}
-                            className="ib-flow-decision"
-                            style={{
-                                top: RULES_NODE_RULE_PADDING + RULES_NODE_RULE_DIFF * index,
-                            }}
-                        >
-                            <svg viewBox="0 0 200 50" width="200" height="50">
-                                <g className="omni-flow-path">
-                                    <path className="omni-flow-path-path" d="M30,35 h23" />
-                                </g>
-                            </svg>
-
-                            <div className="ib-flow-decision-text-cont">
-                                <div className="ib-flow-decision-text text-ellipsis">{ruleContent}</div>
-                            </div>
-
-                            {!rule.nextElementId &&
-                            !rule.valid &&
-                            false && ( // TODO enable when rules are validated
-                                    <div className="ib-flow-decision-group-shnipple-wrapper-remove">
-                                        <button
-                                            data-index={index}
-                                            onClick={this.removeButtonClickHandler}
-                                            className="ib-flow-decision-shnipple ib-flow-decision-shnipple--remove"
-                                        >
-                                            <img src={removeIcon} alt="" />
-                                        </button>
-                                    </div>
-                                )}
-                        </div>
-                    );
-                })}
-            </div>
-        );
-    };
-
     private addButtonClickHandler = () => {
         this.props.onAddRule(this.props.id);
     };
@@ -204,15 +157,4 @@ export class StartInboundNode extends React.Component<Props> {
             this.props.onRemoveRule(this.props.id, index);
         }
     };
-
-    renderBasePath(size: number) {
-        const height = RULES_NODE_RULE_DIFF * size;
-        return (
-            <svg viewBox={`0 0 50 ${height}`} width="50" height={height}>
-                <g className="omni-flow-path">
-                    <path className="omni-flow-path-path" d={`M30,0 v${height - 15}`} />
-                </g>
-            </svg>
-        );
-    }
 }
