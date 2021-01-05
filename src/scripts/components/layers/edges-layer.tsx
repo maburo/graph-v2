@@ -4,6 +4,8 @@ import { render } from 'react-dom';
 import { start } from 'repl';
 import { clamp, Vector2D } from '../../math';
 import { Node } from '../graph';
+import { ACTION_NODE_HEIGHT, ACTION_NODE_WIDTH, EXIT_NODE_HEIGHT, PAUSE_NODE_HEIGHT, PAUSE_NODE_WIDTH, RULES_NODE_HEADER_HEIGHT, RULES_NODE_WIDTH, START_NODE_HEIGHT, START_NODE_WIDTH } from '../shared-components/diagram/utils/diagram-dimensions.utils';
+import { Point } from '../shared-components/diagram/utils/math/types';
 import { LayerProperties } from './layer-props';
 
 // const EdgeComponent = React.memo(edgeComponent);
@@ -13,6 +15,12 @@ interface EdgesLayerProps extends LayerProperties {
   edges: EdgeData[],
   transform: string,
 }
+
+const HALF_ACTION_NODE_HEIGHT = ACTION_NODE_HEIGHT / 2;
+const HALF_PAUSE_NODE_HEIGHT = PAUSE_NODE_HEIGHT / 2;
+const HALF_EXIT_NODE_HEIGHT = EXIT_NODE_HEIGHT / 2;
+const HALF_START_NODE_HEIGHT = START_NODE_HEIGHT / 2;
+const HALF_RULES_NODE_HEADER_HEIGHT = RULES_NODE_HEADER_HEIGHT / 2;
 
 // function svgLayer(props: SvgLayerProps) {
 export class EdgesLayer extends React.PureComponent<EdgesLayerProps> {
@@ -144,7 +152,7 @@ class EdgeComponent extends React.PureComponent<EdgeProperties> {
 export function calcEdgeConnectionCoord(from: Node<FlowElement>, to: Node<FlowElement>) {
   return {
     ...calcOutCoords(from),
-    ...calcInCoords(from, to),
+    ...calcInCoords(from),
   }
 }
 
@@ -174,8 +182,8 @@ export function calcOutCoords(node: Node<FlowElement>) {
     case FlowElementType.PERFORM_EXPERIMENT_ACTION:
     case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
       return {
-        fromX: node.x + 300,
-        fromY: node.y + 80 / 2,
+        fromX: node.x + RULES_NODE_WIDTH,
+        fromY: node.y + HALF_RULES_NODE_HEADER_HEIGHT,
       }
     case FlowElementType.START_RESOLVE_ONETIME_AUDIENCE:
     case FlowElementType.START_FLOW_WEBHOOK:
@@ -185,20 +193,23 @@ export function calcOutCoords(node: Node<FlowElement>) {
     case FlowElementType.START_EVALUATE_BEHAVIOUR_EVENT:
     case FlowElementType.START_EVALUATE_DATE_TIME_ATTRIBUTE:
       return {
-        fromX: node.x + 300,
-        fromY: node.y + 80 /2,
+        fromX: node.x + START_NODE_WIDTH,
+        fromY: node.y + HALF_START_NODE_HEIGHT,
       }
     case FlowElementType.PAUSE:
       return {
-        fromX: node.x + 125,
-        fromY: node.y + 50 / 2,
+        fromX: node.x + PAUSE_NODE_WIDTH,
+        fromY: node.y + HALF_PAUSE_NODE_HEIGHT,
       }
     default:
-      return { fromX: node.x, fromY: node.y };
+      return { 
+        fromX: node.x, 
+        fromY: node.y 
+      };
     }
 }
 
-export function calcInCoords(from: Node<FlowElement>, to: Node<FlowElement>) {
+export function calcInCoords(to: Node<FlowElement>) {
   switch (to.payload.type) {
     case FlowElementType.SEND_ACTION:
     case FlowElementType.ADD_TAG:
@@ -223,12 +234,126 @@ export function calcInCoords(from: Node<FlowElement>, to: Node<FlowElement>) {
     case FlowElementType.START_CALL_IVR_ACTION:
     case FlowElementType.PERFORM_EXPERIMENT_ACTION:
     case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
-      return { toX: to.x, toY: to.y + 80 / 2 };
+      return { 
+        toX: to.x, 
+        toY: to.y + HALF_ACTION_NODE_HEIGHT 
+      };
     case FlowElementType.EXIT:
-      return { toX: to.x, toY: to.y + 40 / 2 };
+      return { 
+        toX: to.x, 
+        toY: to.y + HALF_EXIT_NODE_HEIGHT 
+      };
     case FlowElementType.PAUSE:
-      return { toX: to.x, toY: to.y + 50 / 2 };
+      return { 
+        toX: to.x, 
+        toY: to.y + HALF_PAUSE_NODE_HEIGHT 
+      };
     default:
-      return { toX: to.x, toY: to.y };
+      return { 
+        toX: to.x, 
+        toY: to.y 
+      };
+    }
+}
+
+//------------------ Offset
+
+export function edgeInOffset(type: FlowElementType | string) {
+  switch (type) {
+    case FlowElementType.SEND_ACTION:
+    case FlowElementType.ADD_TAG:
+    case FlowElementType.START_CONVERSATION:
+    case FlowElementType.REMOVE_TAG:
+    case FlowElementType.ADD_TO_BLACKLIST:
+    case FlowElementType.REMOVE_FROM_BLACKLIST:
+    case FlowElementType.FAILOVER_ACTION:
+    case FlowElementType.IVR_HANG_UP:
+    case FlowElementType.UPDATE_PERSON_ACTION:
+    case FlowElementType.EVALUATE_PARTICIPANT_DATA:
+    case FlowElementType.EVALUATE_VALUE:
+    case FlowElementType.EVALUATE_BEHAVIOUR_EVENT:
+    case FlowElementType.EVALUATE_ATTRIBUTE_EVENT:
+    case FlowElementType.EVALUATE_EVENT:
+    case FlowElementType.EVALUATE_INBOUND_MESSAGE:
+    case FlowElementType.DIAL_IVR_ACTION:
+    case FlowElementType.RECORD_IVR_ACTION:
+    case FlowElementType.PLAY_IVR_ACTION:
+    case FlowElementType.CALL_URL:
+    case FlowElementType.COLLECT_IVR_ACTION:
+    case FlowElementType.START_CALL_IVR_ACTION:
+    case FlowElementType.PERFORM_EXPERIMENT_ACTION:
+    case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
+      return { 
+        toX: 0, 
+        toY: HALF_ACTION_NODE_HEIGHT 
+      };
+    case FlowElementType.EXIT:
+      return { 
+        toX: 0, 
+        toY: HALF_EXIT_NODE_HEIGHT 
+      };
+    case FlowElementType.PAUSE:
+      return { 
+        toX: 0, 
+        toY: HALF_PAUSE_NODE_HEIGHT 
+      };
+    default:
+      return { 
+        toX: 0, 
+        toY: 0 
+      };
+    }
+}
+
+export function edgeOutOffset(type: FlowElementType | string): Point {
+  switch (type) {
+    case FlowElementType.SEND_ACTION:
+    case FlowElementType.ADD_TAG:
+    case FlowElementType.START_CONVERSATION:
+    case FlowElementType.REMOVE_TAG:
+    case FlowElementType.ADD_TO_BLACKLIST:
+    case FlowElementType.REMOVE_FROM_BLACKLIST:
+    case FlowElementType.FAILOVER_ACTION:
+    case FlowElementType.IVR_HANG_UP:
+    case FlowElementType.UPDATE_PERSON_ACTION:
+    case FlowElementType.EVALUATE_PARTICIPANT_DATA:
+    case FlowElementType.EVALUATE_VALUE:
+    case FlowElementType.EVALUATE_BEHAVIOUR_EVENT:
+    case FlowElementType.EVALUATE_ATTRIBUTE_EVENT:
+    case FlowElementType.EVALUATE_EVENT:
+    case FlowElementType.EVALUATE_INBOUND_MESSAGE:
+    case FlowElementType.DIAL_IVR_ACTION:
+    case FlowElementType.RECORD_IVR_ACTION:
+    case FlowElementType.PLAY_IVR_ACTION:
+    case FlowElementType.CALL_URL:
+    case FlowElementType.COLLECT_IVR_ACTION:
+    case FlowElementType.START_CALL_IVR_ACTION:
+    case FlowElementType.PERFORM_EXPERIMENT_ACTION:
+    case FlowElementType.EVALUATE_DATE_TIME_ATTRIBUTE:
+      return {
+        x: ACTION_NODE_WIDTH,
+        y: HALF_ACTION_NODE_HEIGHT,
+      }
+    case FlowElementType.START_RESOLVE_ONETIME_AUDIENCE:
+    case FlowElementType.START_FLOW_WEBHOOK:
+    case FlowElementType.START_IVR_INBOUND:
+    case FlowElementType.START_EVALUATE_INBOUND_MESSAGE:
+    case FlowElementType.START_EVALUATE_PEOPLE_EVENT:
+    case FlowElementType.START_EVALUATE_BEHAVIOUR_EVENT:
+    case FlowElementType.START_EVALUATE_DATE_TIME_ATTRIBUTE:
+      return {
+        x: ACTION_NODE_WIDTH,
+        y: HALF_ACTION_NODE_HEIGHT,
+      }
+    case FlowElementType.PAUSE:
+      return {
+        x: PAUSE_NODE_WIDTH,
+        y: HALF_PAUSE_NODE_HEIGHT,
+      }
+    default:
+      return { 
+        x: 0, 
+        y: 0 
+      };
     }
 }

@@ -78,7 +78,7 @@ class HtmlNode extends React.PureComponent<NodeProperties> {
 
   render() {
     const { x, y, node, onStartDrag } = this.props;
-    let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
+    // let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
     
     return (
       <NodeFactoryContext.Consumer>
@@ -90,7 +90,7 @@ class HtmlNode extends React.PureComponent<NodeProperties> {
               left: x + 'px',
               top: y + 'px'
             }}
-            className={className}
+            className="node"
           >
             {factory.renderNode(node)}
           </div>

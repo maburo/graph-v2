@@ -24,7 +24,7 @@ import {
   MouseController, 
   TouchController 
 } from '../controllers';
-import { calcEdgeConnectionCoord } from './layers/edges-layer';
+import { calcInCoords, edgeInOffset } from './layers/edges-layer';
 
 export interface ZoomSettings {
   readonly min: number,
@@ -147,18 +147,19 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     
     for (const node of nodes) {
       const adjacent = graph.getAdjacentNodes(node.id);
-      if (adjacent.length === 0) continue;
-  
-      for (const edge of adjacent) {
-        const conCoords = calcEdgeConnectionCoord(node, edge);
+      const edgeList = graph.getEdges(node.id);
 
+      if (adjacent.length === 0) continue;
+
+      for (const edge of edgeList) {
+        const end = calcInCoords(edge.to);
         edges.push({
-          key: '' + node.id + edge.id,
-          startX: conCoords.fromX,
-          startY: conCoords.fromY,
-          endX: conCoords.toX,
-          endY: conCoords.toY,
-        });
+          key: edge.key,
+          startX: edge.from.x + edge.xoffset,
+          startY: edge.from.y + edge.yoffset,
+          endX: end.toX,
+          endY: end.toY,
+        })
       }
     }
     

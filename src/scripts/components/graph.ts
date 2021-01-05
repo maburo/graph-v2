@@ -21,14 +21,25 @@ export interface Node<T> {
 }
 
 export interface Edge {
+  xoffset: number;
+  yoffset: number;
   from: number;
   to: number;
+}
+
+interface NodeEdge<T> {
+  key: string,
+  xoffset: number;
+  yoffset: number;
+  from: Node<T>;
+  to: Node<T>;
 }
 
 export class Graph<T> {
   readonly bbox: AABB = new AABB();
   private elementsList: Node<T>[] = [];
-  private elementsMap: NodeMap<T> = new Map()
+  private elementsMap: NodeMap<T> = new Map();
+  private edgeMap: Map<ID, NodeEdge<T>[]> = new Map();
   private adjacencyMap: Map<ID, ID[]> = new Map();
   private selectedNodes: NodeSet<T> = new Set();
   private dragContext: DragContext<T>;
@@ -46,7 +57,17 @@ export class Graph<T> {
       console.warn("Can't add edge", edge);
       return false;
     }
-    
+   
+    const edges = this.edgeMap.get(edge.from) ?? [];
+    edges.push({
+      key: `${edge.from}-${edge.to}`,
+      from: this.getNode(edge.from),
+      to: this.getNode(edge.to),
+      xoffset: edge.xoffset,
+      yoffset: edge.yoffset,
+    });
+    this.edgeMap.set(edge.from, edges);
+
     const to = this.adjacencyMap.get(edge.from) || [];
     to.push(edge.to);
     this.adjacencyMap.set(edge.from, to);
@@ -75,10 +96,14 @@ export class Graph<T> {
     return this.elementsList.filter(filter)
   }
 
-  getAdjacentNodes(id: number): Node<T>[] {
+  getAdjacentNodes(id: ID): Node<T>[] {
     const ids = this.adjacencyMap.get(id);
     if (!ids) return [];
     return ids.map(id => this.elementsMap.get(id));
+  }
+
+  getEdges(id: ID) {
+    return this.edgeMap.get(id) ?? [];
   }
 
   /**

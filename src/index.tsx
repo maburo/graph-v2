@@ -11,13 +11,16 @@ import { AABB, Vector2D, zoomToCursor } from './scripts/math';
 import { NodeFactory } from './scripts/components/node-factory';
 
 import Editor from './scripts/components/editor';
+import { calcEdgeConnectionCoord, edgeOutOffset } from './scripts/components/layers/edges-layer';
+import { RULES_NODE_HEADER_HEIGHT, RULES_NODE_TOP, RULES_NODE_PADDING } from './scripts/components/shared-components/diagram/utils/diagram-dimensions.utils';
+import { off } from 'process';
 
 const container = document.createElement('div');
 container.className = 'container';
 document.body.appendChild(container);
 
-loadGraph('/big_graph.json');
-// loadGraph('/all.json');
+// loadGraph('/big_graph.json');
+loadGraph('/all.json');
 // loadGraph('/small.json');
 // loadGraph('/rules.json');
 
@@ -64,9 +67,27 @@ function loadGraph(file: string) {
           size: calcNodeSize(el),
         });
         
-        if (el.action?.nextElementId) edges.push({from: el.id, to: el.action.nextElementId});
-        el.rules?.forEach(rule => {
-          if (rule.nextElementId) edges.push({from: el.id, to: rule.nextElementId});
+        if (el.action?.nextElementId) {
+          const offset = edgeOutOffset(el.type)
+          edges.push({
+            xoffset: offset.x,
+            yoffset: offset.y,
+            from: el.id, 
+            to: el.action.nextElementId
+          });
+        }
+
+        el.rules?.forEach((rule, idx) => {
+          const yoffset = RULES_NODE_HEADER_HEIGHT 
+            + RULES_NODE_TOP 
+            + RULES_NODE_PADDING * idx;
+
+          if (rule.nextElementId) edges.push({
+            xoffset: 264,
+            yoffset,
+            from: el.id, 
+            to: rule.nextElementId,
+          });
         });
       });
 
@@ -86,7 +107,7 @@ function loadGraph(file: string) {
             graph={graph} 
             zoom={{
               min: 0.05,
-              max: 2,
+              max: 1,
               sense: 0.001,
             }}
             />

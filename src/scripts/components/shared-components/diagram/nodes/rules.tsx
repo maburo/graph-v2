@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import { FlowRule } from '@infobip/moments-components';
-import { RULES_NODE_RULE_DIFF, RULES_NODE_RULE_PADDING } from '../utils/diagram-dimensions.utils';
+import { RULES_NODE_PADDING, RULES_NODE_RULE_DIFF, RULES_NODE_TOP } from '../utils/diagram-dimensions.utils';
 
 import removeIcon from '../../../../../../assets/img/canvas/elements/remove-schnipple.svg';
 
@@ -22,7 +22,7 @@ function renderHPath(size: number): JSX.Element[] {
   let result = [];
 
   for (let i = 0; i < size; i++) {
-    const d = `M30,${25 + 40 * i} h23`;
+    const d = `M30,${RULES_NODE_TOP + RULES_NODE_PADDING * i} h23`;
     result.push((<path className="omni-flow-path-path" d={d} />));
   }
 
