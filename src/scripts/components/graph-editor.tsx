@@ -10,6 +10,7 @@ import {
   move, 
   screenToWorld,
   ZoomFunction,
+  zoomToCenter,
 } from '../math';
 import { NodeFactory } from './node-factory';
 import { 
@@ -21,36 +22,38 @@ import {
 } from './layers';
 import { 
   KeyboardController, 
+  KeyMappingSettings, 
   MouseController, 
   TouchController 
 } from '../controllers';
 import { calcInCoords, edgeInOffset } from './layers/edges-layer';
 
 export interface ZoomSettings {
-  readonly min: number,
-  readonly max: number,
-  readonly sense: number,
+  readonly min: number;
+  readonly max: number;
+  readonly sense: number;
 }
 
 interface GraphProps {
-  readonly graph: Graph<FlowElement>
-  readonly nodeFactory: NodeFactory,
-  readonly zoom: ZoomSettings,
-  readonly zoomFunc: ZoomFunction,
-  readonly debug?: boolean,
+  readonly graph: Graph<FlowElement>;
+  readonly nodeFactory: NodeFactory;
+  readonly zoom: ZoomSettings;
+  readonly zoomFunc: ZoomFunction;
+  readonly debug?: boolean;
+  readonly keymap: KeyMappingSettings[];
 }
 
 interface GraphState {
-  readonly update: Date,
-  readonly position: Vector3D,
-  readonly mousePos: Vector2D,
-  readonly width: number,
-  readonly height: number,
-  readonly vpCenter: Vector2D,
-  readonly transformMtx: string,
-  readonly intercationOrigin: Vector2D,
-  readonly intercationEnd: Vector2D,
-  readonly mode: Mode,
+  readonly update: Date;
+  readonly position: Vector3D;
+  readonly mousePos: Vector2D;
+  readonly width: number;
+  readonly height: number;
+  readonly vpCenter: Vector2D;
+  readonly transformMtx: string;
+  readonly intercationOrigin: Vector2D;
+  readonly intercationEnd: Vector2D;
+  readonly mode: Mode;
 }
 
 export enum Mode {
@@ -78,7 +81,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     this.ref = React.createRef();
     this.mouseController = new MouseController(this);
     this.touchController = new TouchController(this);
-    this.keyboardController = new KeyboardController(this);
+    this.keyboardController = new KeyboardController(this, this.props.keymap);
 
     this.onNodeStartDragFn = this.onNodeStartDrag.bind(this);
     this.animationStepFn = this.animationStep.bind(this);
@@ -166,7 +169,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
-          className="container omni-canvas-bg" 
+          // className="container omni-canvas-bg" 
           style={{
             backgroundPositionX: -position.x * position.z,
             backgroundPositionY: -position.y * position.z,
@@ -322,6 +325,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   onStartInteraction(clientX: number, clientY: number) {
+    this.ref.current?.focus();
+
     switch (this.state.mode) {
       case Mode.StartSelection:
         this.setState({
@@ -371,12 +376,30 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     const { zoomFunc, zoom, graph } = this.props;
     this.setState(prev => 
       zoomFunc(
-        delta, 
+        -delta * zoom.sense * prev.position.z, 
         prev.position, 
         prev.vpCenter, 
         zoom, 
         new Vector2D(ox, oy), 
         graph.bbox)
     );
+  }
+
+  zoom(step: number) {
+    const { zoom } = this.props;
+    this.setState(prev => {
+      const reminder = -(prev.position.z % step);
+      const delta = (step > 0) ? (step + reminder) : (reminder || step);
+       
+      return zoomToCenter(
+        delta,
+        prev.position, 
+        prev.vpCenter, 
+        zoom);
+    });
+  }
+
+  deleteSelectedNodes() {
+    this.props.graph.removeNodes(this.props.graph.selected);
   }
 }

@@ -39,7 +39,7 @@ export function zoomToCenter(
   const position = new Vector3D(
     prevPosition.x,
     prevPosition.y,
-    clamp(prevPosition.z - delta * zoom.sense * prevPosition.z, zoom.min, zoom.max)
+    clamp(prevPosition.z + delta, zoom.min, zoom.max)
   );
 
   return {position, transformMtx: Matrix3D.transformMatrix(position, vpCenter) };
@@ -56,7 +56,7 @@ export function zoomToCursor(
   bbox: AABB
 ) {
   const { x: px, y: py, z: pz } = prevPosition;
-  const nz = clamp(pz - delta * zoom.sense * pz, zoom.min, zoom.max);
+  const nz = clamp(pz + delta, zoom.min, zoom.max);
   const prevMousePos = screenToWorld(origin, prevPosition, vpCenter);
   const newMousePos = screenToWorld(origin, new Vector3D(px, py, nz), vpCenter);
 

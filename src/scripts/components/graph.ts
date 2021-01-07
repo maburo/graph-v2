@@ -33,26 +33,39 @@ interface NodeEdge<T> {
   yoffset: number;
   from: Node<T>;
   to: Node<T>;
+  type: EdgeType,
+}
+
+enum EdgeType {
+  In, Out
+}
+
+function outEdges<T>(edge: NodeEdge<T>) {
+  return edge.type === EdgeType.Out;
+}
+
+function inEdges<T>(edge: NodeEdge<T>) {
+  return edge.type === EdgeType.In;
 }
 
 export class Graph<T> {
   readonly bbox: AABB = new AABB();
-  private elementsList: Node<T>[] = [];
-  private elementsMap: NodeMap<T> = new Map();
+  private nodeList: Node<T>[] = [];
+  private nodeMap: NodeMap<T> = new Map();
   private edgeMap: Map<ID, NodeEdge<T>[]> = new Map();
-  private adjacencyMap: Map<ID, ID[]> = new Map();
+  // private adjacencyMap: Map<ID, ID[]> = new Map();
   private selectedNodes: NodeSet<T> = new Set();
   private dragContext: DragContext<T>;
 
   addNode(node: Node<T>) {
     this.addNodeToBbox(node);
-    this.elementsMap.set(node.id, node);
-    this.elementsList.push(node);
+    this.nodeMap.set(node.id, node);
+    this.nodeList.push(node);
   }
 
   addEdge(edge: Edge): boolean {
-    if (!this.elementsMap.has(edge.from) ||
-        !this.elementsMap.has(edge.to)) 
+    if (!this.nodeMap.has(edge.from) ||
+        !this.nodeMap.has(edge.to)) 
     {
       console.warn("Can't add edge", edge);
       return false;
@@ -65,41 +78,55 @@ export class Graph<T> {
       to: this.getNode(edge.to),
       xoffset: edge.xoffset,
       yoffset: edge.yoffset,
+      type: EdgeType.Out
     });
     this.edgeMap.set(edge.from, edges);
 
-    const to = this.adjacencyMap.get(edge.from) || [];
-    to.push(edge.to);
-    this.adjacencyMap.set(edge.from, to);
+    // const to = this.adjacencyMap.get(edge.from) || [];
+    // to.push(edge.to);
+    // this.adjacencyMap.set(edge.from, to);
     return true;
   }
 
-  removeNode(id: number) {
-    this.elementsMap.delete(id);
-    this.elementsList = this.elementsList.filter(node => node.id === id);
+  removeNode(id: ID) {
+    this.nodeMap.delete(id);
+    this.nodeList = this.nodeList.filter(node => node.id === id);
+    this.reCalcBbox();
+  }
+  
+  removeNodes(nodes: NodeSet<T>) {
+    console.log('delete', nodes);
+    
+    nodes.forEach(node => this.nodeMap.delete(node.id));
+    this.nodeList = this.nodeList.filter(node => !nodes.has(node));
+    // this.selectedNodes = this.selectedNodes.filter(node => ids.has(node));
+    // this.adjacencyMap.delete
+    // this.edgeMap.delete
+
     this.reCalcBbox();
   }
 
   get empty(): boolean {
-    return this.elementsList.length === 0;
+    return this.nodeList.length === 0;
   }
 
   getNode(id: number) {
-    return this.elementsMap.get(id);
+    return this.nodeMap.get(id);
   }
 
   get nodes(): Node<T>[] {
-    return this.elementsList;
+    return this.nodeList;
   }
 
   getNodes(filter: (node: Node<T>) => Boolean) {
-    return this.elementsList.filter(filter)
+    return this.nodeList.filter(filter)
   }
 
   getAdjacentNodes(id: ID): Node<T>[] {
-    const ids = this.adjacencyMap.get(id);
-    if (!ids) return [];
-    return ids.map(id => this.elementsMap.get(id));
+    return this.edgeMap.get(id)?.filter(outEdges).map(edge => edge.to) ?? [];
+    // const ids = this.adjacencyMap.get(id);
+    // if (!ids) return [];
+    // return ids.map(id => this.nodeMap.get(id));
   }
 
   getEdges(id: ID) {

@@ -14,6 +14,8 @@ import Editor from './scripts/components/editor';
 import { calcEdgeConnectionCoord, edgeOutOffset } from './scripts/components/layers/edges-layer';
 import { RULES_NODE_HEADER_HEIGHT, RULES_NODE_TOP, RULES_NODE_PADDING } from './scripts/components/shared-components/diagram/utils/diagram-dimensions.utils';
 import { off } from 'process';
+import { Platform } from './scripts/controllers';
+import { defaultKeyMapping, keyActions } from './scripts/controllers/keyboard-controller';
 
 const container = document.createElement('div');
 container.className = 'container';
@@ -94,9 +96,6 @@ function loadGraph(file: string) {
       edges.forEach(edge => {
         graph.addEdge(edge);
       });
-
-      // const node33 = graph.nodes.find(el => el.id === 33)
-      // graph.findAllChildren([node33])
       
       ReactDOM.render(
         <div className="root">
@@ -107,9 +106,10 @@ function loadGraph(file: string) {
             graph={graph} 
             zoom={{
               min: 0.05,
-              max: 1,
+              max: 2,
               sense: 0.001,
             }}
+            keymap={defaultKeyMapping()}
             />
           {/* <Editor /> */}
         </div>

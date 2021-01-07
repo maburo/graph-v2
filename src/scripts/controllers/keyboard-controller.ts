@@ -1,80 +1,203 @@
+import { Graph } from "../components/graph";
 import { GraphEditor } from "../components/graph-editor";
+import { clamp } from "../math";
+
+export const enum Platform {
+  Win, Mac
+}
+const PLATFORM = window.navigator.platform.toLocaleLowerCase().startsWith('mac') 
+  ? Platform.Mac 
+  : Platform.Win;
+
+interface KeyModifiers {
+  readonly shiftKey?: boolean;
+  readonly ctrlKey?: boolean;
+  readonly metaKey?: boolean;
+  readonly altKey?: boolean;
+}
+
+interface KeyMapping {
+  readonly modifiers: number;
+  readonly command: (graph: GraphEditor) => void;
+}
+
+export interface KeyMappingSettings {
+  keys: string[],
+  modifiers?: KeyModifiers,
+  platform?: Platform,
+  action: (graph: GraphEditor) => void,
+}
+
+interface KeyMappingSetting {
+  key: string,
+  modifiers?: KeyModifiers,
+  action: (graph: GraphEditor) => void,
+}
 
 export default class KeyboardController {
   readonly onKeyPress: (e: React.KeyboardEvent) => void;
   readonly onKeyDown: (e: React.KeyboardEvent) => void;
 
-  constructor(editor: GraphEditor) {
-    this.onKeyPress = onKeyPressFn.bind(editor);
-    this.onKeyDown = onKeyDownFn.bind(editor);
+  constructor(editor: GraphEditor, settings: KeyMappingSettings[]) {
+    const keyMapping = mapKeys(settings);
+    this.onKeyDown = onKeyDownFn.bind(editor, keyMapping);
   }
 }
 
-function onKeyDownFn(this: GraphEditor, e: React.KeyboardEvent) {
-  // console.log(e);
+function extractActions(settings: KeyMappingSettings): KeyMappingSetting[] {
+  return settings.keys.map(key => ({
+    key,
+    modifiers: settings.modifiers,
+    action: settings.action,
+  }));
 }
 
-const platform = window.navigator.platform.toLocaleLowerCase();
-if (platform.startsWith('mac')) {
-
-} else {
-
+function mapKeys(settings: KeyMappingSettings[]) {
+  return settings
+    .filter(({ platform }) => !platform || platform === PLATFORM)
+    .flatMap(extractActions)
+    .reduce((acc, {key, action, modifiers}) => {
+      return acc.set(key, {
+        command: action,
+        modifiers: modifiersBits(modifiers),
+      })
+    }, new Map<string, KeyMapping>());
 }
 
-function isUndo() {
 
-}
+function onKeyDownFn(this: GraphEditor, keymap: Map<string, KeyMapping>, e: React.KeyboardEvent) {
+  const action = keymap.get(e.code);
 
-function isRedo() {
-
-}
-
-function onKeyPressFn(this: GraphEditor, e: React.KeyboardEvent) {
-  // e.preventDefault();
-  
-  switch (e.code) {
-    case 'KeyZ':
-      break;
-    case 'KeyY':
-      break;
+  if (action && !(action.modifiers ^ modifiersBits(e))) {
+    e.preventDefault();
+    e.stopPropagation();
+    action.command(this);
   }
 }
 
-class CommandManger {
-  private stack: Command[] = [];
-  private maxSize: number = 10;
-  private idx: number = 0;
-
-  undo() {
-    this.stack[this.idx].undo();
-    this.idx -= 1;
+function modifiersBits(modifiers?: KeyModifiers) {
+  if (modifiers) {
+    return (modifiers.shiftKey && 0x0001) 
+         | (modifiers.ctrlKey && 0x0010) 
+         | (modifiers.altKey && 0x0100) 
+         | (modifiers.metaKey && 0x1000);
   }
 
-  redo() {
-    this.idx += 1;
-    this.stack[this.idx].execute();
-  }
-
-  add(command: Command) {
-    this.stack.push(command);
-    if (this.stack.length > this.maxSize) {
-      this.stack.shift();
-    }
-    this.idx = this.stack.length - 1;
-  }
+  return 0;
 }
 
-abstract class Command {
-  abstract execute(): void;
-  abstract undo(): void;
-}
-
-
-
-class UndoCommand {
+export function undo(graph: GraphEditor) {
 
 }
 
-class RedoCommand {
-
+function zoomIn(graph: GraphEditor) {
+  graph.zoom(.25);
 }
+
+function zoomOut(graph: GraphEditor) {
+  graph.zoom(-.25);
+}
+
+function deleteNode(graph: GraphEditor) {
+  graph.deleteSelectedNodes();
+}
+
+export const keyActions = {
+  zoomIn,
+  zoomOut,
+  deleteNode,
+}
+
+export function defaultKeyMapping() {
+  return [
+    { 
+      keys:['KeyF'], 
+      action: () => {
+        console.log('focus');
+      },
+    },
+    { 
+      keys:['Minus', 'NumpadSubtract'], 
+      action: keyActions.zoomOut,
+    },
+    { 
+      keys:['Equal', 'NumpadAdd'], 
+      action: keyActions.zoomIn,
+    },
+    { 
+      keys:['Delete'], 
+      action: keyActions.deleteNode,
+    },
+    { 
+      keys:['KeyZ'], 
+      modifiers: {ctrlKey: true}, 
+      action: () => { 
+        console.log('undo');
+      },
+      platform: Platform.Win 
+    },
+    { 
+      keys:['KeyY'], 
+      modifiers: {ctrlKey: true}, 
+      action: () => {
+        console.log('redo');
+      },
+      platform: Platform.Win 
+    },
+    { 
+      keys:['KeyZ'], 
+      modifiers: {metaKey: true}, 
+      action: () => {
+        console.log('undo mac');
+      }, 
+      platform: Platform.Mac 
+    },
+    { 
+      keys:['KeyZ'], 
+      modifiers: {metaKey: true, shiftKey: true}, 
+      action: () => {
+        console.log('redo mac');
+      }, 
+      platform: Platform.Mac 
+    },
+  ]
+}
+
+// class CommandManger {
+//   private stack: Command[] = [];
+//   private maxSize: number = 10;
+//   private idx: number = 0;
+
+//   undo() {
+//     this.stack[this.idx].undo();
+//     this.idx -= 1;
+//   }
+
+//   redo() {
+//     this.idx += 1;
+//     this.stack[this.idx].execute();
+//   }
+
+//   add(command: Command) {
+//     this.stack.push(command);
+//     if (this.stack.length > this.maxSize) {
+//       this.stack.shift();
+//     }
+//     this.idx = this.stack.length - 1;
+//   }
+// }
+
+// abstract class Command {
+//   abstract execute(): void;
+//   abstract undo(): void;
+// }
+
+
+
+// class UndoCommand {
+
+// }
+
+// class RedoCommand {
+
+// }
