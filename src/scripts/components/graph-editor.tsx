@@ -140,7 +140,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       height, 
       mousePos,
       vpCenter,
-      // projMousePos, 
       transformMtx,
       intercationOrigin,
       intercationEnd,
@@ -149,10 +148,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     const edges: EdgeData[] = [];
     
     for (const node of nodes) {
-      const adjacent = graph.getAdjacentNodes(node.id);
-      const edgeList = graph.getEdges(node.id);
-
-      if (adjacent.length === 0) continue;
+      const edgeList = graph.getOutEdges(node.id);
 
       for (const edge of edgeList) {
         const end = calcInCoords(edge.to);
@@ -170,6 +166,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
           // className="container omni-canvas-bg" 
+          className="container" 
           style={{
             backgroundPositionX: -position.x * position.z,
             backgroundPositionY: -position.y * position.z,

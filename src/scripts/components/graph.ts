@@ -44,8 +44,27 @@ function outEdges<T>(edge: NodeEdge<T>) {
   return edge.type === EdgeType.Out;
 }
 
-function inEdges<T>(edge: NodeEdge<T>) {
-  return edge.type === EdgeType.In;
+function createEdge<T>(type: EdgeType, from: Node<T>, to: Node<T>, xoffset: number, yoffset: number) {
+  return {
+    key: `${EdgeType[type]}-${from.id}-${to.id}`,
+    from,
+    to,
+    xoffset: xoffset,
+    yoffset: yoffset,
+    type,
+  };
+}
+
+function addTo<T>(map: Map<ID, T[]>, id: ID, value: T) {
+  const list = map.get(id) ?? [];
+  list.push(value);
+  map.set(id, list);
+}
+
+function deleteFrom<T>(map: Map<ID, T[]>, id: ID, filter: (value:T) => boolean) {
+  const list = map.get(id);
+  if (!list) return;
+  map.set(id, list.filter(filter));
 }
 
 export class Graph<T> {
@@ -53,9 +72,9 @@ export class Graph<T> {
   private nodeList: Node<T>[] = [];
   private nodeMap: NodeMap<T> = new Map();
   private edgeMap: Map<ID, NodeEdge<T>[]> = new Map();
-  // private adjacencyMap: Map<ID, ID[]> = new Map();
   private selectedNodes: NodeSet<T> = new Set();
   private dragContext: DragContext<T>;
+  private deleteFromEdgeMap = deleteFrom.bind(this.edgeMap);
 
   addNode(node: Node<T>) {
     this.addNodeToBbox(node);
@@ -64,45 +83,36 @@ export class Graph<T> {
   }
 
   addEdge(edge: Edge): boolean {
-    if (!this.nodeMap.has(edge.from) ||
-        !this.nodeMap.has(edge.to)) 
-    {
+    const from = this.getNode(edge.from);
+    const to = this.getNode(edge.to);
+
+    if (!from || !to) {
       console.warn("Can't add edge", edge);
       return false;
     }
-   
-    const edges = this.edgeMap.get(edge.from) ?? [];
-    edges.push({
-      key: `${edge.from}-${edge.to}`,
-      from: this.getNode(edge.from),
-      to: this.getNode(edge.to),
-      xoffset: edge.xoffset,
-      yoffset: edge.yoffset,
-      type: EdgeType.Out
-    });
-    this.edgeMap.set(edge.from, edges);
 
-    // const to = this.adjacencyMap.get(edge.from) || [];
-    // to.push(edge.to);
-    // this.adjacencyMap.set(edge.from, to);
+    addTo(this.edgeMap, edge.from, createEdge(EdgeType.Out, from, to, edge.xoffset, edge.yoffset));
+    addTo(this.edgeMap, edge.to, createEdge(EdgeType.In, to, from, 0, 0));
+
     return true;
-  }
-
-  removeNode(id: ID) {
-    this.nodeMap.delete(id);
-    this.nodeList = this.nodeList.filter(node => node.id === id);
-    this.reCalcBbox();
   }
   
   removeNodes(nodes: NodeSet<T>) {
-    console.log('delete', nodes);
-    
-    nodes.forEach(node => this.nodeMap.delete(node.id));
-    this.nodeList = this.nodeList.filter(node => !nodes.has(node));
-    // this.selectedNodes = this.selectedNodes.filter(node => ids.has(node));
-    // this.adjacencyMap.delete
-    // this.edgeMap.delete
+    nodes.forEach(node => {
+      const nodeId = node.id;
+      
+      this.edgeMap.get(nodeId).forEach(edge => deleteFrom(
+        this.edgeMap, 
+        edge.to.id, 
+        it => (edge.type === EdgeType.Out ? it.from.id : it.to.id) !== nodeId)
+      );
+      this.edgeMap.delete(nodeId);
+      this.nodeMap.delete(nodeId);
+    });
 
+    // onDelete set state
+
+    this.nodeList = this.nodeList.filter(node => !nodes.has(node));
     this.reCalcBbox();
   }
 
@@ -123,14 +133,11 @@ export class Graph<T> {
   }
 
   getAdjacentNodes(id: ID): Node<T>[] {
-    return this.edgeMap.get(id)?.filter(outEdges).map(edge => edge.to) ?? [];
-    // const ids = this.adjacencyMap.get(id);
-    // if (!ids) return [];
-    // return ids.map(id => this.nodeMap.get(id));
+    return this.getOutEdges(id).map(edge => edge.to);
   }
 
-  getEdges(id: ID) {
-    return this.edgeMap.get(id) ?? [];
+  getOutEdges(id: ID) {
+    return this.edgeMap.get(id)?.filter(outEdges) ?? [];
   }
 
   /**

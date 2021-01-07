@@ -71,7 +71,7 @@ function renderCrosshair(vpWidth: number, vpHeight: number, label: string) {
   const radius = 15;
   const centerX = vpWidth / 2;
   const centerY = vpHeight / 2;
-
+  
   return (
     <svg 
       width={vpWidth} 

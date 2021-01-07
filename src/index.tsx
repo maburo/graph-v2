@@ -93,16 +93,14 @@ function loadGraph(file: string) {
         });
       });
 
-      edges.forEach(edge => {
-        graph.addEdge(edge);
-      });
+      edges.forEach(edge => graph.addEdge(edge));
       
       ReactDOM.render(
         <div className="root">
           <GraphEditor 
             nodeFactory={new NodeFactory()}
             zoomFunc={zoomToCursor}
-            // debug={true}
+            debug={true}
             graph={graph} 
             zoom={{
               min: 0.05,
