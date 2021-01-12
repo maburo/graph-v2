@@ -40,7 +40,7 @@ enum EdgeType {
   In, Out
 }
 
-function outEdges<T>(edge: NodeEdge<T>) {
+function outEdgesFilter<T>(edge: NodeEdge<T>) {
   return edge.type === EdgeType.Out;
 }
 
@@ -55,26 +55,115 @@ function createEdge<T>(type: EdgeType, from: Node<T>, to: Node<T>, xoffset: numb
   };
 }
 
-function addTo<T>(map: Map<ID, T[]>, id: ID, value: T) {
-  const list = map.get(id) ?? [];
-  list.push(value);
-  map.set(id, list);
+/**
+ * MultiMap for edges
+ */
+class EdgeMap<T> {
+  private map: Map<ID, NodeEdge<T>[]> = new Map();
+
+  get: (nodeId: ID) => NodeEdge<T>[] = this.map.get.bind(this.map);
+
+  add(nodeId: ID, value: NodeEdge<T>): this {
+    const list = this.map.get(nodeId) ?? [];
+    if (list.find(edge => edge.from === value.from && edge.to === value.to)) {
+      return this;
+    }
+
+    list.push(value);
+    this.map.set(nodeId, list);
+
+    return this;
+  }
+
+  /**
+   * Deletes all edges from all nodes related to the nodeId
+   * @param nodeId 
+   */
+  delete(nodeId: ID): NodeEdge<T>[] {
+    const edges = this.map.get(nodeId);
+    if (!edges) return;
+
+    const isEdgeNotLinkedToNode = (edge: NodeEdge<T>) => !(edge.to.id === nodeId || edge.from.id === nodeId);
+
+    edges.forEach(edge => {
+      const linkId = edge.to.id;
+      const filtered = this.map.get(linkId).filter(isEdgeNotLinkedToNode);
+      this.map.set(linkId, filtered);
+    });
+
+    this.map.delete(nodeId);
+    return edges;
+  }
 }
 
-function deleteFrom<T>(map: Map<ID, T[]>, id: ID, filter: (value:T) => boolean) {
-  const list = map.get(id);
-  if (!list) return;
-  map.set(id, list.filter(filter));
+interface Command {
+  execute: () => void;
+  undo: () => void;
 }
 
+export class StateHistory {
+  readonly maxHistoryDepth: number;
+  private history: Command[] = [];
+  private idx: number = 0
+
+  constructor(maxHistoryDepth: number = 10) {
+    this.maxHistoryDepth = maxHistoryDepth;
+  }
+
+  undo() {
+    if (this.idx === 0) return;
+
+    this.idx -= 1;
+    this.history[this.idx].undo();
+  }
+
+  redo() {
+    this.history[this.idx].execute();
+    this.idx += 1;
+  }
+
+  push(action: Command) {
+    action.execute();
+    const startIdx = Math.max(0, this.idx + 1 - this.maxHistoryDepth);
+    this.history = this.history.slice(startIdx, this.idx).concat(action);
+    this.idx = this.history.length;
+  }
+}
+
+/**
+ * Graph
+ */
 export class Graph<T> {
   readonly bbox: AABB = new AABB();
   private nodeList: Node<T>[] = [];
   private nodeMap: NodeMap<T> = new Map();
-  private edgeMap: Map<ID, NodeEdge<T>[]> = new Map();
+  private edgeMap: EdgeMap<T> = new EdgeMap();
   private selectedNodes: NodeSet<T> = new Set();
   private dragContext: DragContext<T>;
-  private deleteFromEdgeMap = deleteFrom.bind(this.edgeMap);
+  private history: StateHistory = new StateHistory();
+
+  private selectedNode: Node<T> = null;
+  private setState: (state: any) => void;
+
+  private subscribers: Map<ID, () => void[]> = new Map();
+
+  // selctedNodeState(nodeId: ID, setState: (state: any) => void) {
+  //   console.log('selctedNodeState');
+
+  //   const node = this.getNode(nodeId);
+    
+  //   this.setState = setState;
+
+  //   const subscribers = this.subscribers.get(nodeId) ?? [];
+  //   subscribers.push(setState);
+  //   this.subscribers.set(nodeId, subscribers);
+    
+  //   return (node: Node<T>) => {
+  //     node.payload = payload;
+
+  //     this.subscribers.get(nodeId).forEach(sub => sub(node));
+  //   };
+  // }
 
   addNode(node: Node<T>) {
     this.addNodeToBbox(node);
@@ -91,23 +180,17 @@ export class Graph<T> {
       return false;
     }
 
-    addTo(this.edgeMap, edge.from, createEdge(EdgeType.Out, from, to, edge.xoffset, edge.yoffset));
-    addTo(this.edgeMap, edge.to, createEdge(EdgeType.In, to, from, 0, 0));
+    this.edgeMap.add(edge.from, createEdge(EdgeType.Out, from, to, edge.xoffset, edge.yoffset));
+    this.edgeMap.add(edge.to, createEdge(EdgeType.In, to, from, 0, 0));
 
     return true;
   }
   
   removeNodes(nodes: NodeSet<T>) {
-    nodes.forEach(node => {
+    const edges = [...nodes].flatMap(node => {
       const nodeId = node.id;
-      
-      this.edgeMap.get(nodeId).forEach(edge => deleteFrom(
-        this.edgeMap, 
-        edge.to.id, 
-        it => (edge.type === EdgeType.Out ? it.from.id : it.to.id) !== nodeId)
-      );
-      this.edgeMap.delete(nodeId);
       this.nodeMap.delete(nodeId);
+      return this.edgeMap.delete(nodeId);
     });
 
     // onDelete set state
@@ -116,7 +199,7 @@ export class Graph<T> {
     this.reCalcBbox();
   }
 
-  get empty(): boolean {
+  get isEmpty(): boolean {
     return this.nodeList.length === 0;
   }
 
@@ -128,16 +211,12 @@ export class Graph<T> {
     return this.nodeList;
   }
 
-  getNodes(filter: (node: Node<T>) => Boolean) {
-    return this.nodeList.filter(filter)
-  }
-
-  getAdjacentNodes(id: ID): Node<T>[] {
+  private getAdjacentNodes(id: ID): Node<T>[] {
     return this.getOutEdges(id).map(edge => edge.to);
   }
 
   getOutEdges(id: ID) {
-    return this.edgeMap.get(id)?.filter(outEdges) ?? [];
+    return this.edgeMap.get(id)?.filter(outEdgesFilter) ?? [];
   }
 
   /**
@@ -155,6 +234,10 @@ export class Graph<T> {
   }
 
   setSelection(node: Node<T>): NodeSet<T> {
+    console.log('setSelection', this.setState);
+    
+    // this.setState({node});
+
     this.selectedNodes = new Set();
     return this.addToSelection(node);
   }

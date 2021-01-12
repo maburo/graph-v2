@@ -9,8 +9,11 @@ export const NODE_TRANSFORM_DELTA_X = 60;
 export const NODE_TRANSFORM_DELTA_Y = 45;
 export const NODE_PADDING = 20;
 
-export const RULES_NODE_WIDTH = 300;
-export const RULES_NODE_HEADER_HEIGHT = 80;
+export const ACTION_NODE_WIDTH = 300;
+export const ACTION_NODE_HEIGHT = 80;
+export const RULES_NODE_WIDTH = ACTION_NODE_WIDTH;
+export const RULES_NODE_HEADER_HEIGHT = ACTION_NODE_HEIGHT;
+
 export const RULES_NODE_RULE_PADDING = 10;
 export const RULES_NODE_RULE_HEIGHT = 30;
 export const RULES_NODE_CONNECTOR_X = 263;
@@ -26,8 +29,7 @@ export const RULES_NODE_FIRST_CONNECTOR_Y =
 export const RULES_NODE_RULE_DIFF = RULES_NODE_RULE_PADDING + RULES_NODE_RULE_HEIGHT;
 
 export const MENU_NODE_DELTA_X = 40;
-export const ACTION_NODE_WIDTH = 300;
-export const ACTION_NODE_HEIGHT = 80;
+
 
 export const MENU_NODE_WIDTH = 320;
 export const MENU_NODE_HEIGHT = 360;

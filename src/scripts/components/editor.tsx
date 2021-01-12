@@ -1,60 +1,51 @@
-import React, { useRef, useState } from 'react';
-import { start } from 'repl';
+import React, { useContext, useRef, useState } from 'react';
+import { Graph, Node } from './graph';
+import { GraphContext } from '../../index';
 
-interface State {
-  width: number;
-  node?: any;
+interface Props {
+  nodeId?: number;
+  graph: Graph<any>;
 }
 
-export default function Editor() {
-  const [ state, setState ] = useState<State>({ width: 1000 });
+interface State {
+  node?: Node<any>;
+}
+
+// function useNodeState(nodeId: number): [Node<any>, (node: any) => void] {
+//   const ctx = useContext(GraphContext);
+//   const [ state, setState ] = useState();
+  
+//   ctx.selctedNodeState(setState);
+
+//   return [];
+// }
+
+export default function Editor(props: Props) {
+  // const [ state, setState ] = useState<State>({ });
+  // const node = props.graph.selctedNodeState(setState);
+  // const [ node, setState ] = useNodeState(props.nodeId)
+
+  
   
   return (
-    <div style={{width: state.width, display: 'flex'}}>
+    <div style={{display: 'flex', width: 500}}>
       <div 
         style={{
           width: '5px', 
           backgroundColor: '#333',
-          cursor: 'pointer',
         }}
-        onMouseDown={startResize.bind({width: state.width, setState})}
         />
 
-      <div>
-        <textarea></textarea>
+      <div style={{width: '100%'}}>
+        {/* <textarea 
+          onChange={e => setState(JSON.parse(e.target.value))}
+          value={JSON.stringify(node?.payload, null, 2)}
+          style={{
+            boxSizing: 'border-box',
+            width: '100%',
+            height: '100%'
+          }}/> */}
       </div>
     </div>
   );
-}
-
-function startResize(e: MouseEvent) {
-  const startX = e.screenX;
-  const { width, setState } = this;
-  console.log(width, startX);
-  
-
-  function resize(re: MouseEvent) {
-    setState((prev: State) => {
-      const diff = startX - re.screenX;
-      console.log(re.screenX, diff);
-      
-      return { width: width + diff };
-    });
-  }
-
-  function onMouseMove(e1: MouseEvent) {
-    resize(e1);
-  }
-
-  function onMouseUp(e: MouseEvent) {
-    console.log('remove');
-    
-    window.removeEventListener('mousemove', onMouseMove);
-    window.removeEventListener('mouseup', onMouseUp);
-  }
-
-  console.log('add event');
-  
-  window.addEventListener('mousemove', onMouseMove);
-  window.addEventListener('mouseup', onMouseUp);
 }

@@ -4,18 +4,31 @@ import { FlowRule } from '@infobip/moments-components';
 import { RULES_NODE_PADDING, RULES_NODE_RULE_DIFF, RULES_NODE_TOP } from '../utils/diagram-dimensions.utils';
 
 import removeIcon from '../../../../../../assets/img/canvas/elements/remove-schnipple.svg';
+import plusIcon from '../../../../../../assets/img/canvas/elements/plus-schnipple.svg';
+import { relative } from 'path';
 
 const __ = (s: string) => s;
 
 export function renderRules(rules?: FlowRule[]) {
-  return [
-    <div className="ib-flow-decision-path">
-      {renderBasePath(rules?.length)}
-    </div>,
-    <div className="ib-flow-decision-group-decisions">
-      {rules?.map(renderRule)}
+  return (
+    <div style={{position: 'relative'}}>
+      <div className="ib-flow-decision-path">
+        { renderBasePath(rules?.length) }
+      </div>
+      { rules?.map(renderRule) }
+      { renderAddRuleButton(true, rules) }
     </div>
-  ];
+  )
+}
+
+function renderAddRuleButton(canAddRule: boolean, rules?: FlowRule[]) {
+  return rules?.length > 0 && canAddRule ? (
+    <div className="ib-flow-shnipple-wrapper" style={{top: RULES_NODE_TOP, left: 8}}>
+      <button className="ib-flow-shnipple" onClick={() => {}/*this.addButtonClickHandler*/}>
+        <img src={plusIcon} alt="" />
+      </button>
+    </div>
+  ) : (null);
 }
 
 function renderHPath(size: number): JSX.Element[] {
@@ -53,8 +66,8 @@ function renderRule(rule: FlowRule, index: number) {
       key={index} // TODO: next el id?
       className="ib-flow-decision"
       style={{
-        marginTop: '10px',
-        marginLeft: '53px'
+        paddingTop: '10px',
+        paddingLeft: '53px'
       }}
     >
       <div className="ib-flow-decision-text-cont">

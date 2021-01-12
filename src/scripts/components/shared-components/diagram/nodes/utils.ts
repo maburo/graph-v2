@@ -38,6 +38,9 @@ import recordIcon from '../../../../../../assets/img/ivr/record.svg';
 import hangUpIcon from '../../../../../../assets/img/ivr/icon-hang-up.svg';
 import callUrlIcon from '../../../../../../assets/img/ivr/icon-call-url.svg';
 
+
+export const DEFAULT_DESCRIPTION_TEXT = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua';
+
 // const __: Localization = _.partial(I18n.__, 'Diagram');
 const __ = (s: string) => s;
 

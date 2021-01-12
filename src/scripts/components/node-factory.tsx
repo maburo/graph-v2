@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
 
 import { FlowElement, FlowElementType } from "@infobip/moments-components"
-// import { ActionNode, ExitNode, PauseNode } from "./flow-nodes"
 import {
   ActionNode,
   ExitNode,
@@ -73,20 +72,6 @@ export class NodeFactory {
             // validationResult={this.getValidationResult(element)}
           />
         );
-      // case FlowElementType.NEW_ELEMENT:
-      //   return (
-      //     <CreateElementMenu
-      //       id={node.id}
-      //       deleteElement={() => {}}
-      //       // accountRoutesPresent={accountRoutesPresent(this.props.config)}
-      //       changeType={() => {}}
-      //       // commonData={this.props.store.commonDataStore.commonData}
-      //       // zoomLevel={this.props.store.diagramDimensions.zoomLevel}
-      //       createdFromType={() => {}}
-      //       isEditingFlow={true}
-      //       // ivrChains={getIvrChainsEndedBy(elements, element)}
-      //     />
-      //   );
       case FlowElementType.EVALUATE_PARTICIPANT_DATA:
       case FlowElementType.EVALUATE_VALUE:
       case FlowElementType.EVALUATE_BEHAVIOUR_EVENT:
@@ -143,3 +128,63 @@ export class NodeFactory {
     }
   }
 }
+
+import schnippleIcon from '../../../assets/img/canvas/elements/connect-schnipple.svg';
+
+interface ConnectorProps {
+  x: number;
+  y: number;
+}
+
+function Connector(props: ConnectorProps) {
+  const style: Record<string, unknown> = {
+    position: 'absolute',
+    left: props.x,
+    top: props.y * .5,
+    // width: SCHNIPPLE_SIZE,
+    // height: SCHNIPPLE_SIZE,
+  };
+
+  return (
+    <div
+      data-tip=""
+      // data-for={`connector-tooltip-${this.props.order}`}
+      className="ib-flow-shnipple-wrapper"
+      style={style}
+      // onMouseDown={this.onMouseDown}
+      // onDragStart={this.onDragStart}
+    >
+      <div className="connecting-line" />
+      <button className="ib-flow-shnipple">
+          <img src={schnippleIcon} />
+      </button>
+
+      {/* <DiagramReactTooltip
+          id={`connector-tooltip-${this.props.order}`}
+          place="right"
+          zoomLevel={this.props.zoomLevel}
+          className="ib-flow-tooltip flow-schnipple-tooltip"
+      >
+          {__('Click to add an element or drag to connect to an existing element')}
+      </DiagramReactTooltip> */}
+  </div>
+  )
+}
+
+function renderNewConnection(path?: string, end?: { x: number; y: number }) {
+  const { left, top, zoomLevel } = this.props;
+
+  if (!path || !end) {
+      return null;
+  }
+
+  return (
+      <g className="omni-flow-path" transform={`translate(${left},${top}) scale(${zoomLevel} ${zoomLevel})`}>
+          <path strokeDasharray="5" className="omni-flow-path-path" d={path} />
+          <path className="omni-flow-new-path-overlay" d={path} />
+          <circle cx={end.x} cy={end.y} r="15" fill="rgba(41, 184, 153, 0.1)" />
+          <circle cx={end.x} cy={end.y} r="10" fill="rgba(41, 184, 153, 0.1)" />
+          <circle cx={end.x} cy={end.y} r="5" fill="black" />
+      </g>
+  );
+};

@@ -19,7 +19,7 @@ import sanitizeHtml from 'sanitize-html';
 
 import { TruncateWithEllipsis } from '../../truncate-with-ellipsis';
 
-import { ElementGroup, getAllFlowElements, resolveUrlShortenedText } from './utils';
+import { DEFAULT_DESCRIPTION_TEXT, ElementGroup, getAllFlowElements, resolveUrlShortenedText } from './utils';
 import { Metrics } from './metrics/metrics';
 
 // const __: Localization = _.partial(I18n.__, 'Diagram');
@@ -70,10 +70,10 @@ export class ActionNode extends React.Component<Props> {
         });
 
         const elementPreview = this.props.elementPreview;
-        const title = elementPreview ? elementPreview.title : '';
+        const title = elementPreview ? elementPreview.title : DEFAULT_DESCRIPTION_TEXT;
 
         const urlShorteningParams = this.props.action?.serviceMessagingData?.urlShorteningParams;
-        let actionText = elementPreview ? elementPreview.content : '';
+        let actionText = elementPreview ? elementPreview.content : DEFAULT_DESCRIPTION_TEXT;
 
         if (urlShorteningParams) {
             actionText = resolveUrlShortenedText(actionText, urlShorteningParams);
@@ -97,6 +97,9 @@ export class ActionNode extends React.Component<Props> {
 
                     <div className={messageTextClasses}>
                         { this.props.renderContent() }
+                        <div className="text text-ellipsis" title={actionText}>
+                            {actionText}
+                        </div>
                         {/* {this.props.failover ? (
                             <div
                                 dangerouslySetInnerHTML={{

@@ -27,11 +27,7 @@ interface Props {
 
 import icon from '../../../../../../assets/img/canvas/icon-pause-action-color.svg';
 
-export class PauseNode extends React.Component<Props> {
-    shouldComponentUpdate(nextProps: Props) {
-        return compareWithoutFunctions(this.props, nextProps);
-    }
-
+export class PauseNode extends React.PureComponent<Props> {
     render() {
         const classes = classNames('flow-pause-element', {
             warning: this.props.validationResult?.type === Validation.WARNING,

@@ -1,13 +1,10 @@
-import { Graph } from "../components/graph";
 import { GraphEditor } from "../components/graph-editor";
-import { clamp } from "../math";
 
 export const enum Platform {
   Win, Mac
 }
-const PLATFORM = window.navigator.platform.toLocaleLowerCase().startsWith('mac') 
-  ? Platform.Mac 
-  : Platform.Win;
+
+const PLATFORM = window.navigator.platform.toLocaleLowerCase().startsWith('mac') ? Platform.Mac : Platform.Win;
 
 interface KeyModifiers {
   readonly shiftKey?: boolean;
@@ -16,7 +13,7 @@ interface KeyModifiers {
   readonly altKey?: boolean;
 }
 
-interface KeyMapping {
+interface KeyAction {
   readonly modifiers: number;
   readonly command: (graph: GraphEditor) => void;
 }
@@ -25,12 +22,6 @@ export interface KeyMappingSettings {
   keys: string[],
   modifiers?: KeyModifiers,
   platform?: Platform,
-  action: (graph: GraphEditor) => void,
-}
-
-interface KeyMappingSetting {
-  key: string,
-  modifiers?: KeyModifiers,
   action: (graph: GraphEditor) => void,
 }
 
@@ -44,7 +35,7 @@ export default class KeyboardController {
   }
 }
 
-function extractActions(settings: KeyMappingSettings): KeyMappingSetting[] {
+function extractActions(settings: KeyMappingSettings) {
   return settings.keys.map(key => ({
     key,
     modifiers: settings.modifiers,
@@ -61,11 +52,11 @@ function mapKeys(settings: KeyMappingSettings[]) {
         command: action,
         modifiers: modifiersBits(modifiers),
       })
-    }, new Map<string, KeyMapping>());
+    }, new Map<string, KeyAction>());
 }
 
 
-function onKeyDownFn(this: GraphEditor, keymap: Map<string, KeyMapping>, e: React.KeyboardEvent) {
+function onKeyDownFn(this: GraphEditor, keymap: Map<string, KeyAction>, e: React.KeyboardEvent) {
   const action = keymap.get(e.code);
 
   if (action && !(action.modifiers ^ modifiersBits(e))) {

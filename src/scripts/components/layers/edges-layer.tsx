@@ -8,9 +8,10 @@ import { ACTION_NODE_HEIGHT, ACTION_NODE_WIDTH, EXIT_NODE_HEIGHT, PAUSE_NODE_HEI
 import { Point } from '../shared-components/diagram/utils/math/types';
 import { LayerProperties } from './layer-props';
 
-// const EdgeComponent = React.memo(edgeComponent);
+export const EdgesLayer = React.memo(edgesLayer);
+export const EdgeComponent = React.memo(edgeComponent);
 
-interface EdgesLayerProps extends LayerProperties {
+interface Props extends LayerProperties {
   update: Date,
   edges: EdgeData[],
   transform: string,
@@ -22,22 +23,9 @@ const HALF_EXIT_NODE_HEIGHT = EXIT_NODE_HEIGHT / 2;
 const HALF_START_NODE_HEIGHT = START_NODE_HEIGHT / 2;
 const HALF_RULES_NODE_HEADER_HEIGHT = RULES_NODE_HEADER_HEIGHT / 2;
 
-// function svgLayer(props: SvgLayerProps) {
-export class EdgesLayer extends React.PureComponent<EdgesLayerProps> {
-  // shouldComponentUpdate(next: SvgLayerProps) {
-  //   const a = this.props as any;
-  //   const b = next as any;
-
-  //   Object.keys(a).forEach(key => {
-  //     if (a[key] !== b[key]) console.log('>> svg layer', key);
-  //   })
-  //   return true;
-  // }
-
-  render() {
-    const props = this.props;
-
+function edgesLayer(props: Props) {
   const transform = props.transform;
+
   const edges = props.edges.map(edge => (
     <EdgeComponent 
       key={edge.key} 
@@ -65,9 +53,6 @@ export class EdgesLayer extends React.PureComponent<EdgesLayerProps> {
   </svg>
   );
 }
-}
-
-// export const SvgLayer = React.memo(svgLayer);
 
 export interface EdgeData {
   key: string,
@@ -90,22 +75,7 @@ const curveFactor = 2/curve;
 const COLOR_VALUES = ['0', '1', '2', '3', '4', '5', '6', '7', 
 '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F'];
 
-// function edgeComponent(props: EdgeProperties) {
-class EdgeComponent extends React.PureComponent<EdgeProperties> {
-
-  // shouldComponentUpdate(next: EdgeProperties) {
-  //   const a = this.props as any;
-  //   const b = next as any;
-
-  //   Object.keys(a).forEach(key => {
-  //     if (a[key] !== b[key]) console.log('>> edge', key);
-  //   })
-  //   return true;
-  // }
-
-  render() {    
-    const props = this.props;
-
+function edgeComponent(props: EdgeProperties) {
   const { startX, startY, endX, endY } = props;
   
   const halfLen = (endX - startX) * .5;
@@ -146,7 +116,6 @@ class EdgeComponent extends React.PureComponent<EdgeProperties> {
         />
     </g>
   );
-}
 }
 
 export function calcEdgeConnectionCoord(from: Node<FlowElement>, to: Node<FlowElement>) {
@@ -342,8 +311,8 @@ export function edgeOutOffset(type: FlowElementType | string): Point {
     case FlowElementType.START_EVALUATE_BEHAVIOUR_EVENT:
     case FlowElementType.START_EVALUATE_DATE_TIME_ATTRIBUTE:
       return {
-        x: ACTION_NODE_WIDTH,
-        y: HALF_ACTION_NODE_HEIGHT,
+        x: START_NODE_WIDTH,
+        y: HALF_START_NODE_HEIGHT,
       }
     case FlowElementType.PAUSE:
       return {

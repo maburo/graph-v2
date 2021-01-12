@@ -72,7 +72,7 @@ export class RulesNode extends React.Component<Props> {
 
         { renderRules(this.props.rules) }
 
-        {this.props.canAddRule && (
+        {/* {this.props.canAddRule && (
           <div
             className="ib-flow-decision-group-shnipple-wrapper"
             data-tip="tooltip"
@@ -87,7 +87,7 @@ export class RulesNode extends React.Component<Props> {
               <img src={plusIcon} alt="" />
             </button>
           </div>
-        )}
+        )} */}
         {/* {this.props.addingRuleDisabled && (
           <DiagramReactTooltip
             id={`add-condition-tooltip-${this.props.id}`}
