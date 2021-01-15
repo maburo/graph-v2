@@ -1,34 +1,30 @@
 import React from 'react';
-import { Vector2D } from '../../math';
 
-import { Graph, Node } from '../graph';
-import { Mode, NodeFactoryContext } from '../graph-editor';
+import { NodeFactoryContext, useNodeState } from '../graph-editor';
 import { LayerProperties } from './layer-props';
 
+export const NodesLayer = React.memo(nodesLayer);
+
 interface HtmlLayerProperties extends LayerProperties {
-  update: Date,
-  onStartDrag: (e: React.MouseEvent) => void,
-  nodes: Node<any>[],
-  transform: string,
+  onStartDrag: (e: React.MouseEvent) => void;
+  nodes: number[];
+  transform: string;
 }
 
-function nodesLayer({ nodes, transform, mode, graph, onStartDrag }: HtmlLayerProperties) {
+function nodesLayer({ nodes, transform, onStartDrag }: HtmlLayerProperties) {
+  // console.log('render node layer', [...nodes]);
+  
   return (
     <div
       className="render layer"
       style={{ transform, transformOrigin: "0px 0px", width: 0, height: 0 }}
     >
       {
-        nodes.map((node: Node<any>) => (
+        nodes.map(id => (
           <HtmlNode
-            key={node.id}
-            x={node.x}
-            y={node.y}
-            size={node.size}
+            key={id}
+            id={id}
             onStartDrag={onStartDrag}
-            graph={graph}
-            mode={mode}
-            node={node}
           />))
       }
     </div>
@@ -36,27 +32,24 @@ function nodesLayer({ nodes, transform, mode, graph, onStartDrag }: HtmlLayerPro
 }
 
 interface NodeProperties {
-  x: number;
-  y: number;
-  size: Vector2D;
-  mode: Mode;
-  node: Node<any>;
-  graph: Graph<any>;
+  id: number;
   onStartDrag: (e: React.MouseEvent) => void;
 }
 
-const HtmlNode = React.memo(function({ x, y, node, onStartDrag, size }: NodeProperties) {
+const HtmlNode = React.memo(function(props: NodeProperties) {
   // let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
+  
+  const node = useNodeState(props.id);
   
   return (
     <NodeFactoryContext.Consumer>
       { factory => (
         <div
           data-id={node.id}
-          onMouseDown={onStartDrag}
+          onMouseDown={props.onStartDrag}
           style={{
-            left: x + 'px',
-            top: y + 'px'
+            left: node.x + 'px',
+            top: node.y + 'px'
           }}
           className="node"
         >
@@ -66,5 +59,3 @@ const HtmlNode = React.memo(function({ x, y, node, onStartDrag, size }: NodeProp
     </NodeFactoryContext.Consumer>
   )
 });
-
-export const NodesLayer = React.memo(nodesLayer);

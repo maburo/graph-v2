@@ -1,19 +1,19 @@
 import { Vector2D } from '../math';
 import AABB from '../math/aabb';
 
-type ID = number;
-type NodeMap<T> = Map<ID, Node<T>>;
-type NodeSet<T> = Set<Node<T>>;
+export type EdgeId = string;
+export type NodeId = number;
+type NodeMap<T> = Map<NodeId, Node<T>>;
 
 interface DragContext<T> {
   origin: Vector2D;
-  startPositions: Map<ID, Vector2D>;
+  startPositions: Map<NodeId, Vector2D>;
   nodes: Node<T>[];
   hasChildren: boolean;
 }
 
 export interface Node<T> {
-  id: ID;
+  id: NodeId;
   x: number;
   y: number;
   size: Vector2D;
@@ -21,77 +21,95 @@ export interface Node<T> {
 }
 
 export interface Edge {
-  xoffset: number;
-  yoffset: number;
-  from: number;
-  to: number;
+  from: NodeId;
+  to: NodeId;
+  idx: number;
 }
 
-interface NodeEdge<T> {
-  key: string,
-  xoffset: number;
-  yoffset: number;
+export interface NodeEdge<T> {
+  id: string;
+  idx: number;
   from: Node<T>;
   to: Node<T>;
-  type: EdgeType,
 }
 
-enum EdgeType {
-  In, Out
-}
-
-function outEdgesFilter<T>(edge: NodeEdge<T>) {
-  return edge.type === EdgeType.Out;
-}
-
-function createEdge<T>(type: EdgeType, from: Node<T>, to: Node<T>, xoffset: number, yoffset: number) {
+function createEdge<T>(from: Node<T>, to: Node<T>, idx: number): NodeEdge<T> {
   return {
-    key: `${EdgeType[type]}-${from.id}-${to.id}`,
+    id: `${from.id}-${to.id}`,
+    idx,
     from,
     to,
-    xoffset: xoffset,
-    yoffset: yoffset,
-    type,
   };
+}
+
+interface NodeEdges<T> {
+  in: NodeEdge<T>[];
+  out: NodeEdge<T>[];
 }
 
 /**
  * MultiMap for edges
  */
 class EdgeMap<T> {
-  private map: Map<ID, NodeEdge<T>[]> = new Map();
+  private byEdgeId: Map<EdgeId, NodeEdge<T>> = new Map();
+  private adjacencyMap: Map<NodeId, NodeEdge<T>[]> = new Map();
 
-  get: (nodeId: ID) => NodeEdge<T>[] = this.map.get.bind(this.map);
+  getByEdgeId: (edgeId: EdgeId) => NodeEdge<T> = this.byEdgeId.get.bind(this.byEdgeId);
 
-  add(nodeId: ID, value: NodeEdge<T>): this {
-    const list = this.map.get(nodeId) ?? [];
-    if (list.find(edge => edge.from === value.from && edge.to === value.to)) {
-      return this;
+  keys(): EdgeId[] {
+    const result = [];
+    for (const key of this.byEdgeId.keys()) result.push(key);
+    return result;
+  }
+
+  add(edge: NodeEdge<T>): this {
+    const fromId = edge.from.id;
+    const toId = edge.to.id;
+
+    if (this.adjacencyMap.has(fromId)) {
+      this.adjacencyMap.get(fromId).push(edge);
+    } else {
+      this.adjacencyMap.set(fromId, [edge]);
     }
 
-    list.push(value);
-    this.map.set(nodeId, list);
+    if (this.adjacencyMap.has(toId)) {
+      this.adjacencyMap.get(toId).push(edge);
+    } else {
+      this.adjacencyMap.set(toId, [edge]);
+    }
+
+    this.byEdgeId.set(edge.id, edge);
 
     return this;
+  }
+
+  getByNodeId(nodeId: NodeId): NodeEdge<T>[] {
+    return this.adjacencyMap.get(nodeId);
   }
 
   /**
    * Deletes all edges from all nodes related to the nodeId
    * @param nodeId 
    */
-  delete(nodeId: ID): NodeEdge<T>[] {
-    const edges = this.map.get(nodeId);
-    if (!edges) return;
+  delete(nodeId: NodeId): NodeEdge<T>[] {
+    const edges = this.adjacencyMap.get(nodeId);
 
-    const isEdgeNotLinkedToNode = (edge: NodeEdge<T>) => !(edge.to.id === nodeId || edge.from.id === nodeId);
-
+    if (!edges) return [];
+    
     edges.forEach(edge => {
-      const linkId = edge.to.id;
-      const filtered = this.map.get(linkId).filter(isEdgeNotLinkedToNode);
-      this.map.set(linkId, filtered);
+      this.byEdgeId.delete(edge.id);
+
+      if (edge.from.id === nodeId) {
+        const children = this.adjacencyMap.get(edge.to.id);
+        this.adjacencyMap.set(edge.to.id, children.filter(e => e.id !== edge.id));
+      } else {
+        const parent = this.adjacencyMap.get(edge.from.id);
+        this.adjacencyMap.set(edge.from.id, parent.filter(e => e.id !== edge.id));
+      }
     });
 
-    this.map.delete(nodeId);
+    this.adjacencyMap.delete(nodeId);
+
     return edges;
   }
 }
@@ -138,40 +156,92 @@ export class Graph<T> {
   private nodeList: Node<T>[] = [];
   private nodeMap: NodeMap<T> = new Map();
   private edgeMap: EdgeMap<T> = new EdgeMap();
-  private selectedNodes: NodeSet<T> = new Set();
+  private selectedNodes: Set<NodeId> = new Set();
   private dragContext: DragContext<T>;
-  private history: StateHistory = new StateHistory();
+  // private history: StateHistory = new StateHistory();
 
-  private selectedNode: Node<T> = null;
-  private setState: (state: any) => void;
+  private nodeSubscribers: Map<NodeId, Set<(node: Node<T>) => void>> = new Map();
+  private edgeSubscribers: Map<EdgeId, Set<(node: NodeEdge<T>) => void>> = new Map();
+  private edgeStateSubscribers: Set<(edge: EdgeId[]) => void> = new Set();
+  private nodeStateSubscribers: Set<(nodeId: NodeId[]) => void> = new Set(); 
 
-  private subscribers: Map<ID, () => void[]> = new Map();
+  private parser: (payload: T) => [Node<T>, Edge[]];
 
-  // selctedNodeState(nodeId: ID, setState: (state: any) => void) {
-  //   console.log('selctedNodeState');
+  constructor(parser: (payload: T) => [Node<T>, Edge[]]) {
+    this.parser = parser;
+  }
 
-  //   const node = this.getNode(nodeId);
-    
-  //   this.setState = setState;
+  add(payload: T) {
+    const [node, edges] = this.parser(payload);
+    this.addNode(node);
+    edges.forEach(this.addEdge.bind(this));
+  }
 
-  //   const subscribers = this.subscribers.get(nodeId) ?? [];
-  //   subscribers.push(setState);
-  //   this.subscribers.set(nodeId, subscribers);
-    
-  //   return (node: Node<T>) => {
-  //     node.payload = payload;
+  addAll(payload: T[]) {
+    let edgeList: Edge[] = [];
 
-  //     this.subscribers.get(nodeId).forEach(sub => sub(node));
-  //   };
-  // }
+    payload.forEach(item => {
+      const [node, edges] = this.parser(item);
+      this.addNode(node);
+      edgeList = edgeList.concat(edges);
+    });
 
-  addNode(node: Node<T>) {
+    edgeList.forEach(this.addEdge.bind(this));
+  }
+
+  /**
+   * State
+   */
+  addEdgeStateListner(setter: (edge: EdgeId[]) => void) {
+    this.edgeStateSubscribers.add(setter);
+  }
+
+  removeEdgeStateListner(setter: (edge: EdgeId[]) => void) {
+    this.edgeStateSubscribers.delete(setter);
+  }
+
+  addNodesStateListner(setter: (edge: NodeId[]) => void) {
+    this.nodeStateSubscribers.add(setter);
+  }
+
+  removeNodesStateListner(setter: (edge: NodeId[]) => void) {
+    this.nodeStateSubscribers.delete(setter);
+  }
+  
+  addListner(nodeId: NodeId, setter: (node: Node<any>) => void) {
+    const listners = this.nodeSubscribers.get(nodeId) ?? new Set();
+    listners.add(setter);
+    this.nodeSubscribers.set(nodeId, listners);
+  }
+
+  removeListner(nodeId: NodeId, setter: (node: Node<any>) => void) {
+    this.nodeSubscribers.get(nodeId)?.delete(setter);
+  }
+
+  addEdgeListner(edgeId: EdgeId, setter: (edge: NodeEdge<T>) => void) {
+    const listners = this.edgeSubscribers.get(edgeId) ?? new Set();
+    listners.add(setter);
+    this.edgeSubscribers.set(edgeId, listners);
+  }
+
+  removeEdgeListner(edgeId: EdgeId, setter: (edge: NodeEdge<T>) => void) {
+    this.edgeSubscribers.get(edgeId).delete(setter);
+  }
+
+  updateNode(payload: T) {
+    // parse edges
+    // update all
+  }
+
+
+
+  private addNode(node: Node<T>) {
     this.addNodeToBbox(node);
     this.nodeMap.set(node.id, node);
     this.nodeList.push(node);
   }
 
-  addEdge(edge: Edge): boolean {
+  private addEdge(edge: Edge): boolean {
     const from = this.getNode(edge.from);
     const to = this.getNode(edge.to);
 
@@ -180,87 +250,92 @@ export class Graph<T> {
       return false;
     }
 
-    this.edgeMap.add(edge.from, createEdge(EdgeType.Out, from, to, edge.xoffset, edge.yoffset));
-    this.edgeMap.add(edge.to, createEdge(EdgeType.In, to, from, 0, 0));
+    this.edgeMap.add(createEdge(from, to, edge.idx));
 
     return true;
   }
   
-  removeNodes(nodes: NodeSet<T>) {
-    const edges = [...nodes].flatMap(node => {
-      const nodeId = node.id;
-      this.nodeMap.delete(nodeId);
-      return this.edgeMap.delete(nodeId);
+  removeNodes(ids: Set<NodeId>) {
+    this.nodeList = this.nodeList.filter(n => !ids.has(n.id));
+    
+    [...ids].flatMap(id => {
+      this.nodeSubscribers.delete(id);  
+      this.nodeMap.delete(id);
+      this.selectedNodes.delete(id);
+
+      return this.edgeMap.delete(id)?.forEach(edge => this.edgeSubscribers.delete(edge.id));
     });
 
-    // onDelete set state
-
-    this.nodeList = this.nodeList.filter(node => !nodes.has(node));
     this.reCalcBbox();
+    
+    this.nodeStateSubscribers.forEach(sub => sub(this.nodeIds));
+    this.edgeStateSubscribers.forEach(sub => sub(this.edgeIds));
   }
 
-  get isEmpty(): boolean {
-    return this.nodeList.length === 0;
+  /**
+   * Getters
+   */
+  getEdge(id: string): NodeEdge<T> {
+    return this.edgeMap.getByEdgeId(id);
   }
 
-  getNode(id: number) {
+  getNode(id: number): Node<T> {
     return this.nodeMap.get(id);
   }
 
-  get nodes(): Node<T>[] {
-    return this.nodeList;
+  get nodeIds(): NodeId[] {
+    return this.nodeList.map(node => node.id);
   }
 
-  private getAdjacentNodes(id: ID): Node<T>[] {
-    return this.getOutEdges(id).map(edge => edge.to);
+  get edgeIds(): EdgeId[] {
+    return this.edgeMap.keys();
   }
 
-  getOutEdges(id: ID) {
-    return this.edgeMap.get(id)?.filter(outEdgesFilter) ?? [];
+  private getAdjacentNodes(id: NodeId): Node<T>[] {
+    return this.edgeMap.getByNodeId(id).filter(edge => edge.from.id === id).map(edge => edge.to);
   }
 
   /**
    * Selection
    */
-  select(region: AABB): NodeSet<T> {
-    const selected = this.nodes.filter(node => region.containsBbox(new AABB(node.x, node.y, node.x + node.size.x, node.y + node.size.y)));
+  select(region: AABB): Set<NodeId> {
+    const selected = this.nodeList
+    .filter(node => region.containsBbox(new AABB(node.x, node.y, node.x + node.size.x, node.y + node.size.y)))
+    .map(node => node.id)
+
     this.selectedNodes = new Set(selected);
     return this.selectedNodes;
   }
 
-  addToSelection(node: Node<T>): NodeSet<T> {
-    this.selectedNodes.add(node);
+  addToSelection(node: Node<T>): Set<NodeId> {
+    this.selectedNodes.add(node.id);
     return this.selectedNodes;
   }
 
-  setSelection(node: Node<T>): NodeSet<T> {
-    console.log('setSelection', this.setState);
-    
-    // this.setState({node});
-
+  setSelection(node: Node<T>): Set<NodeId> {
     this.selectedNodes = new Set();
     return this.addToSelection(node);
   }
 
-  get selected(): NodeSet<T> {
+  get selected(): Set<NodeId> {
     return this.selectedNodes;
   }
 
   isSelected(node: Node<T>): boolean {
-    return this.selectedNodes.has(node);
+    return this.selectedNodes.has(node.id);
   }
 
   /**
    * Drag
    */
   startDrag(origin: Vector2D) {
-    const nodes = [...this.selectedNodes];
+    const nodes = [...this.selectedNodes].map(id => this.nodeMap.get(id));
 
     this.dragContext = {
       hasChildren: false,
       origin,
       nodes,
-      startPositions: nodes.reduce((acc, node) => acc.set(node.id, new Vector2D(node.x, node.y)), new Map<ID, Vector2D>())
+      startPositions: nodes.reduce((acc, node) => acc.set(node.id, new Vector2D(node.x, node.y)), new Map<NodeId, Vector2D>())
     };
   }
 
@@ -269,21 +344,21 @@ export class Graph<T> {
     const shift = pos.sub(origin);
 
     if (moveChildren && !hasChildren) {
-      const selected = [...this.selectedNodes];
+      const selected = [...this.selectedNodes].map(id => this.nodeMap.get(id));
       this.findAllChildren(selected).forEach(node => {
         nodes.push(node);
         startPositions.set(node.id, new Vector2D(node.x, node.y));
       });
       this.dragContext.hasChildren = true;
     } else if (!moveChildren && hasChildren) {
-      nodes.filter(el => !this.selectedNodes.has(el))
+      nodes.filter(el => !this.selectedNodes.has(el.id))
       .forEach(el => {
         const pos = startPositions.get(el.id);
         el.x = pos.x;
         el.y = pos.y;
       });
 
-      this.dragContext.nodes = [...this.selectedNodes];
+      this.dragContext.nodes = [...this.selectedNodes].map(id => this.nodeMap.get(id));
       this.dragContext.hasChildren = false;
     }
 
@@ -291,6 +366,9 @@ export class Graph<T> {
       const pos = startPositions.get(node.id).add(shift)
       node.x = pos.x;
       node.y = pos.y;
+      
+      this.nodeSubscribers.get(node.id).forEach(sub => sub(node));
+      this.edgeMap.getByNodeId(node.id).forEach(edge => this.edgeSubscribers.get(edge.id).forEach(sub => sub({...edge})));
     });
 
     this.reCalcBbox();
@@ -305,7 +383,7 @@ export class Graph<T> {
    */
   private reCalcBbox() {
     this.bbox.reset();
-    this.nodes.forEach(this.addNodeToBbox.bind(this));
+    this.nodeList.forEach(this.addNodeToBbox.bind(this));
   }
 
   private addNodeToBbox(node: Node<T>) {

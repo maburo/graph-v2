@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
-import { Mode } from '../graph-editor';
+import { Mode, useNodeState } from '../graph-editor';
 import { LayerProperties } from './layer-props';
-import { Node } from '../graph';
+import { Node, NodeId } from '../graph';
 import { AABB, Vector2D, Vector3D } from '../../math';
+import { GraphContext } from '../../..';
 
 interface DebugLayerProperties extends LayerProperties {
-  transform: string,
-  nodes: Node<any>[],
-  parentRef?: React.MutableRefObject<any>,
-  position: Vector3D,
-  mouseCoords: Vector2D,
+  transform: string;
+  nodes: number[];
+  parentRef?: React.MutableRefObject<any>;
+  position: Vector3D;
+  mouseCoords: Vector2D;
+  mode: Mode;
 }
 
 export function DebugLayer(props: DebugLayerProperties) {
   const { transform, graph, mode, position, mouseCoords } = props;
+  const ctx = useContext(GraphContext);
 
   return (
     <div className="debug render layer">
@@ -21,7 +24,10 @@ export function DebugLayer(props: DebugLayerProperties) {
         style={{ transform, transformOrigin: "0px 0px" }}
         className="render layer"
       >
-        {renderNodeLabels(props.nodes)}
+        <div>
+          {props.nodes.map(id => <NodeLabel id={id} />)}
+        </div>
+
         {renderOriginGizmo()}
         {renderBoundingBox(graph.bbox)}
       </div>
@@ -111,21 +117,22 @@ function renderOriginGizmo() {
   );
 }
 
-function renderNodeLabels(nodes: Node<any>[]) {
-  const elements = nodes.map(element => <div style={{
+const NodeLabel = React.memo(({ id }: { id: number }) => {
+  const node = useNodeState(id);
+
+  return (
+  <div style={{
     position: "absolute",
     padding: "10px 10px",
     fontWeight: "bold",
     minWidth: "40px",
-    top: element.y + 'px',
-    left: element.x + 'px',
+    top: node.y + 'px',
+    left: node.x + 'px',
     backgroundColor: "#AAFD",
     borderRadius: "15px",
     textAlign: "center",
-  }}>{element.id}</div>)
-
-  return <div>{elements}</div>
-}
+   }}>{node.id}</div>);
+});
 
 function renderBoundingBox(aabb: AABB) {
   return (

@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 import React, { useRef, useState } from 'react';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { GraphEditor } from './scripts/components/graph-editor';
-import { Graph, Edge, Node } from './scripts/components/graph';
+import { Edge, Graph, Node } from './scripts/components/graph';
 
 import { AABB, Vector2D, zoomToCursor } from './scripts/math';
 import { NodeFactory } from './scripts/components/node-factory';
@@ -14,7 +14,6 @@ import Editor from './scripts/components/editor';
 
 import Splitter from './scripts/components/splitter';
 
-import { calcEdgeConnectionCoord, edgeOutOffset } from './scripts/components/layers/edges-layer';
 import { 
   RULES_NODE_HEADER_HEIGHT, 
   RULES_NODE_TOP, 
@@ -29,6 +28,7 @@ import {
   ACTION_NODE_HEIGHT,
 } from './scripts/components/shared-components/diagram/utils/diagram-dimensions.utils';
 import { defaultKeyMapping } from './scripts/controllers/keyboard-controller';
+import { EdgeRender } from './scripts/components/layers';
 
 const container = document.createElement('div');
 container.className = 'container';
@@ -72,24 +72,19 @@ function elementToNode(element: FlowElement): [Node<FlowElement>, Edge[]] {
     size,
   } as Node<FlowElement>;
 
-  const edges = [];
+  const edges: Edge[] = [];
   
   if (element.action?.nextElementId) {
-    const offset = edgeOutOffset(element.type)
     edges.push({
-      xoffset: offset.x,
-      yoffset: offset.y,
+      idx: 0,
       from: element.id, 
       to: element.action.nextElementId
     });
   }
 
-  element.rules?.forEach((rule, idx) => {
-    const yoffset = size.y + RULES_NODE_TOP + RULES_NODE_PADDING * idx;
-
+  element.rules?.filter(el => el.nextElementId).forEach((rule, idx) => {
     if (rule.nextElementId) edges.push({
-      xoffset: 264,
-      yoffset,
+      idx: idx + 1,
       from: element.id, 
       to: rule.nextElementId,
     });
@@ -106,47 +101,9 @@ function loadGraph(file: string) {
         ...json.flowData.startElements, 
         ...json.flowData.flowElements
       ]
-           
-      const edges: Edge[] = [];
-      const graph: Graph<FlowElement> = new Graph();
-
-      elements.forEach((el: FlowElement) => {
-        const [node, nodeEdges] = elementToNode(el)
-        graph.addNode(node);
-        edges.push(...nodeEdges);
-
-        // const size = calcNodeSize(el);
-        // graph.addNode({
-        //   id: el.id,
-        //   x: el.diagramX,
-        //   y: el.diagramY,
-        //   payload: el,
-        //   size,
-        // });
-        
-        // if (el.action?.nextElementId) {
-        //   const offset = edgeOutOffset(el.type)
-        //   edges.push({
-        //     xoffset: offset.x,
-        //     yoffset: offset.y,
-        //     from: el.id, 
-        //     to: el.action.nextElementId
-        //   });
-        // }
-
-        // el.rules?.forEach((rule, idx) => {
-        //   const yoffset = size.y + RULES_NODE_TOP + RULES_NODE_PADDING * idx;
-
-        //   if (rule.nextElementId) edges.push({
-        //     xoffset: 264,
-        //     yoffset,
-        //     from: el.id, 
-        //     to: rule.nextElementId,
-        //   });
-        // });
-      });
-
-      edges.forEach(edge => graph.addEdge(edge));
+      
+      const graph: Graph<FlowElement> = new Graph(elementToNode);
+      graph.addAll(elements);
       
       ReactDOM.render(
         // <Splitter>
@@ -157,9 +114,10 @@ function loadGraph(file: string) {
         <div className="root">
           <GraphContext.Provider value={graph}>
             <GraphEditor 
+              edgeRenderFunction={EdgeRender.bezier}
               nodeFactory={new NodeFactory()}
               zoomFunc={zoomToCursor}
-              // debug={true}
+              debug={true}
               graph={graph} 
               zoom={{
                 min: 0.05,

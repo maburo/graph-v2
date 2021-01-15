@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ContextMenu } from './context-menu';
-import { FlowElement, FlowElementType } from '@infobip/moments-components';
-import { Graph, Node } from './graph';
+import { FlowElement } from '@infobip/moments-components';
+import { Edge, EdgeId, Graph, Node, NodeEdge, NodeId } from './graph';
 import { 
   AABB, 
   Vector2D, 
@@ -18,7 +18,7 @@ import {
   NodesLayer, 
   EdgesLayer, 
   DebugLayer,
-  EdgeData
+  EdgeProperties,
 } from './layers';
 import { 
   KeyboardController, 
@@ -26,7 +26,7 @@ import {
   MouseController, 
   TouchController 
 } from '../controllers';
-import { calcInCoords, edgeInOffset } from './layers/edges-layer';
+import { GraphContext } from '../..';
 
 export interface ZoomSettings {
   readonly min: number;
@@ -41,10 +41,12 @@ interface GraphProps {
   readonly zoomFunc: ZoomFunction;
   readonly debug?: boolean;
   readonly keymap: KeyMappingSettings[];
+  readonly edgeRenderFunction: (props: EdgeProperties) => JSX.Element;
 }
 
 interface GraphState {
-  readonly update: Date;
+  readonly nodes: NodeId[];
+  readonly edges: EdgeId[];
   readonly position: Vector3D;
   readonly mousePos: Vector2D;
   readonly width: number;
@@ -60,6 +62,8 @@ export enum Mode {
   Edit, StartSelection, Select, Move, Drag
 }
 
+let prevState = {};
+
 export const NodeFactoryContext = React.createContext<NodeFactory>(null);
 
 /**
@@ -70,6 +74,9 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
   private onNodeStartDragFn: (node: React.MouseEvent) => void;
   private animationStepFn: () => void;
+
+  private updateEdgeStateFn: (edges: EdgeId[]) => void;
+  private updateNodeStateFn: (edges: NodeId[]) => void;
 
   private mouseController: MouseController;
   private touchController: TouchController;
@@ -86,10 +93,12 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     this.onNodeStartDragFn = this.onNodeStartDrag.bind(this);
     this.animationStepFn = this.animationStep.bind(this);
 
+    this.updateEdgeStateFn = this.updateEdgeState.bind(this);
+    this.updateNodeStateFn = this.updateNodeState.bind(this);
+
     const position = move(new Vector3D(-457, -100, 1), new Vector2D(), props.graph.bbox);
   
     this.state = {
-      update: new Date(),
       position,
       mousePos: new Vector2D(),
       transformMtx: Matrix3D.cssMatrix(Matrix3D.identity()),
@@ -99,7 +108,20 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       intercationOrigin: new Vector2D(),
       intercationEnd: new Vector2D(),
       mode: Mode.Edit,
+      nodes: props.graph.nodeIds,
+      edges: props.graph.edgeIds,
     }
+
+    props.graph.addEdgeStateListner(this.updateEdgeStateFn);
+    props.graph.addNodesStateListner(this.updateNodeStateFn);
+  }
+
+  updateEdgeState(edges: EdgeId[]) {
+    this.setState({edges});
+  }
+
+  updateNodeState(nodes: number[]) {
+    this.setState({nodes});
   }
 
   componentDidMount() {
@@ -109,9 +131,12 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
   componentWillUnmount() {
     this.ref.current.removeEventListener('wheel', this.mouseController.onWheel);
+
+    this.props.graph.removeEdgeStateListner(this.updateEdgeStateFn);
+    this.props.graph.removeNodesStateListner(this.updateNodeStateFn);
   }
 
-  animationStep() {    
+  animationStep() {
     const div = this.ref.current;
     if (!div) return;
 
@@ -131,6 +156,27 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     window.requestAnimationFrame(this.animationStepFn);
   }
 
+  shouldComponentUpdate(props: GraphProps, state: GraphState) {
+    const propsKeys = [];
+    for (const key in this.props) {
+      if ((this.props as any)[key] !== (props as any)[key]) {
+        propsKeys.push(key);
+      }
+    }
+
+    const stateKeys = [];
+    for (const key in this.state) {
+      if (key === 'mousePos') continue;
+      if ((this.state as any)[key] !== (state as any)[key]) {
+        stateKeys.push(key);
+      }
+    }
+
+    // if (propsKeys.length || stateKeys.length) console.log(propsKeys, stateKeys);
+    
+    return true;
+  }
+
   render() {
     const { graph, nodeFactory } = this.props;
     const { 
@@ -143,24 +189,9 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       transformMtx,
       intercationOrigin,
       intercationEnd,
-    } = this.state; 
-    const nodes = graph.nodes;
-    const edges: EdgeData[] = [];
-    
-    for (const node of nodes) {
-      const edgeList = graph.getOutEdges(node.id);
-
-      for (const edge of edgeList) {
-        const end = calcInCoords(edge.to);
-        edges.push({
-          key: edge.key,
-          startX: edge.from.x + edge.xoffset,
-          startY: edge.from.y + edge.yoffset,
-          endX: end.toX,
-          endY: end.toY,
-        })
-      }
-    }
+      nodes,
+      edges,
+    } = this.state;
     
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
@@ -186,19 +217,16 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
           {/* <GlLayer /> */}
        
           <EdgesLayer 
-            update={this.state.update}
+            renderFunction={this.props.edgeRenderFunction}
             graph={graph}
-            mode={mode}
             width={width}
             height={height}
             transform={transformMtx}
             edges={edges} />
 
           <NodesLayer 
-            update={this.state.update}
             onStartDrag={this.onNodeStartDragFn}
             graph={graph}
-            mode={mode}
             width={width}
             height={height}
             transform={transformMtx}
@@ -208,7 +236,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
             // TODO: change on zoom
             mode === Mode.Select &&
             <SelectLayer 
-              mode={mode}
               graph={graph}
               width={width}
               height={height}
@@ -312,7 +339,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
       case Mode.Drag:
         graph.dragSelectedTo(projMousePos, shiftKey);
-        this.setState({update});
+        // this.setState({update});
         break;
 
       case Mode.Edit:
@@ -400,3 +427,31 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     this.props.graph.removeNodes(this.props.graph.selected);
   }
 }
+
+
+export function useNodeState(nodeId: number): Node<any> {
+  const ctx = useContext(GraphContext); // Interface
+  const node = ctx.getNode(nodeId);
+
+  const [state, setState] = useState(node);
+  const setter = (node: Node<any>) => setState({...node});
+
+  useEffect(() => () => ctx.removeListner(nodeId, setter));
+  ctx.addListner(nodeId, setter);
+
+  return state;
+}
+
+export function useEdgeState(id: string): NodeEdge<any> {
+  const ctx = useContext(GraphContext);
+  const edge = ctx.getEdge(id);
+  
+  const [state, setState] = useState(edge);
+  const setter = (edge: NodeEdge<any>) => setState({...edge});
+
+  useEffect(() => () => ctx.removeEdgeListner(id, setter));
+  ctx.addEdgeListner(id, setter);
+
+  return state;
+}
+

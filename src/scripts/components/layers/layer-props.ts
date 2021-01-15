@@ -4,7 +4,6 @@ import { Graph } from "../graph";
 
 export interface LayerProperties {
   readonly graph: Graph<FlowElement>,
-  readonly mode: Mode,
   readonly width: number,
   readonly height: number,
 }

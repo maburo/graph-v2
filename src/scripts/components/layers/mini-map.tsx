@@ -75,9 +75,9 @@ function create(ctx: CanvasRenderingContext2D, graph:Graph<FlowElementType>) {
 
   ctx.fillRect(center.x-2, center.y-2, 2, 2)
 
-  graph.nodes.forEach((n:Node<FlowElementType>) => {
-    this.drawNode(n, scale, offset);
-  });
+  // graph.nodes.forEach((n:Node<FlowElementType>) => {
+  //   this.drawNode(n, scale, offset);
+  // });
 }
 
 function drawNode(ctx: CanvasRenderingContext2D, node:Node<FlowElementType>, scale:number, offset:Vector2D) {

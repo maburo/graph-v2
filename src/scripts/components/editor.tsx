@@ -11,22 +11,13 @@ interface State {
   node?: Node<any>;
 }
 
-// function useNodeState(nodeId: number): [Node<any>, (node: any) => void] {
-//   const ctx = useContext(GraphContext);
-//   const [ state, setState ] = useState();
-  
-//   ctx.selctedNodeState(setState);
 
-//   return [];
-// }
 
 export default function Editor(props: Props) {
   // const [ state, setState ] = useState<State>({ });
   // const node = props.graph.selctedNodeState(setState);
   // const [ node, setState ] = useNodeState(props.nodeId)
 
-  
-  
   return (
     <div style={{display: 'flex', width: 500}}>
       <div 
