@@ -1,4 +1,5 @@
 import React from 'react';
+import { NodeId } from '../graph';
 
 import { NodeFactoryContext, useNodeState } from '../graph-editor';
 import { LayerProperties } from './layer-props';
@@ -7,7 +8,7 @@ export const NodesLayer = React.memo(nodesLayer);
 
 interface HtmlLayerProperties extends LayerProperties {
   onStartDrag: (e: React.MouseEvent) => void;
-  nodes: number[];
+  nodes: NodeId[];
   transform: string;
 }
 
@@ -32,7 +33,7 @@ function nodesLayer({ nodes, transform, onStartDrag }: HtmlLayerProperties) {
 }
 
 interface NodeProperties {
-  id: number;
+  id: NodeId;
   onStartDrag: (e: React.MouseEvent) => void;
 }
 

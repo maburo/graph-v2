@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ContextMenu } from './context-menu';
 import { FlowElement } from '@infobip/moments-components';
-import { Edge, EdgeId, Graph, Node, NodeEdge, NodeId } from './graph';
+import { StateSetter, EdgeId, Graph, Node, NodeEdge, NodeId } from './graph';
 import { 
   AABB, 
   Vector2D, 
@@ -75,8 +75,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   private onNodeStartDragFn: (node: React.MouseEvent) => void;
   private animationStepFn: () => void;
 
-  private updateEdgeStateFn: (edges: EdgeId[]) => void;
-  private updateNodeStateFn: (edges: NodeId[]) => void;
+  private updateStateFn: StateSetter;
 
   private mouseController: MouseController;
   private touchController: TouchController;
@@ -93,8 +92,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     this.onNodeStartDragFn = this.onNodeStartDrag.bind(this);
     this.animationStepFn = this.animationStep.bind(this);
 
-    this.updateEdgeStateFn = this.updateEdgeState.bind(this);
-    this.updateNodeStateFn = this.updateNodeState.bind(this);
+    this.updateStateFn = this.updateState.bind(this);
 
     const position = move(new Vector3D(-457, -100, 1), new Vector2D(), props.graph.bbox);
   
@@ -112,16 +110,11 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       edges: props.graph.edgeIds,
     }
 
-    props.graph.addEdgeStateListner(this.updateEdgeStateFn);
-    props.graph.addNodesStateListner(this.updateNodeStateFn);
+    props.graph.addStateListner(this.updateStateFn);
   }
 
-  updateEdgeState(edges: EdgeId[]) {
-    this.setState({edges});
-  }
-
-  updateNodeState(nodes: number[]) {
-    this.setState({nodes});
+  updateState(nodes: NodeId[], edges: EdgeId[]) {
+    this.setState({nodes, edges});
   }
 
   componentDidMount() {
@@ -132,8 +125,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   componentWillUnmount() {
     this.ref.current.removeEventListener('wheel', this.mouseController.onWheel);
 
-    this.props.graph.removeEdgeStateListner(this.updateEdgeStateFn);
-    this.props.graph.removeNodesStateListner(this.updateNodeStateFn);
+    this.props.graph.removeStateListner(this.updateStateFn);
   }
 
   animationStep() {

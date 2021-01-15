@@ -3,6 +3,7 @@ import AABB from '../math/aabb';
 
 export type EdgeId = string;
 export type NodeId = number;
+export type StateSetter = (nodes: NodeId[], edges: EdgeId[]) => void;
 type NodeMap<T> = Map<NodeId, Node<T>>;
 
 interface DragContext<T> {
@@ -40,11 +41,6 @@ function createEdge<T>(from: Node<T>, to: Node<T>, idx: number): NodeEdge<T> {
     from,
     to,
   };
-}
-
-interface NodeEdges<T> {
-  in: NodeEdge<T>[];
-  out: NodeEdge<T>[];
 }
 
 /**
@@ -158,12 +154,11 @@ export class Graph<T> {
   private edgeMap: EdgeMap<T> = new EdgeMap();
   private selectedNodes: Set<NodeId> = new Set();
   private dragContext: DragContext<T>;
-  // private history: StateHistory = new StateHistory();
+  private history: StateHistory = new StateHistory();
 
   private nodeSubscribers: Map<NodeId, Set<(node: Node<T>) => void>> = new Map();
   private edgeSubscribers: Map<EdgeId, Set<(node: NodeEdge<T>) => void>> = new Map();
-  private edgeStateSubscribers: Set<(edge: EdgeId[]) => void> = new Set();
-  private nodeStateSubscribers: Set<(nodeId: NodeId[]) => void> = new Set(); 
+  private stateSubscribers: Set<(nodes: NodeId[], edges: EdgeId[]) => void> = new Set();
 
   private parser: (payload: T) => [Node<T>, Edge[]];
 
@@ -192,20 +187,12 @@ export class Graph<T> {
   /**
    * State
    */
-  addEdgeStateListner(setter: (edge: EdgeId[]) => void) {
-    this.edgeStateSubscribers.add(setter);
+  addStateListner(setter: StateSetter) {
+    this.stateSubscribers.add(setter);
   }
 
-  removeEdgeStateListner(setter: (edge: EdgeId[]) => void) {
-    this.edgeStateSubscribers.delete(setter);
-  }
-
-  addNodesStateListner(setter: (edge: NodeId[]) => void) {
-    this.nodeStateSubscribers.add(setter);
-  }
-
-  removeNodesStateListner(setter: (edge: NodeId[]) => void) {
-    this.nodeStateSubscribers.delete(setter);
+  removeStateListner(setter: StateSetter) {
+    this.stateSubscribers.delete(setter);
   }
   
   addListner(nodeId: NodeId, setter: (node: Node<any>) => void) {
@@ -268,8 +255,7 @@ export class Graph<T> {
 
     this.reCalcBbox();
     
-    this.nodeStateSubscribers.forEach(sub => sub(this.nodeIds));
-    this.edgeStateSubscribers.forEach(sub => sub(this.edgeIds));
+    this.stateSubscribers.forEach(sub => sub(this.nodeIds, this.edgeIds));
   }
 
   /**

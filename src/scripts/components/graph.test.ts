@@ -29,8 +29,10 @@ test('delete node with edges', () => {
 
   const expectedNodes = [0, 1, 3];
   const expectedEdges = ['0-1', '3-1'];
-  graph.addNodesStateListner(nodes => expect(nodes).toEqual(expectedNodes));
-  graph.addEdgeStateListner(edges => expect(edges).toEqual(expectedEdges));
+  graph.addStateListner((nodes, edges) => {
+    expect(nodes).toEqual(expectedNodes);
+    expect(edges).toEqual(expectedEdges)
+  });
 
   graph.addAll([
     { id: 0, connections: [1, 2] },

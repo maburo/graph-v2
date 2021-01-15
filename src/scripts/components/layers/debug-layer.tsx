@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef, EventHandler, useContext } from 'react';
+import React from 'react';
 import { Mode, useNodeState } from '../graph-editor';
 import { LayerProperties } from './layer-props';
-import { Node, NodeId } from '../graph';
+import { NodeId } from '../graph';
 import { AABB, Vector2D, Vector3D } from '../../math';
-import { GraphContext } from '../../..';
 
 interface DebugLayerProperties extends LayerProperties {
   transform: string;
-  nodes: number[];
+  nodes: NodeId[];
   parentRef?: React.MutableRefObject<any>;
   position: Vector3D;
   mouseCoords: Vector2D;
@@ -16,7 +15,6 @@ interface DebugLayerProperties extends LayerProperties {
 
 export function DebugLayer(props: DebugLayerProperties) {
   const { transform, graph, mode, position, mouseCoords } = props;
-  const ctx = useContext(GraphContext);
 
   return (
     <div className="debug render layer">
