@@ -85,7 +85,26 @@ module.exports = {
           'css-loader',     // Translates CSS into CommonJS
           'sass-loader',    // Compiles Sass to CSS
         ],
-      }
+      },
+      {
+        test: /\.css$/,
+        use: [
+            {
+                loader: require.resolve('css-loader'),
+                options: {
+                    sourceMap: false,
+                },
+            },
+            // // Loader which rewrites relative paths in url() statements based on the original source file
+            // // https://github.com/bholloway/resolve-url-loader
+            // {
+            //     loader: require.resolve('resolve-url-loader'),
+            //     options: {
+            //         keepQuery: true,
+            //     },
+            // },
+        ].filter(Boolean),
+    },
     ]
   },
   plugins: [

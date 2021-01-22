@@ -4,6 +4,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "moduleResolution": "node",
     "experimentalDecorators": true,
     "module": "commonjs",
     "target": "es6",
