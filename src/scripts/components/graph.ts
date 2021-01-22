@@ -286,7 +286,7 @@ export class Graph<T> {
    */
   select(region: AABB): Set<NodeId> {
     const selected = this.nodeList
-    .filter(node => region.containsBbox(new AABB(node.x, node.y, node.x + node.size.x, node.y + node.size.y)))
+    .filter(node => region.containsNode(node))
     .map(node => node.id)
 
     this.selectedNodes = new Set(selected);

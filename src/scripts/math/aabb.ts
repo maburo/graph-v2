@@ -1,3 +1,4 @@
+import { Node } from "../components/graph";
 import { Vector2D } from "./vector";
 
 /**
@@ -37,6 +38,13 @@ export default class AABB {
             bbox.minX >= this.minX &&
             bbox.maxY <= this.maxY &&
             bbox.minY >= this.minY);
+  }
+
+  containsNode(node: Node<any>): boolean {
+    return (node.x + node.size.x <= this.maxX &&
+            node.x >= this.minX &&
+            node.y + node.size.y <= this.maxY &&
+            node.y >= this.minY);
   }
 
   addPoint(x:number, y:number) {

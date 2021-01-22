@@ -62,8 +62,6 @@ export enum Mode {
   Edit, StartSelection, Select, Move, Drag
 }
 
-let prevState = {};
-
 export const NodeFactoryContext = React.createContext<NodeFactory>(null);
 
 /**
@@ -188,8 +186,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
-          // className="container omni-canvas-bg" 
-          className="container" 
+          className="container omni-canvas-bg" 
+          // className="container" 
           style={{
             backgroundPositionX: -position.x * position.z,
             backgroundPositionY: -position.y * position.z,
@@ -297,18 +295,10 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   onMove(clientX: number, clientY: number, shiftKey: boolean = false, altKey: boolean = false) {
-    const update = new Date();
     const { graph } = this.props;
     const mousePos = new Vector2D(clientX, clientY);
     const projMousePos = screenToWorld(mousePos, this.state.position, this.state.vpCenter);
     const mode = this.state.mode;
-    // const { 
-    //   mode, 
-    //   intercationOrigin, 
-    //   position: prevPos, 
-    //   mousePos: currMousePos, 
-    //   vpCenter 
-    // } = this.state; 
     
     switch (mode) {
       case Mode.Select:
@@ -331,7 +321,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
       case Mode.Drag:
         graph.dragSelectedTo(projMousePos, shiftKey);
-        // this.setState({update});
         break;
 
       case Mode.Edit:
@@ -420,8 +409,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 }
 
-
-export function useNodeState(nodeId: number): Node<any> {
+export function useNodeState(nodeId: NodeId): Node<any> {
   const ctx = useContext(GraphContext); // Interface
   const node = ctx.getNode(nodeId);
 
@@ -434,15 +422,15 @@ export function useNodeState(nodeId: number): Node<any> {
   return state;
 }
 
-export function useEdgeState(id: string): NodeEdge<any> {
+export function useEdgeState(edgeId: EdgeId): NodeEdge<any> {
   const ctx = useContext(GraphContext);
-  const edge = ctx.getEdge(id);
+  const edge = ctx.getEdge(edgeId);
   
   const [state, setState] = useState(edge);
   const setter = (edge: NodeEdge<any>) => setState({...edge});
 
-  useEffect(() => () => ctx.removeEdgeListner(id, setter));
-  ctx.addEdgeListner(id, setter);
+  useEffect(() => () => ctx.removeEdgeListner(edgeId, setter));
+  ctx.addEdgeListner(edgeId, setter);
 
   return state;
 }
