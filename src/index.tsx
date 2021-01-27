@@ -2,22 +2,17 @@ import './styles/main.scss';
 import './styles/omni.scss';
 
 import * as ReactDOM from 'react-dom';
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { FlowElement, FlowElementType } from '@infobip/moments-components';
 import { GraphEditor } from './scripts/components/graph-editor';
 import { Edge, Graph, Node } from './scripts/components/graph';
 
-import { AABB, Vector2D, zoomToCursor } from './scripts/math';
+import { Vector2D, zoomToCursor } from './scripts/math';
 import { NodeFactory } from './scripts/components/node-factory';
 
 import Editor from './scripts/components/editor';
 
-import Splitter from './scripts/components/splitter';
-
 import { 
-  RULES_NODE_HEADER_HEIGHT, 
-  RULES_NODE_TOP, 
-  RULES_NODE_PADDING, 
   PAUSE_NODE_WIDTH, 
   PAUSE_NODE_HEIGHT, 
   EXIT_NODE_HEIGHT, 
@@ -40,27 +35,6 @@ export const GraphContext = React.createContext<Graph<any>>(null);
 loadGraph('/all.json');
 // loadGraph('/small.json');
 // loadGraph('/rules.json');
-
-// ReactDOM.render((
-//   <div>
-//     <ExitNode
-//       // config={{}}
-//       id={1}
-//       readonly={false}
-//       type={FlowElementType.EXIT}
-//       />
-//     <PauseNode
-//       id={2}
-//       type={FlowElementType.PAUSE}
-//       />
-//     <ActionNode
-//       totalNumberOfElements={3}
-//       id={3}
-//       readonly={false}
-//       type={FlowElementType.SEND_ACTION}
-//       />
-//   </div>
-// ), container);
 
 function elementToNode(element: FlowElement): [Node<FlowElement>, Edge[]] {
   const size = calcNodeSize(element);
@@ -106,11 +80,6 @@ function loadGraph(file: string) {
       graph.addAll(elements);
       
       ReactDOM.render(
-        // <Splitter>
-        //   <div>1</div>
-        //   <button>2</button>
-        // </Splitter>
-
         <div className="root">
           <GraphContext.Provider value={graph}>
             <GraphEditor 
@@ -126,7 +95,7 @@ function loadGraph(file: string) {
               }}
               keymap={defaultKeyMapping()}
               />
-            <Editor graph={graph} />
+            {/* <Editor graph={graph} /> */}
           </GraphContext.Provider>
         </div>
         , container

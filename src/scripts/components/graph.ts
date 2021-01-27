@@ -19,6 +19,7 @@ export interface Node<T> {
   y: number;
   size: Vector2D;
   payload: T;
+  selected: boolean;
 }
 
 export interface Edge {
@@ -289,26 +290,39 @@ export class Graph<T> {
     .filter(node => region.containsNode(node))
     .map(node => node.id)
 
-    this.selectedNodes = new Set(selected);
-    return this.selectedNodes;
+    return this.setSelection(selected);
   }
 
-  addToSelection(node: Node<T>): Set<NodeId> {
-    this.selectedNodes.add(node.id);
-    return this.selectedNodes;
+  addToSelection(nodeId: NodeId): Set<NodeId> {
+    return this.setSelection([...this.selectedNodes, nodeId]);
   }
 
-  setSelection(node: Node<T>): Set<NodeId> {
-    this.selectedNodes = new Set();
-    return this.addToSelection(node);
+  setSelection(nodeIds: NodeId[]): Set<NodeId> {
+    console.log('set selection', nodeIds);
+    
+    const selected = new Set(nodeIds);
+    for (const id of new Set([...nodeIds, ...this.selectedNodes])) {
+      const node = this.nodeMap.get(id);
+      node.selected = selected.has(id);
+      
+      this.nodeSubscribers.get(id).forEach(sub => sub({...node}));
+    }
+    this.selectedNodes = new Set(nodeIds);
+    return this.selectedNodes;
   }
 
   get selected(): Set<NodeId> {
-    return this.selectedNodes;
+    return new Set([...this.selectedNodes]);
   }
 
-  isSelected(node: Node<T>): boolean {
-    return this.selectedNodes.has(node.id);
+  undo() {
+    console.log('undo');
+    
+    this.history.undo();
+  }
+
+  redo() {
+    this.history.redo();
   }
 
   /**
@@ -348,20 +362,33 @@ export class Graph<T> {
       this.dragContext.hasChildren = false;
     }
 
+    this.move(nodes, startPositions, shift);
+    this.reCalcBbox();
+  }
+
+  endDrag(pos: Vector2D) {
+    const { startPositions, origin, nodes } = this.dragContext;
+    this.history.push({
+      execute: () => this.move(nodes, startPositions, pos.sub(origin)),
+      undo: () => {
+        console.log('undo move');
+        
+        this.move(nodes, startPositions, new Vector2D())
+      },
+    });
+
+    this.reCalcBbox();
+  }
+
+  private move(nodes: Node<T>[], originalPos: Map<NodeId, Vector2D>, shift: Vector2D) {
     nodes.forEach(node => {
-      const pos = startPositions.get(node.id).add(shift)
+      const pos = originalPos.get(node.id).add(shift)
       node.x = pos.x;
       node.y = pos.y;
       
       this.nodeSubscribers.get(node.id).forEach(sub => sub(node));
       this.edgeMap.getByNodeId(node.id).forEach(edge => this.edgeSubscribers.get(edge.id).forEach(sub => sub({...edge})));
     });
-
-    this.reCalcBbox();
-  }
-
-  endDrag() {
-    this.reCalcBbox();
   }
 
   /**

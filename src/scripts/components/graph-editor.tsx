@@ -117,6 +117,7 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
 
   componentDidMount() {
     this.ref.current.addEventListener('wheel', this.mouseController.onWheel, { passive: false });
+    this.ref.current.focus();
     window.requestAnimationFrame(this.animationStepFn);
   }
 
@@ -146,25 +147,12 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     window.requestAnimationFrame(this.animationStepFn);
   }
 
-  shouldComponentUpdate(props: GraphProps, state: GraphState) {
-    const propsKeys = [];
-    for (const key in this.props) {
-      if ((this.props as any)[key] !== (props as any)[key]) {
-        propsKeys.push(key);
-      }
-    }
+  undo() {
+    this.props.graph.undo();
+  }
 
-    const stateKeys = [];
-    for (const key in this.state) {
-      if (key === 'mousePos') continue;
-      if ((this.state as any)[key] !== (state as any)[key]) {
-        stateKeys.push(key);
-      }
-    }
-
-    // if (propsKeys.length || stateKeys.length) console.log(propsKeys, stateKeys);
-    
-    return true;
+  redo() {
+    this.props.graph.redo();
   }
 
   render() {
@@ -186,8 +174,8 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     return (
       <NodeFactoryContext.Provider value={nodeFactory}>
         <div 
-          className="container omni-canvas-bg" 
-          // className="container" 
+          // className="container omni-canvas-bg" 
+          className="container" 
           style={{
             backgroundPositionX: -position.x * position.z,
             backgroundPositionY: -position.y * position.z,
@@ -281,10 +269,11 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
     const node = graph.getNode(id);
     const pos = screenToWorld(mousePos, position, vpCenter)
 
-    if (e.shiftKey) {
-      graph.addToSelection(node);
-    } else {
-      graph.setSelection(node);
+    
+    if (e.ctrlKey) {
+      graph.addToSelection(node.id);
+    } else if (!graph.selected.has(node.id)) {
+      graph.setSelection([node.id]);
     }
     graph.startDrag(pos);
 
@@ -304,7 +293,6 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       case Mode.Select:
         this.setState({intercationEnd: mousePos});
         break;
-
       case Mode.Move:
         this.setState(prev => {
           const shift = new Vector2D(
@@ -330,18 +318,20 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
   }
 
   onStartInteraction(clientX: number, clientY: number) {
-    this.ref.current?.focus();
+    const intercationOrigin = new Vector2D(clientX, clientY)
 
     switch (this.state.mode) {
       case Mode.StartSelection:
         this.setState({
-          intercationOrigin: new Vector2D(clientX, clientY),
-          intercationEnd: new Vector2D(clientX, clientY),
+          intercationOrigin,
+          intercationEnd: intercationOrigin,
           mode: Mode.Select,
         });
         break;
       case Mode.Edit:  
         this.setState({
+          intercationOrigin,
+          intercationEnd: intercationOrigin,
           mode: Mode.Move,
           mousePos: new Vector2D(clientX, clientY),
         });
@@ -354,8 +344,10 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
       position,
       vpCenter,
       intercationOrigin,
-      intercationEnd,
+      // intercationEnd,
     } = this.state;
+
+    const intercationEnd = new Vector2D(clientX, clientY);
 
     switch (this.state.mode) {
       case Mode.Select:
@@ -367,10 +359,15 @@ export class GraphEditor extends React.Component<GraphProps, GraphState> {
         this.setState({mode: Mode.Edit});
         break;
       case Mode.Move:
+        if (intercationOrigin.equals(intercationEnd)) {
+          this.props.graph.setSelection([]);
+        }
         this.setState({mode: Mode.Edit});
         break;
       case Mode.Drag:
-        this.props.graph.endDrag();
+        const mousePos = intercationEnd;
+        const projMousePos = screenToWorld(mousePos, this.state.position, this.state.vpCenter);
+        this.props.graph.endDrag(projMousePos);
         this.setState({mode: Mode.Edit});
         break;
     }

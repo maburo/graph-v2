@@ -18,7 +18,8 @@ function parser(obj: Element): [Node<any>, Edge[]] {
       payload: obj,
       size: obj.size ?? defaultSize,
       x: obj.x ?? 0,
-      y: obj.y ?? 0
+      y: obj.y ?? 0,
+      selected: false,
     },
     obj.connections?.map((to, idx) => ({from: obj.id, to, idx})) ?? []
   ]
@@ -41,7 +42,7 @@ test('delete node with edges', () => {
     { id: 3, connections: [1] }
   ]);
 
-  graph.setSelection(graph.getNode(2));
+  graph.setSelection([2]);
   graph.removeNodes(graph.selected);
   
   expect(graph.nodeIds).toEqual(expectedNodes);

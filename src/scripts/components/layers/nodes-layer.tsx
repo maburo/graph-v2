@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { GraphContext } from '../../..';
 import { NodeId } from '../graph';
 
 import { NodeFactoryContext, useNodeState } from '../graph-editor';
@@ -13,8 +14,6 @@ interface HtmlLayerProperties extends LayerProperties {
 }
 
 function nodesLayer({ nodes, transform, onStartDrag }: HtmlLayerProperties) {
-  // console.log('render node layer', [...nodes]);
-  
   return (
     <div
       className="render layer"
@@ -38,9 +37,8 @@ interface NodeProperties {
 }
 
 const HtmlNode = React.memo(function(props: NodeProperties) {
-  // let className = "node" + (this.props.graph.isSelected(node) ? ' selected' : '');
-  
   const node = useNodeState(props.id);
+  let className = "node" + (node.selected ? ' selected' : '');
   
   return (
     <NodeFactoryContext.Consumer>
@@ -52,7 +50,7 @@ const HtmlNode = React.memo(function(props: NodeProperties) {
             left: node.x + 'px',
             top: node.y + 'px'
           }}
-          className="node"
+          className={className}
         >
           {factory.renderNode(node)}
         </div>

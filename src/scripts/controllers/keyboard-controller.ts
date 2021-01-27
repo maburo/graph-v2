@@ -1,3 +1,4 @@
+import { platform } from "os";
 import { GraphEditor } from "../components/graph-editor";
 
 export const enum Platform {
@@ -18,10 +19,14 @@ interface KeyAction {
   readonly command: (graph: GraphEditor) => void;
 }
 
-export interface KeyMappingSettings {
+interface Binding {
   keys: string[],
   modifiers?: KeyModifiers,
   platform?: Platform,
+}
+
+export interface KeyMappingSettings {
+  bindings: Binding[],
   action: (graph: GraphEditor) => void,
 }
 
@@ -35,24 +40,19 @@ export default class KeyboardController {
   }
 }
 
-function extractActions(settings: KeyMappingSettings) {
-  return settings.keys.map(key => ({
-    key,
-    modifiers: settings.modifiers,
-    action: settings.action,
-  }));
-}
-
 function mapKeys(settings: KeyMappingSettings[]) {
-  return settings
-    .filter(({ platform }) => !platform || platform === PLATFORM)
-    .flatMap(extractActions)
-    .reduce((acc, {key, action, modifiers}) => {
-      return acc.set(key, {
-        command: action,
-        modifiers: modifiersBits(modifiers),
-      })
-    }, new Map<string, KeyAction>());
+  return settings.flatMap(mapping =>
+    mapping.bindings
+    .filter(binding => !binding.platform || binding.platform === PLATFORM)
+    .flatMap(binding => binding.keys.map(key => ({
+      key,
+      modifiers: binding.modifiers,
+      action: mapping.action,
+    })))
+  ).reduce((acc, obj) => acc.set(obj.key, {
+    command: obj.action,
+    modifiers: modifiersBits(obj.modifiers)
+  }), new Map<string, KeyAction>())
 }
 
 
@@ -77,10 +77,6 @@ function modifiersBits(modifiers?: KeyModifiers) {
   return 0;
 }
 
-export function undo(graph: GraphEditor) {
-
-}
-
 function zoomIn(graph: GraphEditor) {
   graph.zoom(.25);
 }
@@ -93,102 +89,82 @@ function deleteNode(graph: GraphEditor) {
   graph.deleteSelectedNodes();
 }
 
-export const keyActions = {
-  zoomIn,
-  zoomOut,
-  deleteNode,
+function undo(graph: GraphEditor) {
+  graph.undo();
+}
+
+function redo(graph: GraphEditor) {
+  graph.redo();
+}
+
+function copy(graph: GraphEditor) {
+
+}
+
+function paste(graph: GraphEditor) {
+
+}
+
+function cut(graph: GraphEditor) {
+
+}
+
+function focus(graph: GraphEditor) {
+
 }
 
 export function defaultKeyMapping() {
   return [
-    { 
-      keys:['KeyF'], 
-      action: () => {
-        console.log('focus');
-      },
+    {
+      bindings: [ {keys: ['KeyF']} ], 
+      action: focus,
     },
     { 
-      keys:['Minus', 'NumpadSubtract'], 
-      action: keyActions.zoomOut,
+      bindings: [ {keys: ['Minus', 'NumpadSubtract']} ],
+      action: zoomOut,
     },
     { 
-      keys:['Equal', 'NumpadAdd'], 
-      action: keyActions.zoomIn,
+      bindings: [ {keys: ['Equal', 'NumpadAdd']} ], 
+      action: zoomIn,
     },
     { 
-      keys:['Delete'], 
-      action: keyActions.deleteNode,
+      bindings: [ {keys: ['Delete']} ], 
+      action: deleteNode,
     },
     { 
-      keys:['KeyZ'], 
-      modifiers: {ctrlKey: true}, 
-      action: () => { 
-        console.log('undo');
-      },
-      platform: Platform.Win 
+      bindings: [
+        { keys: ['KeyZ'], modifiers: {ctrlKey: true}, platform: Platform.Win },
+        { keys: ['KeyZ'], modifiers: {metaKey: true}, platform: Platform.Mac },
+      ],
+      action: undo,
     },
     { 
-      keys:['KeyY'], 
-      modifiers: {ctrlKey: true}, 
-      action: () => {
-        console.log('redo');
-      },
-      platform: Platform.Win 
+      bindings: [
+        { keys: ['KeyY'], modifiers: {ctrlKey: true}, platform: Platform.Win },
+        { keys: ['KeyZ'], modifiers: {metaKey: true, shiftKey: true}, platform: Platform.Mac },
+      ],
+      action: redo,
     },
-    { 
-      keys:['KeyZ'], 
-      modifiers: {metaKey: true}, 
-      action: () => {
-        console.log('undo mac');
-      }, 
-      platform: Platform.Mac 
+    {
+      bindings: [
+        { keys: ['KeyC'], modifiers: {ctrlKey: true}, platform: Platform.Win },
+        { keys: ['KeyX'], modifiers: {cmdKey: true}, platform: Platform.Mac }
+      ],
+      action: copy,
     },
-    { 
-      keys:['KeyZ'], 
-      modifiers: {metaKey: true, shiftKey: true}, 
-      action: () => {
-        console.log('redo mac');
-      }, 
-      platform: Platform.Mac 
+    {
+      bindings: [
+        { keys: ['KeyV'], modifiers: {ctrlKey: true}, platform: Platform.Win },
+        { keys: ['KeyX'], modifiers: {cmdKey: true}, platform: Platform.Mac }
+      ],
+      action: paste,
+    },
+    {
+      bindings: [
+        { keys: ['KeyX'], modifiers: {ctrlKey: true}, platform: Platform.Win },
+        { keys: ['KeyX'], modifiers: {cmdKey: true}, platform: Platform.Mac }
+      ],
+      action: paste,
     },
   ]
 }
-
-// class CommandManger {
-//   private stack: Command[] = [];
-//   private maxSize: number = 10;
-//   private idx: number = 0;
-
-//   undo() {
-//     this.stack[this.idx].undo();
-//     this.idx -= 1;
-//   }
-
-//   redo() {
-//     this.idx += 1;
-//     this.stack[this.idx].execute();
-//   }
-
-//   add(command: Command) {
-//     this.stack.push(command);
-//     if (this.stack.length > this.maxSize) {
-//       this.stack.shift();
-//     }
-//     this.idx = this.stack.length - 1;
-//   }
-// }
-
-// abstract class Command {
-//   abstract execute(): void;
-//   abstract undo(): void;
-// }
-
-
-
-// class UndoCommand {
-
-// }
-
-// class RedoCommand {
-
-// }

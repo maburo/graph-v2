@@ -27,6 +27,10 @@ export class Vector2D {
     return new Vector2D(this.x - vec.x, this.y - vec.y);
   }
 
+  get negative(): Vector2D {
+    return new Vector2D(-this.x, -this.y);
+  }
+
   mul(scalar: number): Vector2D {
     this.x *= scalar;
     this.y *= scalar;
@@ -47,5 +51,9 @@ export class Vector2D {
 
   copy(): Vector2D {
     return new Vector2D(this.x, this.y);
+  }
+
+  equals(vec: Vector2D): boolean {
+    return this.x === vec.x && this.y === vec.y;
   }
 }
